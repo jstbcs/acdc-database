@@ -3,12 +3,13 @@
 # 
 
 library(shiny)
+library(DT)
 source("./shiny/helper_file_shiny.R")
 
 ui <- fluidPage(
   
   # TITLE 
-  titlePanel("Information about data in inhibition data base"),
+  titlePanel("Information about data in the Attentional Control Data Collection data base"),
   
   # INTRO PART
   
@@ -23,7 +24,7 @@ ui <- fluidPage(
   # action button explaining the project 
   fluidRow(
     column(12, 
-           actionButton("action_explain_db", "What is the inhibition task data base?")),
+           actionButton("action_explain_db", "What is the ACDC data base?")),
            htmlOutput("explanation_db")
           # imageOutput("img_structure_db")
   ), 
@@ -139,12 +140,12 @@ ui <- fluidPage(
       # TAB 1
       tabPanel("Overview of suited datasets",
                
-               tableOutput("suited_datasets")),
+              DTOutput("suited_datasets")),
       
       # TAB 2
       tabPanel("Descriptives",
                
-               tableOutput("descriptives")),
+              DTOutput("descriptives")),
       
       # TAB 3
       tabPanel("Get the data",

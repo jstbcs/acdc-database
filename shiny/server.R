@@ -5,6 +5,7 @@
 
 source("./shiny/helper_file_shiny.R")
 source("./shiny/ui.R")
+library(knitr)
 
 
 server <- function(input, output, session){
@@ -13,7 +14,7 @@ server <- function(input, output, session){
   
   # print short intro text
   output$short_intro <- renderUI({
-    HTML("This shiny app provides an overview over datasets in the inhibition task data base.")
+    HTML("This shiny app provides an overview over datasets in the Attentional Control Data Collection data base (ACDC).")
   })
   
   # print explanation of project 
@@ -21,24 +22,17 @@ server <- function(input, output, session){
     # show text when number of clicks is uneven; hide if even
     if(input$action_explain_db %% 2 == 1){
       updateActionButton(inputId = "action_explain_db", label = "Got it!")
-      renderUI({HTML("The inhibition task data base contains attentional control task data (i.e., stroop, flanker or simon task) from over 40 datasets as well as information about the respective studies and publications. <br>
-                     It is meant to enhance access to open inhibition task data. <br>
+      renderUI({HTML("The ACDC data base contains attentional control task data (i.e., Stroop, flanker or Simon task) from over 40 datasets as well as information about the respective studies and publications. <br>
+                     It is meant to enhance access to open attentional control task data. <br>
                      Data can be accessed either via SQL or our R package (?). <br> <br>
                      <img src='/shiny/www/db_structure.png' alt='Structure of inhibition task db' width='400' height='400'>"
                      )
         })
     } else {
-      updateActionButton(inputId = "action_explain_db", label = "What is the inhibition task data base?")
+      updateActionButton(inputId = "action_explain_db", label = "What is the ACDC data base?")
       tagList()
     }
   })
-  
-  output$img_structure_db <- renderImage({
-      list(src = "shiny/www/structure_db.png",
-         width = "100%",
-         height = 330)
-    
-  }, deleteFile = F)
   
   # print description of how to contribute 
   output$explanation_contribute <- renderUI({
@@ -46,8 +40,8 @@ server <- function(input, output, session){
     if(input$action_contribute %% 2 == 1){
       updateActionButton(inputId = "action_contribute", label = "Got it!")
       renderUI({HTML("If you have data on attention control tasks that you would like to make available to other researchers, we would be happy to include it in our data base. <br>
-                     Note that the study/ studies which data were collected must have been published (this includes preprints). <br>
-                     Furthermore, suited data must fulfill include the following information: <ul>
+                     Note that the study/ studies which data were collected for must have been published (this includes preprints). <br>
+                     Furthermore, suited data must include the following information: <ul>
                      <li>An ID variable</li> 
                      <li>A congruency variable, indicating stimuli were congruent or conflicting </li> 
                      <li>Reaction time of each trial, in milliseconds </li>
@@ -241,7 +235,9 @@ server <- function(input, output, session){
   )
   colnames(suited_data_df) <- colnames_suited
   
-  output$suited_datasets <- renderTable(suited_data_df)
+  output$suited_datasets <- renderDT(suited_data_df)
+                                    
+  
   
   # print dataframe of descriptives ----
   descriptives_df <- data.frame(
@@ -256,7 +252,11 @@ server <- function(input, output, session){
   )
   colnames(descriptives_df) <- colnames_descriptives
   
-  output$descriptives <- renderTable(descriptives_df)
+  output$descriptives <- renderDT(descriptives_df,
+                                  caption = htmltools::tags$caption(
+                                    style = 'caption-side: bottom; text-align: center;',
+                                    htmltools::em('Note:'), 'percentage congruent, mean reaction time and mean accuracy are calculated across all participants and conditions within this task.'
+                                  ))
   
   # print R Code to access data ----
   output$Rcode <- renderPrint({
