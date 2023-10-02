@@ -50,7 +50,7 @@ correct_cols_in_task_table <- function(task_table){
   
   # stop if required column names are not present
   confirm_object_names(task_table, entry_list_info$task_table)
-  }
+}
 
 
 # This function checks whether all optional columns of the dataset_table table 
