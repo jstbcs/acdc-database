@@ -13,8 +13,7 @@
 download_datasets <- function(entry, download_folder){
   # step 1: Get non-entry choices of how to provide data access
   datachoice_cols <- which(grepl("How", colnames(entry)))
-  download_links <- entry %>%
-    select(datachoice_cols[which(!is.na(entry[1, datachoice_cols]))])
+  download_links <- dplyr::select(entry, datachoice_cols[which(!is.na(entry[1, datachoice_cols]))])
   
   # step 2: append respective download link to each column of download_links df
   for(col in 1:ncol(download_links)){
