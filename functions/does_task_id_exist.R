@@ -1,3 +1,5 @@
+# FLAGGED probably not used anymore
+
 # Checks to see if a given task_name exists in task-lookup table
 # Returns TRUE/FALSE if task ID exsits
 does_task_id_exist <- function(conn, object){

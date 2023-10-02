@@ -1,6 +1,13 @@
-# This function checks whether the number of rows in the within_table table equals the 
-# number of within conditions coded in the data table and whether there are duplicate within_names 
-# in within_name
+#' Verify the number of unique within conditions and check for duplicates.
+#'
+#' This function checks the number of unique within conditions and whether there are duplicate within_names in the within_table. It also ensures that the number of unique within conditions in the observation table matches the number of within_names in the within_table.
+# 
+#' @param within_table The within table to verify.
+#' @param observation_table The observation table to verify.
+# 
+#' @details The 'correct_n_of_withinid' function verifies the consistency of within conditions between the within_table and the observation table. It checks for duplicate within_names in the within_table, ensuring that they are unique. It also ensures that the number of unique within conditions in the observation table matches the number of within_names in the within_table.
+# 
+#' @export
 correct_n_of_withinid <- function(within_table, observation_table){
   # check if within ids are unique
   if(length(unique(within_table$within_name)) != nrow(within_table)){

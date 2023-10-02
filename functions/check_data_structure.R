@@ -1,4 +1,16 @@
-# Check data list structue
+#' Check the structure of a data list element.
+#'
+#' This function validates the structure of a data list element, ensuring that it adheres to the expected format.
+#'
+#' @param object A list element representing data to be validated. The structure should contain data entries with "data" and "overview" sub-elements.
+#'
+#' @details This function checks the provided 'object' structure to ensure it adheres to the expected format. It validates the presence of required elements and verifies the structure of sub-elements, including "data" and "overview".
+#'
+#' @return This function does not return a value. It raises an error if the 'object' structure does not meet the expected criteria.
+#'
+#' @seealso \code{\link{do_elements_exist}}, \code{\link{confirm_columns_not_specified}}
+#'
+#' @export
 check_data_structure <- function(object){
   # Check if all other (not study) objects are lists containing two 1 items
   overview_names = c("task_name", "keywords", "data_exclusions", "codebook", 

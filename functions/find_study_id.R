@@ -1,5 +1,8 @@
 # Find study id of table for a given code
 find_study_id <- function(conn, object){
+  
+  warning("using bad function: 'find_study_id()'")
+  
   stop_if_not_top_level(object)
   code = get_study_code(object)
   study_table = tbl(conn, "study")

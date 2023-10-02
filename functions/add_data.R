@@ -1,3 +1,13 @@
+#' Add Data to Database
+#'
+#' This function adds a new data entry to a database. It associates the data with a specified study, group keys, and other relevant information. The function first determines the next available IDs for various tables, adds the data to those tables, and replaces keys in the data as necessary.
+#'
+#' @param conn The connection object or database connection string.
+#' @param entry_data A list or data frame containing the data to be added, including tables for tasks, datasets, within-subject factors, conditions, and observations.
+#' @param study_id The ID of the study to which the data will be associated.
+#' @param group_keys A list of group keys to use for replacing relevant IDs in the data.
+#'
+#' @export
 add_data <- function(conn, entry_data, study_id, group_keys){
   # Add task and get the task id
   task_id = find_next_free_id(conn, "task_table")

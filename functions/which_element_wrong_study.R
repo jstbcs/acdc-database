@@ -1,9 +1,24 @@
-# This function checks whether element on study level contains:
-# 1. "study_info"
-# 2. "group_info"
-# 3. at least one data[NUMBER] element, e.g. data1
-# 4. no duplicated names
+#' Check Validity of Elements on Study Level
+#' 
+#' This function checks whether the elements of a given object on the study level contain
+#' "study_info," "group_info," and at least one "data[NUMBER]" element (e.g., "data1"). 
+#' It also ensures that there are no duplicated names in the object.
+#' 
+#' @param object An object to be checked for the validity of its elements at the study level.
+#' 
+#' @details This function verifies that the elements of the input object on the study level meet certain requirements:
+#' 1. It must contain a "study_info" element.
+#' 2. It must contain a "group_info" element.
+#' 3. It should include at least one "data[NUMBER]" element, such as "data1."
+#' 4. There should be no duplicated names within the object.
+#'
+#' If any of these requirements are not met, the function raises an error.
+#'
+#' @return This function does not return a value; it performs error checks and raises an error if conditions are not met.
+#' @export
 which_element_wrong_study <- function(object){
+  regex_matches_data_names = get_appropriate_regex_pattern("data_names")
+  
   stop_if_not_study_level(object)
   names = names(object)
   length = length(object)

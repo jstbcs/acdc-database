@@ -1,3 +1,14 @@
+#' Download Datasets and Organize into a List
+#'
+#' This function downloads datasets from various sources and organizes them into a list of data frames. 
+# The data sources can include uploaded data, links to GitHub, or links to OSF, among others.
+# 
+#' @param entry A data frame containing information about how to access the data, including choices like "Upload data to this form" and "Submit link to OSF/Github/other."
+#' @param download_folder The folder where downloaded data files will be stored.
+# 
+#' @return A list of data frames, where each data frame contains a downloaded dataset. The list is organized based on the information provided in the 'entry' data frame.
+#' 
+#' @export
 # main function: download datasets, assign correct name and add to list --------
 download_datasets <- function(entry, download_folder){
   # step 1: Get non-entry choices of how to provide data access

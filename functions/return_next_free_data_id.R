@@ -1,5 +1,7 @@
 # Returns the next free elements in overview table as data_ids that are assigned
 return_next_free_data_id <- function(conn){
+  
+  warning("using a bad function: 'return_next_free_data_id()'")
   overview = tbl(conn, "data_overview")
   last_id = overview %>% 
     summarize(max = max(data_id)) %>% 

@@ -1,3 +1,17 @@
+#' Create data structures for the data level of objects required for ACDC database.
+# 
+#' This function populates a data structure with information about tasks, conditions, 
+#' and dataset tables, based on the provided data.
+# 
+#' @param pub A list object representing the ACDC database structure.
+#' @param entry A data frame containing information about tasks, conditions, and dataset tables.
+#' 
+#' @return An updated list structure representing the ACDC database with data level information.
+#' 
+#' @details This function is a key part of the data import or preparation process for the ACDC database. 
+#' It handles different scenarios based on the number of studies and tasks.
+#' 
+#' @export
 # This function creates the first part of the data level of objects required to read in 
 # online form data into the ACDC database 
 

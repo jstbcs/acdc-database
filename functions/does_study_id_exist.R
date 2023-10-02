@@ -1,10 +1,13 @@
+# WARNING: This function is broken. But probably not used?
+
 # Checks to see if a given study_code exists in study-lookup table
 does_study_id_exist <- function(conn, object){
   code = get_study_code(object)
-  study_table = tbl(conn, "study")
-  study_id = study_table %>% 
-    filter(study_code == code) %>% 
-    pull(study_id)
+  sql_query = paste0(
+    "SELECT study_id FROM study_table WHERE publication_code = ",
+    code
+  )
+  study_id = DBI::dbGetQuery(conn, sql_query)
   length = length(study_id)
   if (length == 0){
     return(FALSE)

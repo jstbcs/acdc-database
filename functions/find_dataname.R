@@ -1,3 +1,16 @@
+#' Find a Suitable Name for a Data Frame
+#'
+#' This function determines a suitable name for a data frame based on the provided download links.
+#'
+#' @param download_links A data frame containing download links.
+#' @param col The column index specifying the download link.
+#'
+#' @return A character string representing a suitable name for the data frame.
+#'
+#' @details This function generates a name for a data frame based on the provided download links.
+#' The naming pattern depends on the structure of the download links.
+#'
+#' @export
 find_dataname <- function(download_links, col){
   # pattern type: only 1 task in fist study 
   if(colnames(entry[which(entry == download_links[2, col])]) == "Upload.data" |

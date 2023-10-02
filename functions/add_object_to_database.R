@@ -1,3 +1,11 @@
+#' Add Object to Database
+#'
+#' This function adds a top-level object, such as a study, to a database. It validates the object's structure and prepares it for insertion into the database. It iteratively adds data tables to the database and updates IDs accordingly.
+#'
+#' @param conn The connection object or database connection string.
+#' @param object The top-level object to be added to the database.
+#'
+#' @export
 add_object_to_database <- function(conn, object){
   stop_if_not_top_level(object)
   

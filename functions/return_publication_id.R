@@ -1,4 +1,7 @@
+
 return_publication_id <- function(conn, code){
+  
+  warning("using bad function: 'return_publication_id()'")
   # Finds the next free pub code if it doesnt already exist
   if (does_publication_code_exist(conn, code) == FALSE) 
   {

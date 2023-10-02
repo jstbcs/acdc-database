@@ -1,4 +1,7 @@
 find_task_id <- function(conn, object){
+  
+  warning("using bad function: 'find_task_id'")
+  
   name = get_task_names(object)
   if (length(name) != 1)
   {

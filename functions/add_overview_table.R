@@ -1,3 +1,11 @@
+#' Add Overview Table
+#'
+#' This function adds the overview table to the database, provided that the essential variables such as 'study_id' and 'task_id' are present in the overview data. The function checks if these variables exist and then injects the relevant columns into the 'data_overview' table.
+#'
+#' @param conn The connection object or database connection string.
+#' @param object The object containing overview data.
+#'
+#' @export
 add_overview_table <- function(conn, object){
   stop_if_not_data_level(object)
   if (do_elements_exist(c("study_id", "task_id"), object$overview) == FALSE)

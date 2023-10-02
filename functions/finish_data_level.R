@@ -1,7 +1,20 @@
-# Function to finish data levels when inserting entries to the online form 
-# into the database (see Manual_Onlineform_2_Nested_list.Rmd)
-
-
+#' Finish Data Levels When Inserting Entries to the Database
+#'
+#' This function completes data levels when inserting entries from an online form into the database.
+#' It processes and organizes the submitted data, such as observation tables, condition tables, and dataset tables.
+# 
+#' @param pub A list representing the publication levels.
+#' @param entry A data frame containing information about the form entry.
+#' @param dataframe_list A list of data frames containing the submitted data.
+#' @param n_studies The number of studies submitted.
+#'
+#' @details The function processes the submitted data for each study and task, organizing it into the corresponding data tables.
+# It calculates various statistics, such as the number of participants, blocks, trials, and more, for the dataset table.
+# Additionally, it computes information for the condition table based on the data.
+# 
+#' @return A modified publication list containing the organized data levels.
+#'
+#' @export
 finish_data_level  <- function(pub, entry, dataframe_list, n_studies){
   if(n_studies == 1){
     # JUST ONE STUDY WAS SUBMITTED 

@@ -1,3 +1,15 @@
+#' Create a study level entry for inserting data into the database.
+#'
+#' This function creates a study level entry for inserting data into the database based on the provided information. It generates study and between tables with the required columns, depending on the number of studies and groups. The function extracts information from the provided entry and fills in the tables accordingly.
+# 
+#' @param pub A list containing the publication level entry.
+#' @param entry A nested list containing information required for the study level.
+# 
+#' @return A list containing the study level entry for database insertion.
+# 
+#' @details The 'create_study_level' function generates a study level entry for insertion into the database. The entry's structure varies depending on the number of studies and groups, and the function automatically handles the creation of study and between tables with the required columns.
+# 
+#' @export
 create_study_level <- function(pub, entry){
   # STUDY LEVEL IF NUMBER OF STUDIES = 1 --#
   if(entry$Number.of.studies == 1){

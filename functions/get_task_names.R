@@ -1,4 +1,12 @@
-# Returns vector of task names found in inject object
+#' Get Task Names
+#'
+#' This function retrieves a vector of task names from the input object.
+# 
+#' @param object An object containing task information.
+# 
+#' @return A character vector containing task names.
+# 
+#' @export
 get_task_names <- function(object){
   stop_if_not_data_level(object)
   task_names = c()

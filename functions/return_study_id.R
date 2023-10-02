@@ -1,6 +1,8 @@
 # Finds the study id in table of that code
 return_study_id <- function(conn, object){
   stop_if_not_top_level(object)
+  
+  warning("using bad function: 'return_study_id()'")
   if (does_study_id_exist(conn, object) == FALSE) 
   {
     continue_after_warning("This study code does not currently exist. Want to add it to the study-table?")

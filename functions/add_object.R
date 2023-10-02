@@ -1,5 +1,16 @@
-# Publication
+#' Add Object to Database
+#'
+#' This function adds an object to the database and inspects the object's structure. It checks for publication codes to ensure they are unique and adds them to the database. It then processes study names within the publication and adds them to the respective publication in the database.
+#'
+#' @param conn The connection object or database connection string.
+#' @param object The object to be added to the database.
+#'
+#' @export
 add_object <- function(conn, object){
+  # Regex patterns used later
+  regex_matches_publication_names = get_appropriate_regex_pattern("publication_names")
+  regex_matches_study_names = get_appropriate_regex_pattern("study_names")
+  
   pub_names = which_elements_match(names(object), regex_matches_publication_names)
   
   for (publication in pub_names){
