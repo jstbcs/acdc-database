@@ -60,6 +60,11 @@ add_data <- function(conn, entry_data, study_id, group_keys){
     replace_id_keys_in_data(., within_keys, "within") %>% 
     replace_id_keys_in_data(., condition_keys, "condition")
   
+  # Replace between, within in condition_table
+  entry_data$condition_table = entry_data$condition_table %>% 
+    replace_id_keys_in_data(., group_keys, "between") %>% 
+    replace_id_keys_in_data(., within_keys, "within")
+  
   # Add all tables
   dataset_table = entry_data$dataset_table
   add_table(conn, dataset_table, "dataset_table")
