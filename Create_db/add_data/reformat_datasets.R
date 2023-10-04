@@ -107,7 +107,6 @@ for(i in 1:length(study)){
     colnames(hedge[[i]][[j]]) <- c("block", "trial", "direction", "cond", "accuracy", "rt", "participant", "session", "study")
   }
 }
-
 # combine data of study 1
 hedge_data1 <- bind_rows(hedge[[1]]) %>%
   mutate(congruency = ifelse(cond == 0, 1, ifelse(cond == 2, 2, ifelse(cond == 1, 3, NA))),

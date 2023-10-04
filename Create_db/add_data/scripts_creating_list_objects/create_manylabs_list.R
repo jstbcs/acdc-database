@@ -4,7 +4,8 @@
 # first 40 datasets added to the db, we recommend first running "reformat_datasets.R"
 # to have all raw datasets loaded when constructing the nested list objects 
 
-source("./inject/compute_automatic_info.R")
+files.sources = list.files("./functions", pattern = "\\.R$", full.names = TRUE, include.dirs = FALSE)
+sapply(files.sources, source)
 source("./Create_db/add_data/scripts_creating_list_objects/00_create_publication_study_level.R")
 
 # Load required info from excel file -------------------------------------------------------
@@ -94,8 +95,8 @@ for(i in 1:nrow(study_df)){ # within each study
       percentage_neutral = get_perc_neut(df_cond), 
       n_obs = get_n_obs(df_cond),
       mean_obs_per_participant = get_mean_obs_pp(df_cond), 
-      mean_condition_rt = get_mean_condition_rt(df_cond),
-      mean_condition_acc = get_mean_condition_acc(df_cond)
+      mean_condition_rt = get_mean_rt(df_cond),
+      mean_condition_acc = get_mean_acc(df_cond)
     )
     
     # if more than 1 condition: add rows for each condition
@@ -110,8 +111,8 @@ for(i in 1:nrow(study_df)){ # within each study
         perc_neut <- get_perc_neut(df_con)
         n_obs <- get_n_obs(df_con)
         mean_obs_pp <- get_mean_obs_pp(df_con)
-        mean_condition_rt = get_mean_condition_rt(df_con)
-        mean_condition_acc = get_mean_condition_acc(df_con)
+        mean_condition_rt = get_mean_rt(df_con)
+        mean_condition_acc = get_mean_acc(df_con)
         
         # extend condition table
         pub[[i+1]][[k+2]]$condition_table[condition, ] <- c(condition, 
@@ -123,8 +124,8 @@ for(i in 1:nrow(study_df)){ # within each study
     }
     
     # add mean_dataset_rt and mean_dataset_acc to dataset_table
-    pub[[i+1]][[k+2]]$dataset_table$mean_dataset_rt <- get_mean_dataset_rt(df_test)
-    pub[[i+1]][[k+2]]$dataset_table$mean_dataset_acc <- get_mean_dataset_acc(df_test)
+    pub[[i+1]][[k+2]]$dataset_table$mean_dataset_rt <- get_mean_rt(df_test)
+    pub[[i+1]][[k+2]]$dataset_table$mean_dataset_acc <- get_mean_acc(df_test)
     
   }
   data_added <- data_added + study_df$n_data[i] # keep track of datasets added
