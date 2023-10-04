@@ -179,7 +179,6 @@ dataset10$trial <- rep(1:ntrial, nsub) # add subject and trial numbers
 dataset10 <- dataset10 %>% 
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)  
 
-# Young: 18-24, old: 65-75
 # Dataset 11 (Rey-Mermet et al.); arrow flanker task
 dataset11 <- read.csv("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/mermet_2018_should/arrowFlanker.dat.txt", sep = " ") %>% mutate(id = row_number())
 trialnumber <- dataset11 %>% group_by(sub, block) %>% mutate(trial = row_number()) %>% ungroup()

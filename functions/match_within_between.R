@@ -19,7 +19,9 @@ match_within_between <- function(observations_table, condition_table){
   
   # add matching within and between ID to condition table 
   condition_updated <- condition_table %>%
-    dplyr::left_join(info_from_observations, by = dplyr::join_by(condition_name))
+    dplyr::left_join(info_from_observations, by = dplyr::join_by(condition_name)) %>%
+    dplyr::rename(within_name = within, 
+                  between_name = between)
   
   return(condition_updated)
 }
