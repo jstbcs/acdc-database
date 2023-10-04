@@ -12,8 +12,8 @@
 code_condition <- function(df){
   # create overview of conditions
   conditions <- df %>%
-    dyplr::count(within, between) %>%
-    dyplr::select(within, between) %>%
+    dplyr::count(within, between) %>%
+    dplyr::select(within, between) %>%
     dplyr::mutate(condition = 1:nrow(.))
   
   # add respective condition value to observation
