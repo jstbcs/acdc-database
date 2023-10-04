@@ -8,7 +8,7 @@ does_study_id_exist <- function(conn, object){
     code
   )
   study_id = DBI::dbGetQuery(conn, sql_query)
-  length = length(study_id)
+  length = nrow(study_id)
   if (length == 0){
     return(FALSE)
   } else if (length == 1){

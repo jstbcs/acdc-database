@@ -14,11 +14,12 @@
 #' @export
 does_publication_code_exist <- function(conn, code){
   sql_query = paste0(
-    "SELECT publication_id FROM publication_table WHERE publication_code = ",
-    code
+    "SELECT publication_id FROM publication_table WHERE publication_table.publication_code = '",
+    code, 
+    "'"
   )
   pub_id = DBI::dbGetQuery(conn, sql_query)
-  length = length(pub_id)
+  length = nrow(pub_id)
   if (length == 0){
     return(FALSE)
   } else if (length == 1){
