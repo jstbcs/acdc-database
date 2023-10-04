@@ -1,11 +1,11 @@
 # CREATE NESTED LIST OBJECT TO READ IN CHETVERIKOV ET AL DATA INTO DB ############################
 
-# NOTE: when running all scripts in "\add_data" to replicate/ reconstruct the 
+# NOTE: when running all scripts in "\add_data" to replicate or reconstruct the 
 # first 40 datasets added to the db, we recommend first running "reformat_datasets.R"
 # to have all raw datasets loaded when constructing the nested list objects 
 
 files.sources = list.files("./functions", pattern = "\\.R$", full.names = TRUE, include.dirs = FALSE)
-sapply(files.sources, source)
+sapply(files.sources, source) # load all helper functions
 source("./Create_db/add_data/scripts_creating_list_objects/00_create_publication_study_level.R")
 
 # Load required info from excel file -------------------------------------------------------
@@ -129,6 +129,8 @@ for(i in 1:nrow(study_df)){ # within each study
     # add matching within and between ids to conditon table 
     #pub[[i+1]][[k+2]]$condition_table <- match_within_between(pub[[i+1]][[k+2]]$observation_table, 
     #                                                          pub[[i+1]][[k+2]]$condition_table)
+    pub[[i+1]][[k+2]]$condition_table$within_name <- 1
+    pub[[i+1]][[k+2]]$condition_table$between_name <- 1
     
     
     # add mean_dataset_rt and mean_dataset_acc to dataset_table
