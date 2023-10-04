@@ -123,6 +123,10 @@ for(i in 1:nrow(study_df)){ # within each study
       }
     }
     
+    # add matching within and between ids to conditon table 
+    pub[[i+1]][[k+2]]$condition_table <- match_within_between(pub[[i+1]][[k+2]]$observation_table, 
+                                                              pub[[i+1]][[k+2]]$condition_table)
+    
     # add mean_dataset_rt and mean_dataset_acc to dataset_table
     pub[[i+1]][[k+2]]$dataset_table$mean_dataset_rt <- get_mean_rt(df_test)
     pub[[i+1]][[k+2]]$dataset_table$mean_dataset_acc <- get_mean_acc(df_test)
