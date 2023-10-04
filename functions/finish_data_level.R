@@ -18,10 +18,10 @@
 finish_data_level  <- function(pub, entry, dataframe_list, n_studies){
   if(n_studies == 1){
     # JUST ONE STUDY WAS SUBMITTED 
-    for(i in 1:entry$Number.of.inhibition.tasks){
+    for(i in 1:entry$Number.of.attentional.control.tasks){
       
       # create observation_table  -----------------
-      if(entry$Number.of.inhibition.tasks == 1){
+      if(entry$Number.of.attentional.control.tasks == 1){
         observations_name <- "processed_data_study1"
       } else {
         observations_name <- paste("processed_data_study1_task",i, sep="")
@@ -44,6 +44,8 @@ finish_data_level  <- function(pub, entry, dataframe_list, n_studies){
       pub[[2]][[i+2]]$dataset_table$n_blocks <- get_n_blocks(df_test)
       pub[[2]][[i+2]]$dataset_table$n_trials <- get_n_trials(df_test)
       pub[[2]][[i+2]]$dataset_table$neutral_trials <- get_neutral_trials(df_test)
+      pub[[2]][[i+2]]$dataset_table$mean_dataset_rt <- get_mean_dataset_rt(df_test)
+      pub[[2]][[i+2]]$dataset_table$mean_dataset_acc <- get_mean_dataset_acc(df_test)
       
       # create condition_table --------------------------
       
@@ -54,14 +56,18 @@ finish_data_level  <- function(pub, entry, dataframe_list, n_studies){
       perc_neutral <- get_perc_neut(df_condition1)
       mean_obs_pp <- get_mean_obs_pp(df_condition1)
       n_obs <- get_n_obs(df_condition1)
+      mean_cond_rt <- get_mean_condition_rt(df_condition1)
+      mean_cond_acc <- get_mean_condition_acc(df_condition1)
       
       # fill table
       pub[[2]][[i+2]]$condition_table <- data.frame(
         condition_name = 1, 
         percentage_congruent = perc_congr, 
         percentage_neutral = perc_neutral, 
+        n_obs = n_obs,
         mean_obs_per_participant = mean_obs_pp,
-        n_obs = n_obs
+        mean_condition_rt = mean_cond_rt, 
+        mean_condition_acc = mean_cond_acc
       )
       
       # if more than 1 condition: fill in following ones
@@ -73,10 +79,13 @@ finish_data_level  <- function(pub, entry, dataframe_list, n_studies){
           perc_neutral <- get_perc_neut(df_condition)
           mean_obs_pp <- get_mean_obs_pp(df_condition)
           n_obs <- get_n_obs(df_condition)
+          mean_cond_rt <- get_mean_condition_rt(df_condition)
+          mean_cond_acc <- get_mean_condition_acc(df_condition)
           
           # append to condition_table
           pub[[2]][[i+2]]$condition_table[k, ] <- c(k, perc_congr, perc_neutral, 
-                                                    mean_obs_pp, n_obs)
+                                                    n_obs, mean_obs_pp,
+                                                    mean_cond_rt, mean_cond_acc)
         }
       }
       
@@ -91,7 +100,7 @@ finish_data_level  <- function(pub, entry, dataframe_list, n_studies){
     
     # IF >1 STUDIES WERE SUBMITTED
     for(i in 1:entry$Number.of.studies){
-      n_inhibition_tasks <- paste("Number.of.inhibition.tasks...STUDY.",i, sep="")
+      n_inhibition_tasks <- paste("Number.of.attentional.control.tasks...STUDY.",i, sep="")
       n_inhibition_tasks <- entry[1, n_inhibition_tasks]
       
       # for each task in study i
@@ -119,6 +128,8 @@ finish_data_level  <- function(pub, entry, dataframe_list, n_studies){
         pub[[i+1]][[j+2]]$dataset_table$n_blocks <- get_n_blocks(df_test)
         pub[[i+1]][[j+2]]$dataset_table$n_trials <- get_n_trials(df_test)
         pub[[i+1]][[j+2]]$dataset_table$neutral_trials <- get_neutral_trials(df_test)
+        pub[[i+1]][[j+2]]$dataset_table$mean_dataset_rt <- get_mean_dataset_rt(df_test)
+        pub[[i+1]][[j+2]]$dataset_table$mean_dataset_acc <- get_mean_dataset_acc(df_test)
         
         # create condition_table --------------------------
         
@@ -129,14 +140,18 @@ finish_data_level  <- function(pub, entry, dataframe_list, n_studies){
         perc_neutral <- get_perc_neut(df_condition1)
         mean_obs_pp <- get_mean_obs_pp(df_condition1)
         n_obs <- get_n_obs(df_condition1)
+        mean_cond_rt <- get_mean_condition_rt(df_condition1)
+        mean_cond_acc <- get_mean_condition_acc(df_condition1)
         
         # fill table
         pub[[i+1]][[j+2]]$condition_table <- data.frame(
           condition_name = 1, 
           percentage_congruent = perc_congr, 
           percentage_neutral = perc_neutral, 
+          n_obs = n_obs,
           mean_obs_per_participant = mean_obs_pp,
-          n_obs = n_obs
+          mean_condition_rt = mean_cond_rt, 
+          mean_cond_acc = mean_cond_acc
         )
         
         # if more than 1 condition: fill in following ones
@@ -146,12 +161,16 @@ finish_data_level  <- function(pub, entry, dataframe_list, n_studies){
             df_condition <- filter_condition(df_test, cond = n) # get data of condition k
             perc_congr <- get_perc_congr(df_condition)
             perc_neutral <- get_perc_neut(df_condition)
-            mean_obs_pp <- get_mean_obs_pp(df_condition)
             n_obs <- get_n_obs(df_condition)
+            mean_obs_pp <- get_mean_obs_pp(df_condition)
+            mean_cond_rt <- get_mean_condition_rt(df_condition)
+            mean_cond_acc <- get_mean_condition_acc(df_condition)
             
             # append to condition_table
             pub[[i+1]][[j+2]]$condition_table[n, ] <- c(n, perc_congr, perc_neutral, 
-                                                        mean_obs_pp, n_obs)
+                                                        n_obs, mean_obs_pp,
+                                                        mean_cond_rt,
+                                                        mean_cond_acc)
           }
         }
         
@@ -167,3 +186,5 @@ finish_data_level  <- function(pub, entry, dataframe_list, n_studies){
     return(pub)
   }
 }
+
+
