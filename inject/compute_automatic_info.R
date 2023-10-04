@@ -8,12 +8,14 @@
 #  - n_blocks 
 #  - n_trials 
 #  - neutral_trials
+#  - mean_dataset_rt
+#  - mean_dataset_acc
 # > for condition_table: 
 #   - percentage_congr
 #   - percentage_neut
 #   - mean_obs_pp 
 #   - n_obs
-
+#   - add respective between_id and within_id 
 
 library(dplyr)
 
@@ -78,6 +80,15 @@ get_neutral_trials <- function(df_test){
   return(ifelse(3 %in% df_test$congruency, 1, 0))
 }
 
+get_mean_dataset_rt <- function(df_test){
+  return(round(mean(df_test$rt, na.rm = TRUE),3))
+}
+
+get_mean_dataset_acc <- function(df_test){
+  return(round(mean(df_test$accuracy, na.rm = TRUE),3))
+}
+
+
 # For condition_table -------------------
 
 # filter data frame by condition
@@ -121,4 +132,29 @@ get_n_obs <- function(df_cond){
   
   return(n_obs)
 }
+
+# mean_condition_rt
+get_mean_condition_rt <- function(df_cond){
+  return(round(mean(df_cond$rt, na.rm = TRUE),3))
+}
+
+# mean_condition_acc
+get_mean_condition_acc <- function(df_cond){
+  return(round(mean(df_cond$acc, na.rm = TRUE),3))
+}
+
+# get mathcing between_id and within_id for each row in condition_table
+match_within_between <- function(observations_table, condition_table){
+  # get overview over which between and within condition ID which condition per datasetid
+  info_from_observations <- observations_table %>%
+    count(datasetid, within, between, condition) %>%
+    select(datasetid, within, between, condition)
+  
+  # add matching within and between ID to condition table 
+  condition_updated <- condition_table %>%
+    left_join(info_from_observations, by = join_by(datasetid, condition))
+  
+  return(condition_updated)
+}
+
 

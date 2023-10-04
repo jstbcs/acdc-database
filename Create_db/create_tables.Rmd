@@ -78,6 +78,8 @@ dbExecute(
   neutral_trials BOOLEAN,
   fixation_cross VARCHAR(255),
   time_limit INTEGER,
+  mean_dataset_rt INTEGER,
+  mean_acc_rt INTEGER,
   github VARCHAR(1000),
   comment VARCHAR(10000),
   FOREIGN KEY (study_id) REFERENCES study_table(study_id),
@@ -100,11 +102,17 @@ dbExecute(
   "CREATE TABLE condition_table (
   condition_id INTEGER PRIMARY KEY AUTOINCREMENT,
   dataset_id INTEGER,
+  between_id INTEGER,
+  within_id INTEGER, 
   percentage_congruent FLOAT,
   percentage_neutral FLOAT,
   n_obs INTEGER,
   mean_obs_per_participant INTEGER,
-  FOREIGN KEY (dataset_id) REFERENCES dataset_table(dataset_id)
+  mean_condition_rt INTEGER, 
+  mean_condition_acc INTEGER,
+  FOREIGN KEY (dataset_id) REFERENCES dataset_table(dataset_id),
+  FOREIGN KEY (between_id) REFERENCES between_table(between_id),
+  FOREIGN KEY (within_id) REFERENCES within_table(within_id)
   );"
 )
 

@@ -8,31 +8,31 @@ source("./inject/compute_automatic_info.R")
 source("./Create_db/add_data/scripts_creating_list_objects/00_create_publication_study_level.R")
 
 # Load required info from excel file -------------------------------------------------------
-publication_df <- readxl::read_excel("./add_data/Book.xlsx", "publication_table", range = "A8:I8", 
+publication_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "publication_table", range = "A8:I8", 
                                      col_names = c("study", "authors", "conducted",
                                                    "added", "country","contact", 
                                                    "keywords", "APA-reference",
                                                    "publication_code")) 
-study_df <- readxl::read_excel("./add_data/Book.xlsx", "study_table", range = "A12:D12",
+study_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "study_table", range = "A12:D12",
                                col_names = c("study", "n_groups",	"n_tasks", "comment"))
 study_df$n_data <- 1 # encode number of data sets per study (by hand)
-group_df <- readxl::read_excel("./add_data/Book.xlsx", "group_table", range = "A13:G13",
+group_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "group_table", range = "A13:G13",
                                col_names = c("study_in_publication", "study_description",
                                              "between_id",	"mean_age",	"percentage_female",
                                              "n_members",	"group_description"))
-task_df <- readxl::read_excel("./add_data/Book.xlsx", "task", range = "A27:D27", 
+task_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "task", range = "A27:D27", 
                               col_names = c("study_within_pub",	"Dataset", "task",
                                             "task_description"))
-dataset_df <- readxl::read_excel("./add_data/Book.xlsx", "dataset_overview_table", range = "A27:K27",
+dataset_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "dataset_overview_table", range = "A27:K27",
                                  col_names = c("study_within_publication", "data",	
                                                "data_excl", "n_participants",
                                                "n_blocks", "n_trials", "neutral_trials",
                                                "fixaction_cross",	"time_limit",
                                                "github",	"dataset in R"))
-within_df <- readxl::read_excel("./add_data/Book.xlsx", "within_table", range = "A44:D44",
+within_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "within_table", range = "A44:D44",
                                 col_names = c("study_within_publication",	"data set",
                                               "within_id",	"within_desciption"))
-condition_df <- readxl::read_excel("./add_data/Book.xlsx", "condition_descriptives", range = "A48:F48",
+condition_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "condition_descriptives", range = "A48:F48",
                                    col_names = c("study_in_publication",
                                                  "dataset & condition",	"percentage_congr",
                                                  "percentage_neutral",	"mean_obs_pp",	"n_obs"))
@@ -65,6 +65,8 @@ for(i in 1:nrow(study_df)){ # within each study
       neutral_trials = dataset_df$neutral_trials[k + data_added], 
       fixation_cross = dataset_df$fixaction_cross[k + data_added], 
       time_limit = dataset_df$time_limit[k + data_added], 
+      mean_dataset_rt = NA, 
+      mean_dataset_acc = NA, 
       github = dataset_df$github[k + data_added], 
       comment = NA
     )
@@ -90,8 +92,10 @@ for(i in 1:nrow(study_df)){ # within each study
       condition_name = 1, 
       percentage_congruent = get_perc_congr(df_cond), 
       percentage_neutral = get_perc_neut(df_cond), 
+      n_obs = get_n_obs(df_cond),
       mean_obs_per_participant = get_mean_obs_pp(df_cond), 
-      n_obs = get_n_obs(df_cond)
+      mean_condition_rt = get_mean_condition_rt(df_cond),
+      mean_condition_acc = get_mean_condition_acc(df_cond)
     )
     
     # if more than 1 condition: add rows for each condition
@@ -104,16 +108,32 @@ for(i in 1:nrow(study_df)){ # within each study
         # calculate info
         perc_congr <- get_perc_congr(df_con)
         perc_neut <- get_perc_neut(df_con)
-        mean_obs_pp <- get_mean_obs_pp(df_con)
         n_obs <- get_n_obs(df_con)
+        mean_obs_pp <- get_mean_obs_pp(df_con)
+        mean_condition_rt = get_mean_condition_rt(df_con)
+        mean_condition_acc = get_mean_condition_acc(df_con)
+        
+        
         
         # extend condition table
         pub[[i+1]][[k+2]]$condition_table[condition, ] <- c(condition, 
                                                             perc_congr, perc_neut, 
-                                                            mean_obs_pp, n_obs)
+                                                            n_obs, mean_obs_pp, 
+                                                            mean_condition_rt, 
+                                                            mean_condition_acc)
+      
       }
     }
     
+    # add matching within and between ids to conditon table 
+    #pub[[i+1]][[k+2]]$condition_table <- match_within_between(pub[[i+1]][[k+2]]$observation_table, 
+    #                                                          pub[[i+1]][[k+2]]$condition_table)
+    
+    
+    # add mean_dataset_rt and mean_dataset_acc to dataset_table
+    pub[[i+1]][[k+2]]$dataset_table$mean_dataset_rt <- get_mean_dataset_rt(df_test)
+    pub[[i+1]][[k+2]]$dataset_table$mean_dataset_acc <- get_mean_dataset_acc(df_test)
+
   }
   data_added <- data_added + study_df$n_data[i] # keep track of datasets added
 }

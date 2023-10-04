@@ -65,6 +65,8 @@ for(i in 1:nrow(study_df)){ # within each study
       neutral_trials = dataset_df$neutral_trials[k + data_added], 
       fixation_cross = dataset_df$fixaction_cross[k + data_added], 
       time_limit = dataset_df$time_limit[k + data_added], 
+      mean_dataset_rt = NA, 
+      mean_dataset_acc = NA, 
       github = dataset_df$github[k + data_added], 
       comment = NA
     )
@@ -90,8 +92,10 @@ for(i in 1:nrow(study_df)){ # within each study
       condition_name = 1, 
       percentage_congruent = get_perc_congr(df_cond), 
       percentage_neutral = get_perc_neut(df_cond), 
+      n_obs = get_n_obs(df_cond),
       mean_obs_per_participant = get_mean_obs_pp(df_cond), 
-      n_obs = get_n_obs(df_cond)
+      mean_condition_rt = get_mean_condition_rt(df_cond),
+      mean_condition_acc = get_mean_condition_acc(df_cond)
     )
     
     # if more than 1 condition: add rows for each condition
@@ -104,15 +108,23 @@ for(i in 1:nrow(study_df)){ # within each study
         # calculate info
         perc_congr <- get_perc_congr(df_con)
         perc_neut <- get_perc_neut(df_con)
-        mean_obs_pp <- get_mean_obs_pp(df_con)
         n_obs <- get_n_obs(df_con)
+        mean_obs_pp <- get_mean_obs_pp(df_con)
+        mean_condition_rt = get_mean_condition_rt(df_con)
+        mean_condition_acc = get_mean_condition_acc(df_con)
         
         # extend condition table
         pub[[i+1]][[k+2]]$condition_table[condition, ] <- c(condition, 
                                                             perc_congr, perc_neut, 
-                                                            mean_obs_pp, n_obs)
+                                                            n_obs, mean_obs_pp, 
+                                                            mean_condition_rt, 
+                                                            mean_condition_acc)
       }
     }
+    
+    # add mean_dataset_rt and mean_dataset_acc to dataset_table
+    pub[[i+1]][[k+2]]$dataset_table$mean_dataset_rt <- get_mean_dataset_rt(df_test)
+    pub[[i+1]][[k+2]]$dataset_table$mean_dataset_acc <- get_mean_dataset_acc(df_test)
     
   }
   data_added <- data_added + study_df$n_data[i] # keep track of datasets added
