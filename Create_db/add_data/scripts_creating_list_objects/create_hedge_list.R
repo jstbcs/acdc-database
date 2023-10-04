@@ -4,10 +4,8 @@
 # first 40 datasets added to the db, we recommend first running "reformat_datasets.R"
 # to have all raw datasets loaded when constructing the nested list objects 
 
-library(dplyr)
-#files.sources = list.files("./functions", pattern = "\\.R$", full.names = TRUE, include.dirs = FALSE)
-#sapply(files.sources, source)
-source("./inject/compute_automatic_info.R")
+files.sources = list.files("./functions", pattern = "\\.R$", full.names = TRUE, include.dirs = FALSE)
+sapply(files.sources, source)
 source("./Create_db/add_data/scripts_creating_list_objects/00_create_publication_study_level.R")
 
 # Load required info from excel file -------------------------------------------------------
