@@ -60,6 +60,16 @@ add_data <- function(conn, entry_data, study_id, group_keys){
     entry_data$observation_table$condition = 1
   }
   
+  if (all(is.na(entry_data$condition_table$between_name))){
+    entry_data$condition_table$between = 1
+  }
+  if (all(is.na(entry_data$condition_table$within_name))){
+    entry_data$condition_table$within = 1
+  }
+  if (all(is.na(entry_data$condition_table$condition_name))){
+    entry_data$condition_table$condition = 1
+  }
+  
   # Replace group, within, condition in data
   entry_data$observation_table = entry_data$observation_table %>% 
     replace_id_keys_in_data(., group_keys, "between") %>% 
@@ -68,8 +78,8 @@ add_data <- function(conn, entry_data, study_id, group_keys){
   
   # Replace between, within in condition_table
   entry_data$condition_table = entry_data$condition_table %>% 
-    replace_id_keys_in_data(., group_keys, "between") %>% 
-    replace_id_keys_in_data(., within_keys, "within")
+    replace_id_keys_in_data(., group_keys, "between", suffix = "_name") %>% 
+    replace_id_keys_in_data(., within_keys, "within", suffix = "_name")
   
   # Add all tables
   dataset_table = entry_data$dataset_table
