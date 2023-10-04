@@ -9,14 +9,20 @@
 #' @return A data frame with the ID keys replaced by their corresponding names.
 # 
 #' @export
-replace_id_keys_in_data <- function(data, keys, method){
+replace_id_keys_in_data <- function(data, keys, method, suffix = NULL){
   id_name = paste0(method, "_id")
   
   # Keys has colums: within_name and within_id, we want within, within_id
-  colnames(keys) = c(method, id_name)
+  if (is.null(suffix)){
+    colname_key_var = method
+  } else {
+    colname_key_var = paste0(method, suffix)
+  }
+
+  colnames(keys) = c(colname_key_var, id_name)
   
   data = data %>% 
     dplyr::left_join(., keys) %>% 
-    dplyr::select(-{{method}}) 
+    dplyr::select(-{{colname_key_var}}) 
   return(data)
 }
