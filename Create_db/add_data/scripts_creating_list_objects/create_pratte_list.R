@@ -4,18 +4,19 @@
 # first 40 datasets added to the db, we recommend first running "reformat_datasets.R"
 # to have all raw datasets loaded when constructing the nested list objects 
 
-source("./inject/compute_automatic_info.R")
+files.sources = list.files("./functions", pattern = "\\.R$", full.names = TRUE, include.dirs = FALSE)
+sapply(files.sources, source)
 source("./Create_db/add_data/scripts_creating_list_objects/00_create_publication_study_level.R")
 
 # Load required info from excel file -------------------------------------------
-publication_df <- readxl::read_excel("./add_data/Book.xlsx", "publication_table", range = "A1:I2") 
-study_df <- readxl::read_excel("./add_data/Book.xlsx", "study_table", range = "A1:D3")
+publication_df <- readxl::read_excel("./Create_db/add_data/add_data/Book.xlsx", "publication_table", range = "A1:I2") 
+study_df <- readxl::read_excel("./Create_db/add_data/add_data/Book.xlsx", "study_table", range = "A1:D3")
 study_df$n_data <- c(2,2) # encode number of data sets per study (by hand)
-group_df <- readxl::read_excel("./add_data/Book.xlsx", "group_table", range = "A1:G3")
-task_df <- readxl::read_excel("./add_data/Book.xlsx", "task", range = "A1:D5")
-dataset_df <- readxl::read_excel("./add_data/Book.xlsx", "dataset_overview_table", range = "A1:K5")
-within_df <- readxl::read_excel("./add_data/Book.xlsx", "within_table", range = "A1:D5")
-condition_df <- readxl::read_excel("./add_data/Book.xlsx", "condition_descriptives", range = "A1:F5")
+group_df <- readxl::read_excel("./Create_db/add_data/add_data/Book.xlsx", "group_table", range = "A1:G3")
+task_df <- readxl::read_excel("./Create_db/add_data/add_data/Book.xlsx", "task", range = "A1:D5")
+dataset_df <- readxl::read_excel("./Create_db/add_data/add_data/Book.xlsx", "dataset_overview_table", range = "A1:K5")
+within_df <- readxl::read_excel("./Create_db/add_data/add_data/Book.xlsx", "within_table", range = "A1:D5")
+condition_df <- readxl::read_excel("./Create_db/add_data/add_data/Book.xlsx", "condition_descriptives", range = "A1:F5")
 
 # NOTE: read in dataset2, dataset3, dataset8, and dataset9 from "reformat_datasets.R"
 
@@ -73,8 +74,8 @@ for(i in 1:nrow(study_df)){ # within each study
       percentage_neutral = get_perc_neut(df_cond), 
       n_obs = get_n_obs(df_cond),
       mean_obs_per_participant = get_mean_obs_pp(df_cond), 
-      mean_condition_rt = get_mean_condition_rt(df_cond),
-      mean_condition_acc = get_mean_condition_acc(df_cond)
+      mean_condition_rt = get_mean_rt(df_cond),
+      mean_condition_acc = get_mean_acc(df_cond)
     )
     
     # if more than 1 condition: add rows for each condition
@@ -89,8 +90,8 @@ for(i in 1:nrow(study_df)){ # within each study
         perc_neut <- get_perc_neut(df_con)
         n_obs <- get_n_obs(df_con)
         mean_obs_pp <- get_mean_obs_pp(df_con)
-        mean_condition_rt = get_mean_condition_rt(df_con)
-        mean_condition_acc = get_mean_condition_acc(df_con)
+        mean_condition_rt = get_mean_rt(df_con)
+        mean_condition_acc = get_mean_acc(df_con)
         
         # extend condition table
         pub[[i+1]][[k+2]]$condition_table[condition, ] <- c(condition, 
@@ -102,8 +103,8 @@ for(i in 1:nrow(study_df)){ # within each study
     }
     
     # add mean_dataset_rt and mean_dataset_acc to dataset_table
-    pub[[i+1]][[k+2]]$dataset_table$mean_dataset_rt <- get_mean_dataset_rt(df_test)
-    pub[[i+1]][[k+2]]$dataset_table$mean_dataset_acc <- get_mean_dataset_acc(df_test)
+    pub[[i+1]][[k+2]]$dataset_table$mean_dataset_rt <- get_mean_rt(df_test)
+    pub[[i+1]][[k+2]]$dataset_table$mean_dataset_acc <- get_mean_acc(df_test)
     
   }
   data_added <- data_added + study_df$n_data[i] # keep track of datasets added
