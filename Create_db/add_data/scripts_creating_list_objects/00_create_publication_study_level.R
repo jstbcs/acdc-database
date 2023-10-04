@@ -4,8 +4,8 @@
 # objects of first 40 data sets which were inserted into the data base
 # It can and be re-used to replicate/ reconstruct these data sets 
 # add matching within and between ids to conditon table 
-#files.sources = list.files("./functions", pattern = "\\.R$", full.names = TRUE, include.dirs = FALSE)
-#sapply(files.sources, source)
+files.sources = list.files("./functions", pattern = "\\.R$", full.names = TRUE, include.dirs = FALSE)
+sapply(files.sources, source)
 library(dplyr)
 
 list_study_level <- function(publication_df,
