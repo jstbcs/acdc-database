@@ -61,13 +61,13 @@ add_data <- function(conn, entry_data, study_id, group_keys){
   }
   
   if (all(is.na(entry_data$condition_table$between_name))){
-    entry_data$condition_table$between = 1
+    entry_data$condition_table$between_name = 1
   }
   if (all(is.na(entry_data$condition_table$within_name))){
-    entry_data$condition_table$within = 1
+    entry_data$condition_table$within_name = 1
   }
   if (all(is.na(entry_data$condition_table$condition_name))){
-    entry_data$condition_table$condition = 1
+    entry_data$condition_table$condition_name = 1
   }
   
   # Replace group, within, condition in data
