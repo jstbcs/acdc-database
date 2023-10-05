@@ -106,8 +106,6 @@ get_database_info <- function(){
     "subject",
     "block", 
     "trial",
-    "between_id",
-    "within_id",
     "condition_id",
     "congruency",
     "accuracy",
@@ -115,7 +113,7 @@ get_database_info <- function(){
   )
   
   observation_table_mandatory <- c(1, 1, 1, 1,
-                                   1, 1, 1, 1, 
+                                   1, 1, 
                                    1, 1, 1)
   
   table_info_db <- list(

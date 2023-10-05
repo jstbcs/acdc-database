@@ -65,7 +65,7 @@ create_testing_db <- function(file_path){
     fixation_cross VARCHAR(255),
     time_limit INTEGER,
     mean_dataset_rt INTEGER,
-    mean_acc_rt INTEGER,
+    mean_dataset_acc INTEGER,
     github VARCHAR(1000),
     comment VARCHAR(10000),
     FOREIGN KEY (study_id) REFERENCES study_table(study_id),
@@ -110,17 +110,13 @@ create_testing_db <- function(file_path){
     subject INTEGER,
     block INTEGER,
     trial INTEGER,
-    between_id INTEGER,
-    within_id INTEGER,
     condition_id INTEGER,
     congruency INTEGER,
     accuracy BOOLEAN,
     rt FLOAT,
     FOREIGN KEY (dataset_id) REFERENCES dataset_table(dataset_id),
-    FOREIGN KEY (between_id) REFERENCES between_table(between_id),
-    FOREIGN KEY (within_id) REFERENCES within_table(within_id),
     FOREIGN KEY (condition_id) REFERENCES condition_table(condition_id),
-    UNIQUE (dataset_id, subject, block, trial, condition_id, between_id, within_id)
+    UNIQUE (dataset_id, subject, block, trial, condition_id)
     );"
   )
 }

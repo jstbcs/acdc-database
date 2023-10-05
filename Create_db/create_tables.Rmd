@@ -79,7 +79,7 @@ dbExecute(
   fixation_cross VARCHAR(255),
   time_limit INTEGER,
   mean_dataset_rt INTEGER,
-  mean_acc_rt INTEGER,
+  mean_dataset_acc INTEGER,
   github VARCHAR(1000),
   comment VARCHAR(10000),
   FOREIGN KEY (study_id) REFERENCES study_table(study_id),
