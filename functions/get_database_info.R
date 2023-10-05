@@ -20,7 +20,7 @@ get_database_info <- function(){
     "publication_code"
   ) 
   
-  publication_table_mandatory <- c(1, 0, 0, 0, 0, 0, 0, 1, 1)
+  publication_table_mandatory <- c(0, 0, 0, 0, 0, 0, 0, 1, 1)
   
   study_table_columns <- c(
     "study_id",
@@ -30,7 +30,7 @@ get_database_info <- function(){
     "comment"
   )
   
-  study_table_mandatory <- c(1, 1, 1, 1, 1)
+  study_table_mandatory <- c(0, 0, 1, 1, 1)
   
   dataset_table_columns <- c(
     "study_id",
@@ -62,7 +62,7 @@ get_database_info <- function(){
     "within_description"
   )
   
-  within_table_mandatory <- c(1, 1, 1)
+  within_table_mandatory <- c(0, 0, 1)
   
   between_table_columns <- c(
     "between_id",
@@ -73,7 +73,7 @@ get_database_info <- function(){
     "group_description"
   )
   
-  between_table_mandatory <- c(1, 1, 0, 0, 1, 1)
+  between_table_mandatory <- c(0, 0, 0, 0, 1, 1)
   
   task_table_columns <- c(
     "task_id",
@@ -81,7 +81,7 @@ get_database_info <- function(){
     "task_description"
   )
   
-  task_table_mandatory <- c(1, 1, 0)
+  task_table_mandatory <- c(0, 1, 0)
   
   condition_table_columns <- c(
     "condition_id",
@@ -96,7 +96,7 @@ get_database_info <- function(){
     "mean_condition_acc"
   )
   
-  condition_table_mandatory <- c(1, 1, 1, 1, 
+  condition_table_mandatory <- c(0, 0, 0, 0, 
                                  1, 1, 1, 1,
                                  0, 0)
   
@@ -112,8 +112,8 @@ get_database_info <- function(){
     "rt"
   )
   
-  observation_table_mandatory <- c(1, 1, 1, 1,
-                                   1, 1, 
+  observation_table_mandatory <- c(0, 0, 1, 1,
+                                   1, 0, 
                                    1, 1, 1)
   
   table_info_db <- list(

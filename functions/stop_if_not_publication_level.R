@@ -15,7 +15,7 @@
 stop_if_not_publication_level <- function(object){
   regex_matches_study_names = get_appropriate_regex_pattern("study_names")
   
-  if (!all(str_detect(colnames(object), regex_matches_study_names))){
+  if (!all(stringr::str_detect(colnames(object), regex_matches_study_names))){
     stop("This function takes a publication-level object")
   }
 }

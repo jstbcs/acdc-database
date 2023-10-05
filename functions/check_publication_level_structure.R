@@ -22,5 +22,5 @@ check_publication_level_structure <- function(object){
   {
     "Names can only be study[NUMBER] or publication_table."
   }
-  check_publication_table(object$publication_table, entry_list_info)
+  check_publication_table(object$publication_table)
 }
