@@ -26,6 +26,6 @@ sapply(files.sources, source)
 
 create_testing_db("acdc.db")
 
-db_conn = DBI::dbConnect(RSQLite::SQLite(), "testing7.db")
+db_conn = DBI::dbConnect(RSQLite::SQLite(), "acdc.db")
 
 add_object(db_conn, lists)
