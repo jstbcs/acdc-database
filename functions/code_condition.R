@@ -17,7 +17,7 @@ code_condition <- function(df){
     dplyr::mutate(condition = 1:nrow(.))
   
   # add respective condition value to observation
-  data <- dplry::left_join(df, conditions, by = dplyr::join_by(between, within))
+  data <- dplyr::left_join(df, conditions, by = dplyr::join_by(between, within))
   
   return(data)
 }
