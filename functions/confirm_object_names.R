@@ -15,7 +15,7 @@
 # This function helps ensure that 'object' follows the expected structure.
 #'
 #' @export
-confirm_object_names <- function(object, data_frame_names){
+confirm_object_names <- function(object, data_frame_names, quiet = TRUE){
   # This function checks whether an object has the correctly specified names
   # The data_frame_names gives the info on what names should be there and 
   # whether they are mandatory or not.
@@ -23,7 +23,7 @@ confirm_object_names <- function(object, data_frame_names){
   for (i in 1:nrow(data_frame_names)){
     if (data_frame_names$mandatory[i] == 1){
       are_mandatory_elements_present(object, data_frame_names$column[i])
-    } else {
+    } else if (quiet == FALSE) {
       confirm_columns_not_specified(data_frame_names$column[i], object)
     }
   }
