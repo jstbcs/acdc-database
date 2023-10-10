@@ -27,7 +27,7 @@ get_database_info <- function(){
     "publication_id",
     "n_groups",
     "n_tasks",
-    "comment"
+    "study_comment"
   )
   
   study_table_mandatory <- c(0, 0, 1, 1, 1)
@@ -45,7 +45,7 @@ get_database_info <- function(){
     "fixation_cross", 
     "time_limit",
     "github",
-    "comment",
+    "dataset_comment",
     "mean_dataset_rt",
     "mean_dataset_acc"
     

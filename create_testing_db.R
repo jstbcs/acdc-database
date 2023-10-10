@@ -24,7 +24,7 @@ create_testing_db <- function(file_path){
     publication_id INTEGER,
     n_groups INTEGER,
     n_tasks INTEGER,
-    comment VARCHAR(10000),
+    study_comment VARCHAR(10000),
     FOREIGN KEY (publication_id) REFERENCES publication_table(publication_id)
     );"
   )
@@ -67,7 +67,7 @@ create_testing_db <- function(file_path){
     mean_dataset_rt INTEGER,
     mean_dataset_acc INTEGER,
     github VARCHAR(1000),
-    comment VARCHAR(10000),
+    dataset_comment VARCHAR(10000),
     FOREIGN KEY (study_id) REFERENCES study_table(study_id),
     FOREIGN KEY (task_id) REFERENCES task_table(task_id)
     );"
