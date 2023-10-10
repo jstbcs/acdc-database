@@ -30,7 +30,7 @@ get_database_info <- function(){
     "study_comment"
   )
   
-  study_table_mandatory <- c(0, 0, 1, 1, 1)
+  study_table_mandatory <- c(0, 0, 1, 1, 0) # TODO: Switch comment back to mandatory 
   
   dataset_table_columns <- c(
     "study_id",

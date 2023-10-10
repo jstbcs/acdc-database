@@ -17,12 +17,13 @@ for (i in seq_along(list_files)){
 
 names(lists) = paste0("publication", seq_along(list_files))
 
-check_overall_structure(lists)
 
 # Adding lists ------
 
 files.sources = list.files("./functions", pattern = "\\.R$", full.names = TRUE, include.dirs = FALSE)
 sapply(files.sources, source)
+
+check_overall_structure(lists)
 
 create_testing_db("acdc.db")
 
