@@ -45,7 +45,6 @@ get_database_info <- function(){
     "fixation_cross", 
     "time_limit",
     "github",
-    "dataset_comment",
     "mean_dataset_rt",
     "mean_dataset_acc"
     
@@ -54,7 +53,7 @@ get_database_info <- function(){
   dataset_table_mandatory <- c(0, 0, 0, 0,
                                0, 0, 0, 0,
                                0, 0, 0, 0,
-                               0, 0, 0)
+                               0, 0)
   
   within_table_columns <- c(
     "within_id",

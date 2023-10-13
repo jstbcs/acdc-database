@@ -67,7 +67,6 @@ create_testing_db <- function(file_path){
     mean_dataset_rt INTEGER,
     mean_dataset_acc INTEGER,
     github VARCHAR(1000),
-    dataset_comment VARCHAR(10000),
     FOREIGN KEY (study_id) REFERENCES study_table(study_id),
     FOREIGN KEY (task_id) REFERENCES task_table(task_id)
     );"

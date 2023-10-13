@@ -23,7 +23,7 @@ check_study_table_structure <- function(study_table){
   
   confirm_object_names(study_table, entry_list_info$study_table)
   
-  if (is.na(study_table$comment) | is.null(study_table$comment) | study_table$comment == ""){
+  if (is.na(study_table$study_comment) | is.null(study_table$study_comment) | study_table$study_comment == ""){
     stop("Comment can not be empty")
   }
 }
