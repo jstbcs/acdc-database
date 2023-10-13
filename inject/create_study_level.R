@@ -15,7 +15,7 @@ create_study_level <- function(pub, entry){
     pub[[2]]$study_table <- data.frame(
       n_groups = entry$Number.of.groups,
       n_tasks = entry$Number.of.tasks, 
-      comment = entry$Description
+      study_comment = entry$Description
     )
     
     # FILL between_table 
@@ -118,7 +118,7 @@ create_study_level <- function(pub, entry){
       pub[[i+1]]$study_table <- data.frame(
         n_groups = entry[, n_groups_name], 
         n_tasks = entry[, n_tasks_name],
-        comment = entry[, comment_name]
+        study_comment = entry[, comment_name]
       )
       
       # FILL between_table ------------

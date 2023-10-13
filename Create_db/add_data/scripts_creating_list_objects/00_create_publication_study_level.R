@@ -39,7 +39,7 @@ list_study_level <- function(publication_df,
     pub[[i+1]]$study_table <- data.frame(
       n_groups = study_df$n_groups[i], 
       n_tasks = study_df$n_tasks[i],
-      comment = study_df$comment[i]
+      study_comment = study_df$comment[i]
     )
     
     # group_info table

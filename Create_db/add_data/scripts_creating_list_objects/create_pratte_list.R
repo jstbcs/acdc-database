@@ -48,7 +48,7 @@ for(i in 1:nrow(study_df)){ # within each study
       mean_dataset_rt = NA, 
       mean_dataset_acc = NA, 
       github = dataset_df$github[k + data_added], 
-      comment = NA
+      dataset_comment = NA
     )
     
     # add within_table
