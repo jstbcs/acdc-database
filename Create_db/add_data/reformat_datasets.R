@@ -65,7 +65,7 @@ trialnumber <- dataset4 %>% group_by(sub, block) %>% mutate(trial = row_number()
 dataset4 <- left_join(dataset4, trialnumber, by = c("id", "sub", "ageGroup", "block", "trialType", "cond", "stim", "acc", "rt")) %>%
   mutate(congruency = ifelse(cond == "congruent", 1, ifelse(cond == "incongruent", 2, ifelse(cond == "neutral", 3, NA))),
          congruency = as.factor(congruency),
-         block = ifelse(block == "practice", -999, substring(block ,nchar(block))),
+         block = ifelse(block == "practice" | trialType == "warm-up", -999, substring(block ,nchar(block))),
          datasetid = 4,
          subject =  sub - 100, 
          subject = as.factor(subject),
