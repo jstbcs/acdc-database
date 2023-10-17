@@ -25,7 +25,7 @@ sapply(files.sources, source)
 
 check_overall_structure(lists)
 
-create_testing_db("acdc.db")
+create_empty_db("acdc.db")
 
 db_conn = DBI::dbConnect(RSQLite::SQLite(), "acdc.db")
 
