@@ -1,6 +1,7 @@
 # PREPARE RAW DATA FOR INHIBITION DATA BASE 
 library(dplyr)
 library(data.table)
+library(stringr)
 
 # NOTE!! The dataset numbers in this script do not correspond to the 
 # dataset IDs in the ACDC database 
@@ -575,8 +576,7 @@ trialnumber  <- dataset50a %>% group_by(worker_id, exp_stage) %>% mutate(trial =
 dataset50a <- dataset50a %>%
   mutate(
     datasetid = rep(50, nrow(dataset50a)), 
-    subject = rep(seq_along(rle(worker_id)$lengths), times = rle(worker_id)$lengths),
-    subject = as.factor(subject),
+    subject = as.numeric(str_split_fixed(worker_id, fixed("s"), 2)[, 2]), 
     block = ifelse(exp_stage == "practice", -999, 1),
     trial = trialnumber$trial, 
     congruency = ifelse(condition == "congruent", 1, 2),
@@ -592,8 +592,7 @@ trialnumber  <- dataset50b %>% group_by(worker_id, exp_stage) %>% mutate(trial =
 dataset50b <- dataset50b %>%
   mutate(
     datasetid = rep(50, nrow(dataset50b)), 
-    subject = rep(seq_along(rle(worker_id)$lengths), times = rle(worker_id)$lengths),
-    subject = as.factor(subject),
+    subject =  as.numeric(str_split_fixed(worker_id, fixed("s"), 2)[, 2]),
     block = ifelse(exp_stage == "practice", -999, 1),
     trial = trialnumber$trial, 
     congruency = ifelse(condition == "congruent", 1, 2),
