@@ -571,11 +571,11 @@ dataset50 <- hedge_data2 %>% filter(direction != 0) %>% # keep flanker task data
 
 # Dataset 51: Enkavi et al.; stroop task 
 # first wave: 522 participants
-dataset50a <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/enkavi_2019_large/stroop.csv", sep = ",") 
-trialnumber  <- dataset50a %>% group_by(worker_id, exp_stage) %>% mutate(trial = row_number()) %>%  ungroup() # code trial number
-dataset50a <- dataset50a %>%
+dataset51a <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/enkavi_2019_large/stroop.csv", sep = ",") 
+trialnumber  <- dataset51a %>% group_by(worker_id, exp_stage) %>% mutate(trial = row_number()) %>%  ungroup() # code trial number
+dataset51a <- dataset51a %>%
   mutate(
-    datasetid = rep(50, nrow(dataset50a)), 
+    datasetid = rep(51, nrow(dataset51a)), 
     subject = as.numeric(str_split_fixed(worker_id, fixed("s"), 2)[, 2]), 
     block = ifelse(exp_stage == "practice", -999, 1),
     trial = trialnumber$trial, 
@@ -587,11 +587,11 @@ dataset50a <- dataset50a %>%
   ) %>% 
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt) 
 # retest 2nd wave: 151 participants 
-dataset50b <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/enkavi_2019_large/stroop2.csv", sep = ",") 
-trialnumber  <- dataset50b %>% group_by(worker_id, exp_stage) %>% mutate(trial = row_number()) %>%  ungroup() # code trial number
-dataset50b <- dataset50b %>%
+dataset51b <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/enkavi_2019_large/stroop2.csv", sep = ",") 
+trialnumber  <- dataset51b %>% group_by(worker_id, exp_stage) %>% mutate(trial = row_number()) %>%  ungroup() # code trial number
+dataset51b <- dataset51b %>%
   mutate(
-    datasetid = rep(50, nrow(dataset50b)), 
+    datasetid = rep(51, nrow(dataset51b)), 
     subject =  as.numeric(str_split_fixed(worker_id, fixed("s"), 2)[, 2]),
     block = ifelse(exp_stage == "practice", -999, 1),
     trial = trialnumber$trial, 
@@ -603,5 +603,40 @@ dataset50b <- dataset50b %>%
   ) %>%
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt) 
 # merge both measurement points 
-dataset50 <- rbind(dataset50a, dataset50b)
+dataset51 <- rbind(dataset51a, dataset51b)
+
+
+# Dataset 52: Enkavi et al.; simon task 
+# first wave: 522 participants
+dataset52a <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/enkavi_2019_large/simon.csv", sep = ",") 
+dataset52a <- dataset52a %>%
+  mutate(
+    datasetid = rep(52, nrow(dataset52a)), 
+    subject = as.numeric(str_split_fixed(worker_id, fixed("s"), 2)[, 2]),
+    block = ifelse(exp_stage == "practice", -999, 1),
+    trial = trial_num + 1, 
+    congruency = ifelse(condition == "congruent", 1, 2),
+    between = NA, 
+    within = 1, # first wave; test phase 
+    accuracy = correct, 
+    rt = rt / 1000
+  ) %>% 
+  select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt) 
+#second wave: 148 participants
+dataset52b <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/enkavi_2019_large/simon2.csv", sep = ",") 
+dataset52b <- dataset52b %>%
+  mutate(
+    datasetid = rep(52, nrow(dataset52b)), 
+    subject = as.numeric(str_split_fixed(worker_id, fixed("s"), 2)[, 2]),
+    block = ifelse(exp_stage == "practice", -999, 1),
+    trial = trial_num + 1, 
+    congruency = ifelse(condition == "congruent", 1, 2),
+    between = NA, 
+    within = 2, # second wave, retest
+    accuracy = correct, 
+    rt = rt / 1000
+  ) %>% 
+  select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
+# merge 
+dataset52 <- rbind(dataset52a, dataset52b)
 
