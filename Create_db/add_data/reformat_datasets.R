@@ -2,6 +2,9 @@
 library(dplyr)
 library(data.table)
 
+# NOTE!! The dataset numbers in this script do not correspond to the 
+# dataset IDs in the ACDC database 
+
 ########## Overview of datasets #################################### 
 # - von Basitian et al.:        dataset1, dataset7, dataset10
 # - Pratte et al. :             dataset2, dataset3, dataset8, dataset9
@@ -12,11 +15,12 @@ library(data.table)
 # - Tang et al. (2022):         dataset 41
 # - Chetverikov et al. (2017):  dataset 42
 # - Stahl et al. (2014):        dataset 43 - 45
+# - Enkavi et al. (2019):       dataset 46 - 47
 
 ########## Read in and format the datasets ########## 
 
 # Dataset 1 (Von Bastian et al.) Stroop task 
-dataset1 <- read.csv("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/vonbastian_2015_evidence/LEF_stroop.csv", sep = ";") %>%
+dataset1 <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/vonbastian_2015_evidence/LEF_stroop.csv", sep = ";") %>%
   mutate(congruency = ifelse(congruency == "congruent", 1, ifelse(congruency == "incongruent", 2, ifelse(congruency == "neutral", 3, NA))),
          congruency = as.factor(congruency),
          datasetid = 1,
@@ -32,7 +36,7 @@ dataset1 <- dataset1 %>%
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)  
 
 # Dataset 2 (Pratte et al.); color stroop
-dataset2 <- read.csv("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/pratte_2010_exploring/allsi2.dat.txt", sep = " ")
+dataset2 <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/pratte_2010_exploring/allsi2.dat.txt", sep = " ")
 colnames(dataset2) <- c("exp", "subject", "blk", "trial", "color", "distract", "cond", "resp", "accuracy", "rt", "errorTotal", "unused")
 dataset2 <- dataset2 %>% filter(exp == 1) %>% # keep Stroop task data
   mutate(datasetid = 2,
@@ -46,7 +50,7 @@ dataset2 <- dataset2 %>% filter(exp == 1) %>% # keep Stroop task data
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt) 
 
 # Dataset 3 (Pratte et al.); spatial Stroop
-dataset3 <- read.csv("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/pratte_2010_exploring/allsi7.dat.txt", sep = " ")
+dataset3 <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/pratte_2010_exploring/allsi7.dat.txt", sep = " ")
 colnames(dataset3) <- c("subject","blk","blktype","trial","word","location","cond","resp","accuracy","rt","errorTotal", "unused")
 dataset3 <- dataset3 %>% filter(blktype == 1) %>% # keep Stroop task data
   mutate(datasetid = 3,
@@ -60,7 +64,7 @@ dataset3 <- dataset3 %>% filter(blktype == 1) %>% # keep Stroop task data
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt) 
 
 # Dataset 4 (Rey-Mermet et al.); numStroop
-dataset4 <- read.csv("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/mermet_2018_should/numStroop.dat.txt", sep = " ") %>% mutate(id = row_number())
+dataset4 <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/mermet_2018_should/numStroop.dat.txt", sep = " ") %>% mutate(id = row_number())
 trialnumber <- dataset4 %>% group_by(sub, block) %>% mutate(trial = row_number()) %>% ungroup()
 dataset4 <- left_join(dataset4, trialnumber, by = c("id", "sub", "ageGroup", "block", "trialType", "cond", "stim", "acc", "rt")) %>%
   mutate(congruency = ifelse(cond == "congruent", 1, ifelse(cond == "incongruent", 2, ifelse(cond == "neutral", 3, NA))),
@@ -75,7 +79,7 @@ dataset4 <- left_join(dataset4, trialnumber, by = c("id", "sub", "ageGroup", "bl
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt) 
 
 # Dataset 5 (Rey-Mermet et al.); colStroop
-dataset5 <- read.csv("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/mermet_2018_should/colStroop.dat.txt", sep = " ") %>% mutate(id = row_number())
+dataset5 <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/mermet_2018_should/colStroop.dat.txt", sep = " ") %>% mutate(id = row_number())
 trialnumber <- dataset5 %>% group_by(sub, block) %>% mutate(trial = row_number()) %>% ungroup()
 dataset5 <- left_join(dataset5, trialnumber, by = c("id", "sub", "ageGroup", "block", "trialType", "cond", "stim", "acc", "rt")) %>%
   mutate(congruency = ifelse(cond == "congruent", 1, ifelse(cond == "incongruent", 2, ifelse(cond == "neutral", 3, NA))),
@@ -99,7 +103,7 @@ urls <- list(vector(), vector())
 hedge <- list(list(), list())
 for(i in 1:length(study)){
   for(j in 1:nrow(idx[[i]])){
-    urls[[i]][j] <- paste("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/hedge_2018_reliability/Study", paste(study[i]), "-",
+    urls[[i]][j] <- paste("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/hedge_2018_reliability/Study", paste(study[i]), "-",
                           idx[[i]][j,3], "/Study", paste(study[i]), "_P", idx[[i]][j,1], idx[[i]][j,3], idx[[i]][j,2], ".csv", sep = "")
     hedge[[i]][[j]] <- read.csv(urls[[i]][j]) %>% mutate(subject = paste(idx[[i]][j,1]),
                                                          session = paste(idx[[i]][j,2]),
@@ -121,7 +125,7 @@ dataset6 <- hedge_data1 %>% filter(direction == 0) %>% # keep Stroop task data o
 
 
 # Dataset 7 (Von Bastian et al.); simon task 
-dataset7 <- read.csv("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/vonbastian_2015_evidence/LEF_simon.csv", sep = ";") %>%
+dataset7 <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/vonbastian_2015_evidence/LEF_simon.csv", sep = ";") %>%
   mutate(congruency = ifelse(congruency == "congruent", 1, ifelse(congruency == "incongruent", 2, ifelse(congruency == "neutral", 3, NA))),
          congruency = as.factor(congruency),
          datasetid = 7,
@@ -136,7 +140,7 @@ dataset7$trial <- rep(1:ntrial, nsub) # add subject and trial numbers
 dataset7 <- dataset7 %>% select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt) 
 
 # Dataset 8 (Pratte et al.); classic simon task
-dataset8 <- read.csv("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/pratte_2010_exploring/allsi2.dat.txt", sep = " ")
+dataset8 <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/pratte_2010_exploring/allsi2.dat.txt", sep = " ")
 colnames(dataset8) <- c("exp", "subject", "blk", "trial", "color", "distract", "cond", "resp", "accuracy", "rt", "errorTotal", "unused")
 dataset8 <- dataset8 %>% filter(exp == 0) %>% # keep classic Simon task data
   mutate(datasetid = 8,
@@ -150,7 +154,7 @@ dataset8 <- dataset8 %>% filter(exp == 0) %>% # keep classic Simon task data
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt) 
 
 # Dataset 9 (Pratte et al.); lateral simon task
-dataset9 <- read.csv("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/pratte_2010_exploring/allsi7.dat.txt", sep = " ")
+dataset9 <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/pratte_2010_exploring/allsi7.dat.txt", sep = " ")
 colnames(dataset9) <- c("subject","blk","blktype","trial","word","location","cond","resp","accuracy","rt","errorTotal", "unused")
 dataset9 <- dataset9 %>% filter(blktype == 0) %>% # keep lateral Simon task data
   mutate(datasetid = 9,
@@ -164,7 +168,7 @@ dataset9 <- dataset9 %>% filter(blktype == 0) %>% # keep lateral Simon task data
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt) 
 
 # Dataset 10 (Von Bastian et al.); flanker task
-dataset10 <- read.csv("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/vonbastian_2015_evidence/LEF_flanker.csv", sep = ";") %>%
+dataset10 <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/vonbastian_2015_evidence/LEF_flanker.csv", sep = ";") %>%
   mutate(congruency = ifelse(congruency == "congruent", 1, ifelse(congruency == "incongruent", 2, ifelse(congruency == "neutral", 3, NA))),
          congruency = as.factor(congruency),
          datasetid = 10,
@@ -180,7 +184,7 @@ dataset10 <- dataset10 %>%
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)  
 
 # Dataset 11 (Rey-Mermet et al.); arrow flanker task
-dataset11 <- read.csv("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/mermet_2018_should/arrowFlanker.dat.txt", sep = " ") %>% mutate(id = row_number())
+dataset11 <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/mermet_2018_should/arrowFlanker.dat.txt", sep = " ") %>% mutate(id = row_number())
 trialnumber <- dataset11 %>% group_by(sub, block) %>% mutate(trial = row_number()) %>% ungroup()
 dataset11 <- left_join(dataset11, trialnumber, by = c("id", "sub", "ageGroup", "block", "trialType", "cond", "stim", "acc", "rt")) %>%
   mutate(congruency = ifelse(cond == "congruent", 1, ifelse(cond == "incongruent", 2, ifelse(cond == "neutral", 3, NA))),
@@ -194,7 +198,7 @@ dataset11 <- left_join(dataset11, trialnumber, by = c("id", "sub", "ageGroup", "
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt) 
 
 # Dataset 12 (Rey-Mermet et al.); letter flanker task
-dataset12 <- read.csv("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/mermet_2018_should/letFlanker.dat.txt", sep = " ") %>% mutate(id = row_number())
+dataset12 <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/mermet_2018_should/letFlanker.dat.txt", sep = " ") %>% mutate(id = row_number())
 trialnumber <- dataset12 %>% group_by(sub, block) %>% mutate(trial = row_number()) %>% ungroup()
 dataset12 <- left_join(dataset12, trialnumber, by = c("id", "sub", "ageGroup", "block", "trialType", "cond", "stim", "acc", "rt")) %>%
   mutate(congruency = ifelse(cond == "congruent", 1, ifelse(cond == "incongruent", 2, ifelse(cond == "neutral", 3, NA))),
@@ -215,7 +219,7 @@ dataset13 <- hedge_data1 %>% filter(direction != 0) %>% # keep flanker task data
 
 
 # Dataset 14-34 (Many Labs studies from https://osf.io/n8xa7/)
-manylabs <- read.csv("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/ebersole_2016_many/StroopCleanSet.csv")
+manylabs <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/ebersole_2016_many/StroopCleanSet.csv")
 for(i in 1:21){
   assign(paste("dataset", i+13, sep = ""), 
          manylabs %>% filter(study_name == unique(manylabs$study_name)[i]) %>% 
@@ -237,7 +241,7 @@ for(i in 1:21){
 
 
 # Dataset 35 (Whitehead et al., 2020; FlankerExp2)
-dataset35 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/whitehead_2020/FlankerExp2.csv") %>%
+dataset35 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/whitehead_2020/FlankerExp2.csv") %>%
   mutate(
     datasetid = 35,
     congruency = ifelse(Congruency == 0, 2, Congruency),
@@ -255,7 +259,7 @@ dataset35 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/inhibit
 
 
 # Dataset 36 (Whitehead et al., 2020; FlankerExp3)
-dataset36 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/whitehead_2020/FlankerExp3.csv") %>% 
+dataset36 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/whitehead_2020/FlankerExp3.csv") %>% 
   mutate(
     datasetid = 36,
     congruency = ifelse(Congruency == 0, 2, Congruency),
@@ -263,7 +267,7 @@ dataset36 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/inhibit
     subject = factor(Subject - 100),
     between = NA,
     within = NA,
-    block = ifelse(PracExp == "Exp", 1, -999), # Todo: Check in original paper
+    block = ifelse(PracExp == "Exp", 1, -999), 
     rt = StimSlideFlanker.RT / 1000,
     accuracy = StimSlideFlanker.ACC
   ) %>% 
@@ -274,7 +278,7 @@ dataset36 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/inhibit
 
 
 # Dataset 37 (Whitehead et al., 2020; SimonExp2)
-dataset37 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/whitehead_2020/SimonExp2.csv") %>%
+dataset37 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/whitehead_2020/SimonExp2.csv") %>%
   mutate(
     datasetid = 37,
     congruency = ifelse(Congruency == 0, 2, Congruency),
@@ -293,7 +297,7 @@ dataset37 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/inhibit
 
 
 # Dataset 38 (Whitehead et al., 2020; SimonExp 3)
-dataset38 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/whitehead_2020/SimonExp3.csv") %>%
+dataset38 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/whitehead_2020/SimonExp3.csv") %>%
   mutate(
     datasetid = 38,
     congruency = ifelse(Congruency == 0, 2, Congruency),
@@ -301,7 +305,7 @@ dataset38 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/inhibit
     subject = as.factor(Subject - 100),
     between = NA, 
     within = NA,
-    block = ifelse(PracExp == "Exp", 1, -999), # Todo: Check in original paper
+    block = ifelse(PracExp == "Exp", 1, -999), 
     rt = StimSlideSimon.RT / 1000,
     accuracy = StimSlideSimon.ACC) %>%
   # add trial number/ "Prac" (Note: group by blocks if there are several)
@@ -312,7 +316,7 @@ dataset38 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/inhibit
 
 
 # Dataset 39 (Whitehead et al., 2020; StroopExp 2)
-dataset39 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/whitehead_2020/StroopExp2.csv") %>% 
+dataset39 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/whitehead_2020/StroopExp2.csv") %>% 
   mutate(
     datasetid = 39, 
     congruency = ifelse(Congruency == 0, 2, Congruency),
@@ -330,7 +334,7 @@ dataset39 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/inhibit
 
 
 # Dataset 40 (Whitehead et al., 2020; StroopExp 3)
-dataset40 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/whitehead_2020/StroopExp3.csv") %>% 
+dataset40 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/whitehead_2020/StroopExp3.csv") %>% 
   mutate(
     datasetid = 40,
     congruency = ifelse(Congruency == 0, 2, Congruency),
@@ -338,7 +342,7 @@ dataset40 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/inhibit
     subject = as.factor(Subject - 100),
     between = NA, 
     within = NA, 
-    block = ifelse(PracExp == "Exp", 1, -999), # Todo: Check in original paper 
+    block = ifelse(PracExp == "Exp", 1, -999),  
     rt = StimSlideStroop.RT / 1000,
     accuracy = StimSlideStroop.ACC) %>%
   group_by(subject, block) %>% # group by block if existed
@@ -348,7 +352,7 @@ dataset40 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/inhibit
 
 
 # Dataset 41 (Snijder et al., 2022); data online at https://osf.io/evuhg
-dataset41 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/tang_2022_dual/destroop-raw.csv")  %>% 
+dataset41 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/tang_2022_dual/destroop-raw.csv")  %>% 
   mutate(itemType = ifelse(.$itemType == 2, 
                            "PC50",
                            ifelse(.$itemType == 1 & .$session != "baseline",
@@ -399,7 +403,7 @@ dataset41 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/inhibit
 
 
 # Dataset 42 (Chetverikov et al., 2017); data online at https://osf.io/7rb48
-dataset42 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/chetverikov_2017_blame/flanker_data.csv") %>% 
+dataset42 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/chetverikov_2017_blame/flanker_data.csv") %>% 
   mutate(
     datasetid = 42,
     subject = as.factor(uid),
@@ -414,7 +418,7 @@ dataset42 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/inhibit
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
 
 # Dataset 43: Stahl et al. (2014): Stroop task 
-dataset43 <- read.delim("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/stahl_2014_behavioral/stroop.dat", header = FALSE, sep = " ") %>%
+dataset43 <- read.delim("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/stahl_2014_behavioral/stroop.dat", header = FALSE, sep = " ") %>%
   select(-V14) 
 colnames(dataset43) <- c("subj", "subj_code", "date", "time", "block", "trial_no", 
                          "trial_type", "condition", "color", "word", "exp_resp", 
@@ -443,7 +447,7 @@ dataset43 <- dataset43 %>%
 
 
 # Dataset 44: Stahl et al. (2014); Simon task
-dataset44 <- read.delim("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/stahl_2014_behavioral/simon.dat", header = FALSE, sep = " ") 
+dataset44 <- read.delim("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/stahl_2014_behavioral/simon.dat", header = FALSE, sep = " ") 
 colnames(dataset44) <- c("subj", "subjcode", "date", "time", "part", 
                          "trial_no", "trial_type", "response", "latency")
 dataset44 <- dataset44 %>%
@@ -462,7 +466,7 @@ dataset44 <- dataset44 %>%
 
 
 # Dataset 45: Stahl et al. (2014); Flanker task
-dataset45 <- read.delim("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/stahl_2014_behavioral/flanker.dat", header = FALSE, sep= " ") %>%
+dataset45 <- read.delim("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/stahl_2014_behavioral/flanker.dat", header = FALSE, sep= " ") %>%
   select(-V14)
 colnames(dataset45) <- c("subj", "subjcode", "date", "time", "block", 
                          "trial_no", "trial_type", "condition", "targ",
@@ -493,7 +497,7 @@ dataset45 <- dataset45 %>%
 
 
 # Dataset 46: Whitehead et al. (2020): Simon task from Experiment1
-dataset46 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/whitehead_2020/Experiment1.csv") %>% 
+dataset46 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/whitehead_2020/Experiment1.csv") %>% 
   filter(StimSlideSimon.RT != "NA") %>%  # choose simon task entries
   mutate(datasetid = 46, 
          congruency = ifelse(Congruency == 0, 2, Congruency),
@@ -511,7 +515,7 @@ dataset46 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/inhibit
 
 
 # Dataset 47: Whitehead et al. (2020): Flanker task from Experiment1
-dataset47 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/whitehead_2020/Experiment1.csv") %>% 
+dataset47 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/whitehead_2020/Experiment1.csv") %>% 
   filter(StimSlideFlanker.RT != "NA") %>%  # choose Flanker task entries
   mutate(datasetid = 47, 
          congruency = ifelse(Congruency == 0, 2, Congruency),
@@ -529,7 +533,7 @@ dataset47 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/inhibit
 
 
 # Dataset 48: Whitehead et al. (2020): Stroop task from Experiment1
-dataset48 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/inhibitiontasks/adding-new-data/data/whitehead_2020/Experiment1.csv") %>% 
+dataset48 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/whitehead_2020/Experiment1.csv") %>% 
   filter(StimSlideStroop.RT != "NA") %>%  # choose Stroop task entries
   mutate(datasetid = 48, 
          congruency = ifelse(Congruency == 0, 2, Congruency),
