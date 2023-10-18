@@ -17,6 +17,7 @@ library(stringr)
 # - Chetverikov et al. (2017):  dataset 42
 # - Stahl et al. (2014):        dataset 43 - 45
 # - Enkavi et al. (2019):       dataset 51 - 52
+# - Kucina et al. (2023):       dataset 53 - 59
 
 ########## Read in and format the datasets ########## 
 
@@ -639,4 +640,19 @@ dataset52b <- dataset52b %>%
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
 # merge 
 dataset52 <- rbind(dataset52a, dataset52b)
+
+# Kucina et al. data -----------
+load("C:/Users/Michael/OneDrive - UvA/RA_Mathematical_Psychology/Open_data_bank_Inhibtasks/Kucina_et_al/Reliable Differences/data4.RData")
+
+
+
+
+
+
+
+
+
+
+
+
 
