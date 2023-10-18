@@ -17,7 +17,7 @@ library(stringr)
 # - Chetverikov et al. (2017):  dataset 42
 # - Stahl et al. (2014):        dataset 43 - 45
 # - Enkavi et al. (2019):       dataset 51 - 52
-# - Kucina et al. (2023):       dataset 53 - 59
+# - Kucina et al. (2023):       dataset 53 - 58
 
 ########## Read in and format the datasets ########## 
 
@@ -642,11 +642,107 @@ dataset52b <- dataset52b %>%
 dataset52 <- rbind(dataset52a, dataset52b)
 
 # Kucina et al. data -----------
-load("C:/Users/Michael/OneDrive - UvA/RA_Mathematical_Psychology/Open_data_bank_Inhibtasks/Kucina_et_al/Reliable Differences/data4.RData")
+kucina_tasks <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/kucina_2023_calibration/data4.csv") %>%
+  group_split(experimentGroupID)
+
+# Dataset 53: Kucina Stroop2 task 
+#dataset53 <- as.data.frame(kucina_tasks[[3]]) %>% # TODO: find out why weird actionIDs!
+#  mutate(subject = )
+
+# Dataset 54: Kucina Simon2 task
+dataset54 <- as.data.frame(kucina_tasks[[2]]) %>%
+  mutate(
+    datasetid = rep(54, nrow(.)),
+    subject = userID, 
+    block = ifelse(Block == 0, 20, Block), # Block 20 appears to be coded as 0 
+    trial = Trial, 
+    congruency = ifelse(Conflict == "congruent", 1, 2), 
+    between = NA, # between manipulation was task type
+    within = actionID, # code this + also code session
+    accuracy = NA, # code
+    rt = RT) %>%  # incorporate RT2?
+  select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
+
+# Dataset55: Kucina Stroopon task 
+# Stroopon tasks: split into single trial and double trial task  
+stroopon <- as.data.frame(kucina_tasks[[4]]) 
+dataset55 <- data.frame(); dataset56 <- data.frame() # stroopon1 and 2 respectively
+ids <- unique(stroopon$userID)
+for(i in 1:length(ids)){ # for each participant
+  if(length(unique(stroopon[stroopon$userID == ids[i], 3])) == 1){ # if no 2nd response
+    dataset55 <- rbind(dataset55, stroopon[stroopon$userID == ids[i], ]) # add to stroopon1
+  } else if(length(unique(stroopon[stroopon$userID == ids[i], 3])) == 2) { #if 2nd response
+    dataset56 <- rbind(dataset56, stroopon[stroopon$userID == ids[i], ]) # add to stroopon2
+  }
+} 
+dataset55 <- dataset55 %>%
+  mutate(datasetid = 55, 
+         subject = userID, 
+         block = ifelse(Block == 0, 20, Block), # Block 20 appears to be coded as 0 
+         trial = Trial, 
+         congruency = ifelse(Conflict == "congruent+congruent", 1, 2),
+         between = NA, 
+         within = Session, #?
+         accuracy = NA, 
+         rt = RT) %>%
+  select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
+
+# Dataset56: Kucina Stroopon2 task 
+dataset56 <- dataset56 %>%
+  mutate(datasetid = 56, 
+         subject = userID, 
+         block = ifelse(Block == 0, 20, Block),
+         trial = Trial, 
+         congruency = ifelse(Conflict == "congruent+congruent", 1, 2),
+         between = NA, 
+         within = Double, # ?
+         accuracy = NA,
+         rt = RT # RT2?
+  ) %>%
+  select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
+
+# Dataset 57: Kucina Flanker1 task 
+flanker <- as.data.frame(kucina_tasks[[1]])
+dataset57 <- data.frame(); dataset58 <- data.frame() #Flanker1 and 2 respectively
+ids <- unique(flanker$userID)
+for(i in 1:length(ids)){ # for each participant
+  if(length(unique(flanker[flanker$userID == ids[i], 3])) == 1){ # if no 2nd response
+    dataset57 <- rbind(dataset57, flanker[flanker$userID == ids[i], ]) # add to flanker1
+  } else if(length(unique(flanker[flanker$userID == ids[i], 3])) == 2) { #if 2nd response
+    dataset58 <- rbind(dataset58, flanker[flanker$userID == ids[i], ]) # add to flanker2
+  }
+}
+dataset57 <- dataset57 %>%
+  mutate(
+    datasetid = 57, 
+    subject = userID, 
+    block = ifelse(Block == 0, 20, Block),
+    trial = Trial, 
+    congruency = ifelse(Conflict == "congruent", 1, 2), 
+    between = NA,
+    within = Session, 
+    accuracy = NA, 
+    rt = RT
+  )  %>%
+  select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
 
 
+# Dataset 58: Kucina Flanker2 task 
+dataset58 <- dataset58 %>%
+  mutate(datasetid = 58, 
+         subject = userID, 
+         block = ifelse(Block == 0, 20, Block),
+         trial = Trial, 
+         congruency = ifelse(Conflict == "congruent", 1, 2),
+         between = NA, 
+         within = Double, # ?
+         accuracy = NA, 
+         rt = RT) %>%
+  select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
 
-
+# Note: only excluded failed tutorial and incomplete data 
+# dataset4 still contains 3 x low accuracy, 1x too many anticipatory responses, 
+# and 1x non-responding (which were not included in the papers' analyses)
 
 
 
