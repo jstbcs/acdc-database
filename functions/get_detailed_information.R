@@ -38,8 +38,7 @@ get_detailed_information <- function(conn, arguments, argument_relation){
       "within_id",
       "between_id",
       "condition_id"
-    ),
-    full_db = TRUE
+    )
   )
 
   query_results_trial = query_db(

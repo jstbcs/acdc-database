@@ -1,20 +1,16 @@
-plot_condition_histograms <- function(plot_list){
-  n_plots = length(plot_list)
-
-  colors = RColorBrewer::brewer.pal(n_plots, "Set1")
-  for (i in 1:n_plots){
-    plot(x = plot_list[[i]]$mids,
-         y = plot_list[[i]]$density,
-         type = "l",
-         main = paste("RT - distribution of different conditions"),
-         xlab = "response time (in s)",
-         ylab = "density",
-         xlim = c(0, 2),
-         col = colors[i])
-  }
-
-  legend("topright",
-         legend = paste("condition", 1:n_plots),
-         col = c(colors))
+plot_condition_histograms <- function(dataset, rt_cutoff = 2){
+  dataset |> 
+    dplyr::filter(rt < rt_cutoff) |>
+    ggplot2::ggplot(
+      mapping = ggplot2::aes(
+        x = rt,
+        fill = factor(condition_id),
+        group = factor(condition_id)
+      )
+    ) +
+    ggplot2::geom_histogram(
+      
+    ) +
+    ggplot2::scale_color_brewer(palette = "Set1")
 }
 
