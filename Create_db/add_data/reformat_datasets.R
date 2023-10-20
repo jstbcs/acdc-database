@@ -647,20 +647,22 @@ kucina_tasks <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database
 
 # Dataset 53: Kucina Stroop2 task 
 #dataset53 <- as.data.frame(kucina_tasks[[3]]) %>% # TODO: find out why weird actionIDs!
-#  mutate(subject = )
+ # mutate(subject = )
 
 # Dataset 54: Kucina Simon2 task
 dataset54 <- as.data.frame(kucina_tasks[[2]]) %>%
   mutate(
     datasetid = rep(54, nrow(.)),
     subject = userID, 
-    block = ifelse(Block == 0, 20, Block), # Block 20 appears to be coded as 0 
+    block = ifelse(Session == 1, Block, # keep Block for first session
+                   ifelse(Block == 0, 36, # Block 20 in session 2 is coded as 0, should be 36
+                          Block + 16)), # Start counting from 16 for 2nd session
     trial = Trial, 
     congruency = ifelse(Conflict == "congruent", 1, 2), 
     between = NA, # between manipulation was task type
-    within = actionID, # code this + also code session
-    accuracy = NA, # code
-    rt = RT) %>%  # incorporate RT2?
+    within = Double + 1, 
+    accuracy = ifelse(R == S, 1, 0),
+    rt = RT) %>%  
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
 
 # Dataset55: Kucina Stroopon task 
@@ -669,21 +671,23 @@ stroopon <- as.data.frame(kucina_tasks[[4]])
 dataset55 <- data.frame(); dataset56 <- data.frame() # stroopon1 and 2 respectively
 ids <- unique(stroopon$userID)
 for(i in 1:length(ids)){ # for each participant
-  if(length(unique(stroopon[stroopon$userID == ids[i], 3])) == 1){ # if no 2nd response
+  if(length(unique(stroopon[stroopon$userID == ids[i], 4])) == 1){ # if no 2nd response
     dataset55 <- rbind(dataset55, stroopon[stroopon$userID == ids[i], ]) # add to stroopon1
-  } else if(length(unique(stroopon[stroopon$userID == ids[i], 3])) == 2) { #if 2nd response
+  } else if(length(unique(stroopon[stroopon$userID == ids[i], 4])) == 2) { #if 2nd response
     dataset56 <- rbind(dataset56, stroopon[stroopon$userID == ids[i], ]) # add to stroopon2
   }
 } 
 dataset55 <- dataset55 %>%
   mutate(datasetid = 55, 
          subject = userID, 
-         block = ifelse(Block == 0, 20, Block), # Block 20 appears to be coded as 0 
+         block = ifelse(Session == 1, Block, # keep Block number for first session
+                        ifelse(Block == 0, 36, # Block 20 in session 2 is coded as 0, should be 36
+                               Block + 16)), # Start counting from 16 for 2nd session 
          trial = Trial, 
          congruency = ifelse(Conflict == "congruent+congruent", 1, 2),
          between = NA, 
-         within = Session, #?
-         accuracy = NA, 
+         within = NA,
+         accuracy = ifelse(R == S, 1, 0),
          rt = RT) %>%
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
 
@@ -691,13 +695,15 @@ dataset55 <- dataset55 %>%
 dataset56 <- dataset56 %>%
   mutate(datasetid = 56, 
          subject = userID, 
-         block = ifelse(Block == 0, 20, Block),
+         block = ifelse(Session == 1, Block, # keep Block number for first session
+                        ifelse(Block == 0, 36, # Block 20 in session 2 is coded as 0, should be 36
+                               Block + 16)), # Start counting from 16 for 2nd session 
          trial = Trial, 
          congruency = ifelse(Conflict == "congruent+congruent", 1, 2),
          between = NA, 
-         within = Double, # ?
-         accuracy = NA,
-         rt = RT # RT2?
+         within = Double + 1, 
+         accuracy = ifelse(R == S, 1, 0),
+         rt = RT 
   ) %>%
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
 
@@ -706,9 +712,9 @@ flanker <- as.data.frame(kucina_tasks[[1]])
 dataset57 <- data.frame(); dataset58 <- data.frame() #Flanker1 and 2 respectively
 ids <- unique(flanker$userID)
 for(i in 1:length(ids)){ # for each participant
-  if(length(unique(flanker[flanker$userID == ids[i], 3])) == 1){ # if no 2nd response
+  if(length(unique(flanker[flanker$userID == ids[i], 4])) == 1){ # if no 2nd response
     dataset57 <- rbind(dataset57, flanker[flanker$userID == ids[i], ]) # add to flanker1
-  } else if(length(unique(flanker[flanker$userID == ids[i], 3])) == 2) { #if 2nd response
+  } else if(length(unique(flanker[flanker$userID == ids[i], 4])) == 2) { #if 2nd response
     dataset58 <- rbind(dataset58, flanker[flanker$userID == ids[i], ]) # add to flanker2
   }
 }
@@ -716,12 +722,14 @@ dataset57 <- dataset57 %>%
   mutate(
     datasetid = 57, 
     subject = userID, 
-    block = ifelse(Block == 0, 20, Block),
+    block = ifelse(Session == 1, Block, # keep Block number for first session
+                   ifelse(Block == 0, 36, # Block 20 in session 2 is coded as 0, should be 36
+                          Block + 16)), # Start counting from 16 for 2nd session ,
     trial = Trial, 
     congruency = ifelse(Conflict == "congruent", 1, 2), 
     between = NA,
-    within = Session, 
-    accuracy = NA, 
+    within = NA, 
+    accuracy = ifelse(R == S, 1, 0), 
     rt = RT
   )  %>%
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
@@ -731,12 +739,14 @@ dataset57 <- dataset57 %>%
 dataset58 <- dataset58 %>%
   mutate(datasetid = 58, 
          subject = userID, 
-         block = ifelse(Block == 0, 20, Block),
+         block = ifelse(Session == 1, Block, # keep Block number for first session
+                        ifelse(Block == 0, 36, # Block 20 in session 2 is coded as 0, should be 36
+                               Block + 16)), # Start counting from 16 for 2nd session 
          trial = Trial, 
          congruency = ifelse(Conflict == "congruent", 1, 2),
          between = NA, 
-         within = Double, # ?
-         accuracy = NA, 
+         within = Double + 1, 
+         accuracy = ifelse(R == S, 1, 0), 
          rt = RT) %>%
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
 
