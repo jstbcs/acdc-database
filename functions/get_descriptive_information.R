@@ -38,8 +38,7 @@ get_descriptive_information <- function(conn, arguments, argument_relation){
       "time_limit",
       "mean_dataset_rt",
       "mean_dataset_acc"
-    ),
-    full_db = TRUE
+    )
   )
 
   # Turn duplications of within/between_id into one row per dataset

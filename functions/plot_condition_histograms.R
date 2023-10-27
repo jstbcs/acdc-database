@@ -8,6 +8,16 @@ plot_condition_histograms <- function(dataset, rt_cutoff = 2){
         group = factor(condition_id)
       )
     ) +
+    ggplot2::geom_density()
+    ggplot2::labs(
+      title = "",
+      x = "dataset_id"
+    )+
+    ggplot2::theme_classic()
+  
+  dataset |> 
+    
+    
     ggplot2::geom_histogram(
       
     ) +
