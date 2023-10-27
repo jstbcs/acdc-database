@@ -750,9 +750,7 @@ dataset58 <- dataset58 %>%
          rt = RT) %>%
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
 
-# Note: only excluded failed tutorial and incomplete data 
-# dataset4 still contains 3 x low accuracy, 1x too many anticipatory responses, 
-# and 1x non-responding (which were not included in the papers' analyses)
+
 
 
 
