@@ -46,8 +46,7 @@ get_overview_information <- function(conn, arguments, argument_relation){
       # "group_description"
       # "mean_age",
       # "percentage_female"
-    ),
-    full_db = TRUE
+    )
   )
 
   query_results = dplyr::distinct(query_results, dataset_id, .keep_all = TRUE)
