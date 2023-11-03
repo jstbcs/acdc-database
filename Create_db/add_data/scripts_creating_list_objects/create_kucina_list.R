@@ -138,14 +138,20 @@ for(i in 1:nrow(study_df)){ # within each study
   data_added <- data_added + study_df$n_data[i] # keep track of datasets added
 }
 
-# manually add additional within conditions
-for(i in 1:nrow(study_df)){ # within each study
-  for(k in 2:study_df$n_data[i]){ # within each dataset
-    # TODO: change to 1:study_df$n_data[i] once stroop2 issue sorted out
-    for(col in 1:2){ # fill each column in within_table
-      pub[[i+1]][[k+2]]$within_table[col, ] <- c(col, within_df$within_desciption[col])
-    }
+# manually add additional within conditions --
+within_df$data <- c(1,1,2,2,3,4,4,5,6,6)
+within_list <- within_df %>%
+  group_split(data)
+
+for(dataset in 2:6){ # TODO: change to 1:6 once stroop2 issue sorted out
+  for(i in 1:length(within_list[[dataset]]$within_id)){ # fpr each within condition in dataset
+    pub[[2]][[dataset+2]]$within_table[i, 1] <- within_list[[dataset]]$within_id[i]
+    pub[[2]][[dataset+2]]$within_table[i, 2] <- within_list[[dataset]]$within_desciption[i]
   }
 }
+
+# save list object -------------------------------------------------------------
+saveRDS(pub, file="./Create_db/add_data/kucina_list.RData")
+
 
 

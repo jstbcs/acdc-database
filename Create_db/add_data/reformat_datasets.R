@@ -75,7 +75,7 @@ dataset4 <- left_join(dataset4, trialnumber, by = c("id", "sub", "ageGroup", "bl
          datasetid = 4,
          subject =  sub - 100, 
          subject = as.factor(subject),
-         accuracy = acc,
+         accuracy = ifelse(acc < 97, acc, NA),     # 97 and 99 in raw data are excluded trials
          between = ageGroup,        
          within = NA) %>%
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt) 
@@ -89,7 +89,7 @@ dataset5 <- left_join(dataset5, trialnumber, by = c("id", "sub", "ageGroup", "bl
          block = ifelse(block == "practice", -999, substring(block ,nchar(block))),
          datasetid = 5,
          subject = as.factor(sub - 100),
-         accuracy = acc,
+         accuracy = ifelse(acc < 97, acc, NA),
          between = ageGroup,
          within = NA) %>%
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
