@@ -91,6 +91,14 @@ add_data <- function(conn, entry_data, study_id, group_keys){
   condition = entry_data$condition_table
   add_table(conn, condition, "condition_table")
   
+  # Find next free subject number
+  sql_query = paste0(
+    "SELECT max(subject) FROM observation_table"
+  )
+  
+  max_subject = DBI::dbGetQuery(conn, sql_query)[1, 1]
+  entry_data$observation_table$subject = dplyr::dense_rank(entry_data$observation_table$subject) + max_subject
+  
   observation = as.data.frame(entry_data$observation_table)
   
   add_table(conn, observation, "observation_table")
