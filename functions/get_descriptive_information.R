@@ -24,6 +24,8 @@ get_descriptive_information <- function(conn, arguments, argument_relation){
     target_table = "dataset_table",
     target_vars = c(
       "dataset_id",
+      "publication_id",
+      "study_id",
       "within_id",
       "between_id",
       "condition_id",

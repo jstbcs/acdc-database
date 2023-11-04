@@ -50,23 +50,24 @@ get_detailed_information <- function(conn, arguments, argument_relation){
       "rt",
       "accuracy",
       "dataset_id",
-      "condition_id"
+      "condition_id",
+      "subject"
     )
   )
 
-  condition_ids = unique(query_results_dataset$condition_id)
-
-  n_conditions = length(condition_ids)
-  plots = vector(mode = "list", length = n_conditions)
-  for (i in 1:n_conditions){
-    plots[[i]] = hist(query_results_trial$rt[query_results_trial$rt < 2 & query_results_trial$condition_id == condition_ids[i]],
-                      breaks = 40,
-                      plot = FALSE)
-  }
+  # condition_ids = unique(query_results_dataset$condition_id)
+  # 
+  # n_conditions = length(condition_ids)
+  # plots = vector(mode = "list", length = n_conditions)
+  # for (i in 1:n_conditions){
+  #   plots[[i]] = hist(query_results_trial$rt[query_results_trial$rt < 2 & query_results_trial$condition_id == condition_ids[i]],
+  #                     breaks = 40,
+  #                     plot = FALSE)
+  # }
 
   query_results = list()
   query_results$data = query_results_dataset
-  query_results$plots = plots
+  # query_results$plots = plots
   query_results$trial_data = query_results_trial
 
   return(query_results)
