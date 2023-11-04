@@ -97,6 +97,9 @@ add_data <- function(conn, entry_data, study_id, group_keys){
   )
   
   max_subject = DBI::dbGetQuery(conn, sql_query)[1, 1]
+  if (is.na(max_subject)){
+    max_subject = 0
+  }
   entry_data$observation_table$subject = dplyr::dense_rank(entry_data$observation_table$subject) + max_subject
   
   observation = as.data.frame(entry_data$observation_table)
