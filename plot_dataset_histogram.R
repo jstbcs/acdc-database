@@ -20,14 +20,15 @@ plot_dataset_histograms <- function(dataset){
       width = 0.6
     )+
     ggplot2::scale_y_continuous(
-      name = "Reaction Time",
+      name = "Response Time (in s)",
       sec.axis = ggplot2::sec_axis(~., name = "Accuracy"),
       breaks = c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1),
       labels = c(0, 0.1, 0.2, 0.3, 0.4, 0.5, 0.6, 0.7, 0.8, 0.9, 1)
     ) +
     ggplot2::labs(
-      title = "",
-      x = "dataset_id"
+      title = "Mean Response Time and Accuracy",
+      x = "dataset_id",
+      caption = "Dots represent response time, bars indicate accuracy.\nConstruct queries based on 'mean_dataset_rt' and 'mean_dataset_acc'."
     )+
     ggplot2::theme_classic()
 }
