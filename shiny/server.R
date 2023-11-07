@@ -7,7 +7,6 @@ source("./shiny/helper_file_shiny.R")
 source("./shiny/ui.R")
 library(knitr)
 
-
 server <- function(input, output, session){
   
   # FOR INTRO ---
@@ -20,6 +19,7 @@ server <- function(input, output, session){
   # print explanation of project 
   output$explanation_db <- renderUI({
     # show text when number of clicks is uneven; hide if even
+    #TODO: add info about our R package
     if(input$action_explain_db %% 2 == 1){
       updateActionButton(inputId = "action_explain_db", label = "Got it!")
       renderUI({HTML("The ACDC data base contains attentional control task data (i.e., Stroop, flanker or Simon task) from over 40 datasets as well as information about the respective studies and publications. <br>
@@ -222,6 +222,21 @@ server <- function(input, output, session){
   
   # TAB 1
   # print data frame of suited data sets ----
+  # TODO: include query function which takes argument_df as input and returns 
+  # each publication it applies to 
+  
+  # Reactive expression to get filtered data based on set filter criteria
+  #filtered_data <- reactive({
+  #  req(argument_df()) # Require that argument_df is not NULL
+  #  filter_db(db, arguments)  #TODO: replace filter_db function
+  #})
+  
+  # # Get the reactive filtered da
+  #suited_df <- filtered_data() 
+  
+  # TODO: function to get relevant information from suited_df
+  
+  # print info in suited_data_df
   suited_data_df <- data.frame(
     pub_code = "hedge_2018_reliability",
     authors = "Hedge et al.",
@@ -233,13 +248,17 @@ server <- function(input, output, session){
     n_blocks = 5, 
     n_trials = 30
   )
+
   colnames(suited_data_df) <- colnames_suited
   
+  # print table
   output$suited_datasets <- renderDT(suited_data_df)
                                     
   
-  
   # print dataframe of descriptives ----
+  #TODO: reactive function which gets info from suited_df
+  
+  
   descriptives_df <- data.frame(
     dataset_id = 32,
     trials_pp = 150,
@@ -259,8 +278,14 @@ server <- function(input, output, session){
                                   ))
   
   # print R Code to access data ----
+  #TODO: write function which generates R query based on argument df
+  #R_code <- reactive({
+  #  
+  #})
+  R_code <- "some text"
+  
   output$Rcode <- renderPrint({
-    cat("library(inhibitiontasks)", "some query code", sep = "\n")
+    cat("library(inhibitiontasks)", R_code, sep = "\n")
   })
   
   # logic behind download button
@@ -269,11 +294,9 @@ server <- function(input, output, session){
          paste('inhibition_task_data-', Sys.Date(), '.csv', sep='')
        },
        content = function(con) {
-         write.csv(descriptives_df, con)
+         write.csv(suited_df, con) #TODO: decide which data users can download exactly
        }
      )
-  
-  
 }
 
 
