@@ -6,7 +6,6 @@ library(shiny)
 library(DT)
 source("./shiny/helper_file_shiny.R")
 
-setwd("shiny") # to access image file path
 
 ui <- fluidPage(
   
