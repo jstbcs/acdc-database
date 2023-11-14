@@ -19,12 +19,11 @@ server <- function(input, output, session){
   # print explanation of project 
   output$explanation_db <- renderUI({
     # show text when number of clicks is uneven; hide if even
-    #TODO: add info about our R package
     if(input$action_explain_db %% 2 == 1){
       updateActionButton(inputId = "action_explain_db", label = "Got it!")
       renderUI({HTML("The ACDC data base contains attentional control task data (i.e., Stroop, flanker or Simon task) from over 40 datasets as well as information about the respective studies and publications. <br>
                      It is meant to enhance access to open attentional control task data. <br>
-                     Data can be accessed either via SQL or our R package (?). <br> <br>
+                     Data can be accessed either via SQL or our R package (<a href=http://github.com/SLesche/acdc-query target='_blank' rel='noopener noreferrer'>Github</a>). <br> <br>
                      <img src='/shiny/www/db_structure.png' alt='Structure of inhibition task db' width='400' height='400'>"
                      )
         })
