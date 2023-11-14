@@ -53,7 +53,7 @@ get_descriptive_information <- function(conn, arguments, argument_relation){
     if (length(unique(query_results$within_id)) > 1){
       within_manipulations = paste(
         unique(query_results[which(query_results$dataset_id == id), "within_description"]),
-        collapse = ", "
+        collapse = "; "
       )
     } else {
       within_manipulations = "none"
@@ -62,7 +62,7 @@ get_descriptive_information <- function(conn, arguments, argument_relation){
     if (length(unique(query_results$between_id)) > 1){
       between_manipulations = paste(
         unique(query_results[which(query_results$dataset_id == id), "group_description"]),
-        collapse = ", "
+        collapse = "; "
       )
     } else {
       between_manipulations = "none"
