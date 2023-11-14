@@ -30,8 +30,6 @@ publication_codes <- c("pratte_2010_exploring",
 get_default_value <- function(criterion, operator){
   # only execute once operator has been chosen
   if(!is.null(operator)){
-    
-    # TODO: check
     default_value <- switch(criterion,
                             "Mean reaction time (in ms)" = 700, 
                             "Mean accuracy" = 0.8, 
@@ -65,4 +63,9 @@ colnames_descriptives <- c("Dataset ID", "Mean number of trials per participant"
                            "Percentage congruent", "Mean reaction time", 
                            "Mean accuracy", "Number of conditions", "Time limit (in ms)",
                            "Data exclusion criteria")
+
+# function for server: merge existing lists 
+merge_lists <- function(x, y) {
+  c(x, y)
+}
 

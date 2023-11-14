@@ -132,51 +132,83 @@ server <- function(input, output, session){
   # logic behind adding new argument to argument summary --
   
   # create df as reactive value
-  argument_df <- data.frame(
-    criertion = NA,
-    operator = NA, 
-    value = NA,
-    value2 = NA
+  argument_list <- list(
+    variable = c(),
+    operator = c(),
+    values = list()
   )
+  #argument_df <- data.frame(
+  #  criertion = NA,
+  #  operator = NA, 
+  #  value = NA,
+  #  value2 = NA
+  #)
   
-  rv <- reactiveValues(x = argument_df)
+  #rv <- reactiveValues(x = argument_df)
+  rv <- reactiveValues(x = argument_list)
   
   # specify action whenever "Add argument to list" is clicked
   observeEvent(input$action_add_arg, {
     # add current choices to argument data frame 
     if(input$operator1 != "" & input$operator1 != "between"){
-      new_entry <- data.frame(criterion = input$criterion1,
-                              operator = input$operator1,
-                              value = input$value1,
-                              value2 = "")
+      new_entry <- list(
+        variable = input$criterion1, 
+        opeartor = input$operator1,
+        values = input$value1, 
+      )
+      #new_entry <- data.frame(criterion = input$criterion1,
+      #                        operator = input$operator1,
+      #                        value = input$value1,
+      #                        value2 = "")
       
     } else if (input$operator1 == "between") {
-      new_entry <- data.frame(criterion = input$criterion1,
-                              operator = input$operator1,
-                              value = input$value1,
-                              value2 = input$value1b)
+      new_entry <- list(
+        variable = input$criterion1, 
+        operator = input$operator1,
+        values = list(c(input$value1, input$value1b)) 
+      )
+      #new_entry <- data.frame(criterion = input$criterion1,
+      #                        operator = input$operator1,
+      #                        value = input$value1,
+      #                        value2 = input$value1b)
       
       } else if(input$yes_no != ""){
-        new_entry <- data.frame(criterion = input$criterion1,
-                              operator = "",
-                              value = input$yes_no,
-                              value2 = "")
+        new_entry <- list(
+          variable = input$criterion1, 
+          operator = "",
+          values = input$yes_no, 
+        )
+        #new_entry <- data.frame(criterion = input$criterion1,
+        #                      operator = "",
+        #                      value = input$yes_no,
+        #                      value2 = "")
       
       } else if(!is.null(input$task_type)){
-        new_entry <-  data.frame(criterion = input$criterion1,
-                                operator = "",
-                                value = input$task_type,
-                                value2 = "")
+        new_entry <- list(
+          variable = input$criterion1, 
+          operator = "",
+          values = input$task_type, 
+        )
+        #new_entry <-  data.frame(criterion = input$criterion1,
+        #                        operator = "",
+        #                        value = input$task_type,
+        #                        value2 = "")
         
       } else if (!is.null(input$pub_code)){
-        new_entry <-  data.frame(criterion = input$criterion1,
-                                 operator = "",
-                                 value = input$pub_code,
-                                 value2 = "")
+        new_entry <- list(
+          variable = input$criterion1, 
+          operator = "",
+          values = input$pub_code, 
+        )
+        #new_entry <-  data.frame(criterion = input$criterion1,
+        #                         operator = "",
+        #                         value = input$pub_code,
+        #                         value2 = "")
       
     }
     
-    rv$argument_df <- rbind(rv$argument_df, new_entry)
+    #rv$argument_df <- rbind(rv$argument_df, new_entry)
+    rv_argument_list <- mapply(merge_lists, argument_list, new_entry, SIMPLIFY = FALSE)
     
     # reset drop down menu for criterion choice
     updateSelectInput(session, 
@@ -189,19 +221,25 @@ server <- function(input, output, session){
     
   })
   
-  # remove last row from argument_df when 'action_remove_recent' is clicked
+  # remove last element argument_list when 'action_remove_recent' is clicked
   observeEvent(input$action_remove_recent, {
-    rv$argument_df <-  rv$argument_df[-nrow(rv$argument_df), ]
+    #rv$argument_df <-  rv$argument_df[-nrow(rv$argument_df), ]
+    rv$argument_list <- lapply(argument_list, function(x) x[-1])
   })
   
   # reset argument_df when 'action_reset_list' is clicked
   observeEvent(input$action_reset_list, {
-    rv$argument_df <- rv$argument_df[0,]
+    rv$argument_list <- lapply(argument_list, function(x) c())
+    #rv$argument_df <- rv$argument_df[0,]
   })
   
+  # add reactive dataframe to print argument_list as a table 
+  argument_df <- as.data.frame(do.call(cbind, argument_list))
+  rv <- reactiveValues(x = argument_df)
   # print summary df of chosen arguments
   output$summary <- renderTable(rv$argument_df)
   
+  #TODO: continue here
   # conditional action button to delete last entry to argument list 
   output$conditional_action_remove <- renderUI({
     if(!is.null(rv$argument_df[1,1])){ # show action button only after first argument was added
