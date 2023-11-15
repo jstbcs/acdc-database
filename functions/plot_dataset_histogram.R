@@ -1,10 +1,10 @@
 plot_dataset_histograms <- function(dataset){
   dataset |> 
-    dplyr::mutate(dataset_id = factor(dataset_id)) |>
+    dplyr::mutate(dataset_id = factor(`Dataset ID`)) |>
     ggplot2::ggplot(
       mapping = ggplot2::aes(
-        x = forcats::fct_reorder(dataset_id, mean_dataset_rt, .desc = TRUE),
-        y = mean_dataset_rt
+        x = forcats::fct_reorder(dataset_id, `Mean reaction time (dataset)`, .desc = TRUE),
+        y = `Mean reaction time (dataset)`
       )
     ) +
     ggplot2::geom_point(
@@ -12,7 +12,7 @@ plot_dataset_histograms <- function(dataset){
     ) +
     ggplot2::geom_bar(
       mapping = ggplot2::aes(
-        y = mean_dataset_acc
+        y = `Mean accuracy (dataset)`
       ),
       color = "black",
       stat = "identity",
@@ -28,7 +28,7 @@ plot_dataset_histograms <- function(dataset){
     ggplot2::labs(
       title = "Mean Response Time and Accuracy",
       x = "dataset_id",
-      caption = "Dots represent response time, bars indicate accuracy.\nConstruct queries based on 'mean_dataset_rt' and 'mean_dataset_acc'."
+      caption = "Dots represent response time, bars indicate accuracy.\nValues are based on the 'mean_dataset_rt' and 'mean_dataset_acc' column."
     )+
     ggplot2::theme_classic()
 }

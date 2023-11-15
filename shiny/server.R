@@ -2,8 +2,7 @@
 #
 # Defining server for the "ACDC data base" shiny app
 #
-source("./shiny/helper_file_shiny.R")
-source("./shiny/ui.R")
+
 library(shiny)
 library(knitr)
 library(DT)
@@ -11,6 +10,9 @@ library(dplyr)
 library(DBI)
 library(RSQLite)
 library(acdcquery)
+source("./shiny/helper_file_shiny.R")
+source("./shiny/ui.R")
+
 files.sources = list.files("./functions", pattern = "\\.R$", full.names = TRUE, include.dirs = FALSE)
 sapply(files.sources, source)
 
@@ -109,7 +111,7 @@ server <- function(input, output, session){
       condition = "input.criterion1 == 'Neutral stimuli included?' |  input.criterion1 == 'Existence of between-subject manipulation?' | input.criterion1 == 'Existence of within-subject manipulation (besides congruency)?'",
       selectInput(inputId = "yes_no",
                   label = " ",
-                  choices =  c("", "Yes", "No")) # TODO: change outcome value to 1/0? (Sven)
+                  choices =  c("", "Yes"=1, "No"=0)) 
     ) 
   }) 
   
@@ -198,6 +200,14 @@ server <- function(input, output, session){
                       inputId = "operator1", 
                       selected = "")
     
+    updateSelectInput(session, 
+                      inputId = "task_type", 
+                      selected = "")
+    
+    updateSelectInput(session, 
+                      inputId = "pub_code", 
+                      selected = "")
+    
   })
   
  
@@ -253,13 +263,11 @@ server <- function(input, output, session){
   })
   
   # print table
-  output$suited_datasets <- renderDT(suited_overview_df())
-  # TODO: assign correct column names; change author column
-  # TODO: warning when no match was found
+  output$suited_datasets <- renderDT(suited_overview_df(),
+                                     rownames= FALSE)
   
   # TAB 2 
   # print dataframe of descriptives ----
-  # TODO: correct colnames
   descriptives_df <- reactive({
     get_filtered_df(rv$argument_list, conn, type = "descriptives")
   })
@@ -269,11 +277,12 @@ server <- function(input, output, session){
                                   caption = htmltools::tags$caption(
                                     style = 'caption-side: bottom; text-align: center;',
                                     htmltools::em('Note:'), 
-                                    'percentage congruent, mean reaction time and mean accuracy are calculated across all participants and conditions within this task.'
-                                  ))
+                                    'percentage congruent, mean reaction time and mean accuracy are calculated across all participants and conditions within this task.'),
+                                  rownames= FALSE)
   
   # print histogram of filtered datasets 
   output$histogram <- renderPlot({
+    req(descriptives_df())
     plot_dataset_histograms(descriptives_df())
   })
   

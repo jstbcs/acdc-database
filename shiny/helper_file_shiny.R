@@ -5,12 +5,12 @@
 
 # vector storing criteria to be chosen
 criteria <- c("Task type(s)" = "task_name",
-              #"Mean reaction time (in ms)" = "mean_dataset_rt",
-              #"Mean accuracy" = "mean_dataset_acc",
+              "Mean reaction time (in ms)" = "mean_dataset_rt",
+              "Mean accuracy" = "mean_dataset_acc",
               "Number of participants" = "n_participants",
-              #"Number of blocks per participant" = ,
+              "Number of blocks per participant" = "n_blocks",
               "Number of trials per block" = "n_trials",
-              #"Neutral stimuli included?" = ,
+              "Neutral stimuli included?" = "neutral_trials",
               #"Time limit for responses (in ms)" = ,
               #"Existence of between-subject manipulation?" = , 
               #"Existence of within-subject manipulation (besides congruency)?" = ,
@@ -38,7 +38,7 @@ get_default_value <- function(criterion, operator){
                             "mean_dataset_rt" = 700, 
                             "mean_dataset_acc" = 0.8, 
                             "n_participants" = 100, 
-                            #"Number of blocks per participant" = 5, 
+                            "n_blocks" = 5, 
                             "n_trials" = 30, 
                             #"Time limit for responses (in ms)" = 2000,
                             #"Conducted (Year of Publication)" = 2010
@@ -58,15 +58,15 @@ get_default_value <- function(criterion, operator){
 }
 
 # column names for suited_data_df
-colnames_suited <- c("Publication Code", "Authors", "Conducted", "Dataset ID", 
-                     "Between person manipulation", "Within person manipulation",
-                     "Sample size", "Blocks per participant", "Trials per block")
+colnames_suited <- c("Dataset ID", "Publication Code", "Authors", "Conducted", "Task Type", 
+                     "Sample Size", "Blocks per participant", "Trials per block", 
+                     "Existence of neutral trials", "Within manipulation?", "Between manipulation?")
 
 # column names for descriptives_df 
-colnames_descriptives <- c("Dataset ID", "Mean number of trials per participant", 
-                           "Percentage congruent", "Mean reaction time", 
-                           "Mean accuracy", "Number of conditions", "Time limit (in ms)",
-                           "Data exclusion criteria")
+colnames_descriptives <- c("Dataset ID", "Publication ID", "Study ID", "Condition ID", "Task Type", 
+                           "Sample Size", "Tials per block", "Mean number of trials per participant", 
+                           "Percentage congruent", "Percentage of neutral trials", "Time limit (in ms)",
+                           "Mean reaction time (dataset)", "Mean accuracy (dataset)", "Within manipulation", "Between manipulation")
 
 # function for server: merge existing lists 
 merge_lists <- function(x, y) {
@@ -80,19 +80,30 @@ get_filtered_df <- function(argument_list, conn, type=c("overview", "descriptive
     # update arguments 
     arguments <- list()
     for(i in 1:length(argument_list[[1]])){
+      # if more than one value, split into vector 
+      if(grepl(";", argument_list[[3]][i])) values=str_split(argument_list[[3]][i], "; ")[[1]] else values=argument_list[[3]][i]
+      # loop over list adn update arguments
       arguments <- arguments %>%
         add_argument(
           conn, 
           argument_list[[1]][i], 
           argument_list[[2]][i], 
-          argument_list[[3]][i]
+          values
         )
     }
     # get chosen data frame 
     if(type == "overview"){
       df <- get_overview_information(conn, arguments, "and")
+      df <- df[, c(1,2,12,4,5,6,7,8,9,10,11)] # reorder and delete authors 
+      colnames(df) <- colnames_suited
+      df[,9] <- ifelse(df[,9] == 0, FALSE, TRUE) # convert numeric input to logical
+      df[,10] <- ifelse(df[,10] == 0, FALSE, TRUE)
+      df[,11]<- ifelse(df[,11] == 0, FALSE, TRUE)
+      
     } else if (type == "descriptives"){
       df <- get_descriptive_information(conn, arguments, "and")
+      colnames(df) <- colnames_descriptives
+      
     } else if (type == "detailed"){
       df <- get_detailed_information(conn, arguments, "and")
     }
