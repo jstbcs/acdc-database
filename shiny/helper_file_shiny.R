@@ -107,31 +107,28 @@ get_filtered_df <- function(argument_list, conn, type=c("overview", "descriptive
 # function to create R code based on chosen arguments
 get_R_code <- function(argument_list){
   if(length(argument_list[[1]]) > 0){ # once first argument has been chosen
-  # install, load, connect to db
-  set_up <- "if (!require('acdcquery')) install.packages('acdcquery') \n
-  library(acdcquery) \n 
-  # create connection to SQL data base \n 
-  conn <- connect_to_db('acdc.db')\n
-  \n
-  # specify filter arguments\n
-  arguments <- list() %>% \n"
+    
+  # install, load, connect to db -------
+  set_up <- "if (!require('acdcquery')) install.packages('acdcquery') \n library(acdcquery) \n # create connection to SQL data base \nconn <- connect_to_db('acdc.db')\n # specify filter arguments\n arguments <- list() \n"
   
-  # modify arguments based on user input
-  arguments <- character()
+  # modify arguments based on user input ----
+  arguments <- c()
   for(i in 1:length(argument_list[[1]])){
-    new_argument <- paste("%>% \n 
-                          add_argument(",
-                          "conn",
-                          argument_list[[1]][i], 
-                          argument_list[[2]][i], 
-                          argument_list[[3]][i],
-                          ")", sep = "\n")
+    # elements to be separated by comma
+    comma_separated <- paste("conn",
+                             argument_list[[1]][i], 
+                             argument_list[[2]][i], 
+                             argument_list[[3]][i],
+                             sep =", \n ")
+    new_argument <- paste("%>%",
+                          "add_argument(",
+                          comma_separated,
+                          ")", sep = "\n ")
     arguments <- paste(arguments, new_argument, collapse = "")
   }
+  # TODO: which code shall we provide?  
+  Rcode <- cat(set_up, arguments, sep=" ")
   
-  # TODO: which code shall we provide? 
-  
-  Rcode <- paste(set_up, arguments, sep="\n")
   } else { # if no argument chosen yet
     Rcode <- "if (!require('acdcquery')) install.packages('acdcquery') \n
     library(acdcquery) \n 
@@ -143,8 +140,6 @@ get_R_code <- function(argument_list){
 }
 
 
-get_R_code(argument_list)
-  
   
   
   
