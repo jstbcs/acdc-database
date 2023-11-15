@@ -23,9 +23,10 @@ arguments <- list() %>%
     "greater",
     50
   )
+
 overview <- get_overview_information(conn, arguments, "and")
 descriptive <- get_descriptive_information(conn, arguments, "and")
 detailed <- get_detailed_information(conn, arguments, "and")
 
 plot_dataset_histograms(descriptive)
-plot_trial_rtdist(detailed, 39, 2)
+plot_trial_rtdist(detailed, 4, 2)

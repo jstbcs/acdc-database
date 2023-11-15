@@ -259,6 +259,7 @@ server <- function(input, output, session){
   
   # TAB 2 
   # print dataframe of descriptives ----
+  # TODO: correct colnames
   descriptives_df <- reactive({
     get_filtered_df(rv$argument_list, conn, type = "descriptives")
   })
@@ -267,31 +268,37 @@ server <- function(input, output, session){
   output$descriptives <- renderDT(descriptives_df(),
                                   caption = htmltools::tags$caption(
                                     style = 'caption-side: bottom; text-align: center;',
-                                    htmltools::em('Note:'), 'percentage congruent, mean reaction time and mean accuracy are calculated across all participants and conditions within this task.'
+                                    htmltools::em('Note:'), 
+                                    'percentage congruent, mean reaction time and mean accuracy are calculated across all participants and conditions within this task.'
                                   ))
   
+  # print histogram of filtered datasets 
+  output$histogram <- renderPlot({
+    plot_dataset_histograms(descriptives_df())
+  })
   
-  #descriptives_df <- data.frame(
-  #  dataset_id = 32,
-  #  trials_pp = 150,
-  #  percentage_congruent = 0.66,
-  #  mean_rt = 750, 
-  #  mean_accuracy = 0.94, 
-  #  n_conditions = 2, 
-  #  time_limit = 2000, 
-  #  data_excl = "None"
-  #)
-  #colnames(descriptives_df) <- colnames_descriptives
+  
+  # TAB 3 
+  # TODO: Integrate?
+  # get reactive list with detailed information about dfs 
+  detailed_info<- reactive({
+    get_filtered_df(rv$argument_list, conn, type = "detailed")
+  })
+  # plot detailed information about datasets 
+  #output$rt_dist <- renderPlot({
+  #  req(dataset_id_choice)
+  #  plot_trial_rtdist(detailed_info(), dataset_id_choice, 2)
+  #})
+  
   
   # print R Code to access data ----
-  #TODO: write function which generates R query based on argument df
-  #R_code <- reactive({
-  #  
-  #})
-  R_code <- "some text"
+  R_code <- reactive({
+    req(length(rv$argument_list[[1]]) > 0)
+    get_R_code(argument_list = rv$argument_list)  
+    })
   
   output$Rcode <- renderPrint({
-    cat("library(inhibitiontasks)", R_code, sep = "\n")
+    get_R_code()
   })
   
   # logic behind download button
@@ -300,7 +307,7 @@ server <- function(input, output, session){
          paste('inhibition_task_data-', Sys.Date(), '.csv', sep='')
        },
        content = function(con) {
-         write.csv(suited_df, con) #TODO: decide which data users can download exactly
+         write.csv(suited_df, filename) #TODO: decide which data users can download exactly & make reactive 
        }
      )
 }

@@ -75,7 +75,7 @@ merge_lists <- function(x, y) {
 
 
 # function to get overview_df or descriptive_df based on chosen arguments
-get_filtered_df <- function(argument_list, conn, type=c("overview", "descriptives")){
+get_filtered_df <- function(argument_list, conn, type=c("overview", "descriptives", "detailed")){
   if(length(argument_list[[1]]) > 0){ # once first argument has been chosen
     # update arguments 
     arguments <- list()
@@ -93,6 +93,8 @@ get_filtered_df <- function(argument_list, conn, type=c("overview", "descriptive
       df <- get_overview_information(conn, arguments, "and")
     } else if (type == "descriptives"){
       df <- get_descriptive_information(conn, arguments, "and")
+    } else if (type == "detailed"){
+      df <- get_detailed_information(conn, arguments, "and")
     }
     
   } else { # when no arguments are chosen 
@@ -102,7 +104,46 @@ get_filtered_df <- function(argument_list, conn, type=c("overview", "descriptive
 }
 
 
+# function to create R code based on chosen arguments
+get_R_code <- function(argument_list){
+  if(length(argument_list[[1]]) > 0){ # once first argument has been chosen
+  # install, load, connect to db
+  set_up <- "if (!require('acdcquery')) install.packages('acdcquery') \n
+  library(acdcquery) \n 
+  # create connection to SQL data base \n 
+  conn <- connect_to_db('acdc.db')\n
+  \n
+  # specify filter arguments\n
+  arguments <- list() %>% \n"
   
+  # modify arguments based on user input
+  arguments <- character()
+  for(i in 1:length(argument_list[[1]])){
+    new_argument <- paste("%>% \n 
+                          add_argument(",
+                          "conn",
+                          argument_list[[1]][i], 
+                          argument_list[[2]][i], 
+                          argument_list[[3]][i],
+                          ")", sep = "\n")
+    arguments <- paste(arguments, new_argument, collapse = "")
+  }
+  
+  # TODO: which code shall we provide? 
+  
+  Rcode <- paste(set_up, arguments, sep="\n")
+  } else { # if no argument chosen yet
+    Rcode <- "if (!require('acdcquery')) install.packages('acdcquery') \n
+    library(acdcquery) \n 
+    # create connection to SQL data base \n 
+    conn <- connect_to_db('acdc.db')"
+  }
+  
+  return(Rcode)
+}
+
+
+get_R_code(argument_list)
   
   
   

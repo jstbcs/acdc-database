@@ -143,9 +143,23 @@ ui <- fluidPage(
       
       # TAB 2
       tabPanel("Descriptives",
-              DTOutput("descriptives")),
+              DTOutput("descriptives"),
+              plotOutput("histogram")),
       
       # TAB 3
+      tabPanel("Detailed info on dataset",
+               selectInput(inputId = "dataset_id_choice",
+                           label = "Choose dataset ID:",
+                           choices = c(" ", 1:40),  # TODO: replace 
+                           selected = " ")#,
+               #numericInput(
+               #  inputId = "chosen_dataset",
+               #  label = "Choose Dataset ID",
+               #  value = 1),
+               #plotOutput("rt_dist")
+               ),
+      
+      # TAB 4
       tabPanel("Get the data",
                
                # print R code
