@@ -7,7 +7,7 @@
 #
 #' @param conn A database connection object.
 #' @param arguments A list of arguments to filter the dataset.
-#' @param argument_relation A logical operator ('AND' or 'OR') for combining multiple filter conditions.
+#' @param argument_relation A logical operator ('and' or 'or') for combining multiple filter conditions.
 #
 #' @return A data frame containing summary information for each dataset, indicating the presence of within
 #' and between manipulations.
@@ -48,6 +48,8 @@ get_overview_information <- function(conn, arguments, argument_relation){
       # "percentage_female"
     )
   )
+  
+  if(nrow(query_results) == 0) stop("There are no datasets that match your criteria.")
 
   query_results = dplyr::distinct(query_results, dataset_id, .keep_all = TRUE)
   # Create vector indicating presence or absence of manipulation

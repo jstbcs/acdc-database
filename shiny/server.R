@@ -298,7 +298,7 @@ server <- function(input, output, session){
     })
   
   output$Rcode <- renderPrint({
-    get_R_code()
+    R_code()
   })
   
   # logic behind download button
