@@ -4,14 +4,18 @@
 
 
 # vector storing criteria to be chosen
-criteria <- c("Task type(s)",
-              "Mean reaction time (in ms)", "Mean accuracy", "Number of participants",
-              "Number of blocks per participant", "Number of trials per block",
-              "Neutral stimuli included?", "Time limit for responses (in ms)",
-              "Existence of between-subject manipulation?", 
-              "Existence of within-subject manipulation (besides congruency)?",
-              "Conducted (Year of Publication)",
-              "Publication Code"
+criteria <- c("Task type(s)" = "task_name",
+              #"Mean reaction time (in ms)" = "mean_dataset_rt",
+              #"Mean accuracy" = "mean_dataset_acc",
+              "Number of participants" = "n_participants",
+              #"Number of blocks per participant" = ,
+              "Number of trials per block" = "n_trials",
+              #"Neutral stimuli included?" = ,
+              #"Time limit for responses (in ms)" = ,
+              #"Existence of between-subject manipulation?" = , 
+              #"Existence of within-subject manipulation (besides congruency)?" = ,
+              #"Conducted (Year of Publication)" = ,
+              "Publication Code" = "publication_code"
               )
 
 # TODO:connect to db to update automatically
@@ -31,13 +35,13 @@ get_default_value <- function(criterion, operator){
   # only execute once operator has been chosen
   if(!is.null(operator)){
     default_value <- switch(criterion,
-                            "Mean reaction time (in ms)" = 700, 
-                            "Mean accuracy" = 0.8, 
-                            "Number of participants" = 100, 
-                            "Number of blocks per participant" = 5, 
-                            "Number of trials per block" = 30, 
-                            "Time limit for responses (in ms)" = 2000,
-                            "Conducted (Year of Publication)" = 2010
+                            "mean_dataset_rt" = 700, 
+                            "mean_dataset_acc" = 0.8, 
+                            "n_participants" = 100, 
+                            #"Number of blocks per participant" = 5, 
+                            "n_trials" = 30, 
+                            #"Time limit for responses (in ms)" = 2000,
+                            #"Conducted (Year of Publication)" = 2010
     )
     
     # optionally: second default value for between operator 
@@ -68,4 +72,40 @@ colnames_descriptives <- c("Dataset ID", "Mean number of trials per participant"
 merge_lists <- function(x, y) {
   c(x, y)
 }
+
+
+# function to get overview_df or descriptive_df based on chosen arguments
+get_filtered_df <- function(argument_list, conn, type=c("overview", "descriptives")){
+  if(length(argument_list[[1]]) > 0){ # once first argument has been chosen
+    # update arguments 
+    arguments <- list()
+    for(i in 1:length(argument_list[[1]])){
+      arguments <- arguments %>%
+        add_argument(
+          conn, 
+          argument_list[[1]][i], 
+          argument_list[[2]][i], 
+          argument_list[[3]][i]
+        )
+    }
+    # get chosen data frame 
+    if(type == "overview"){
+      df <- get_overview_information(conn, arguments, "and")
+    } else if (type == "descriptives"){
+      df <- get_descriptive_information(conn, arguments, "and")
+    }
+    
+  } else { # when no arguments are chosen 
+    df <- data.frame()
+  }
+  return(df)
+}
+
+
+  
+  
+  
+  
+  
+
 

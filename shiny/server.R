@@ -1,11 +1,20 @@
 # # R Shiny Sever
 #
-# Defining server for the "inhibition data base" shiny app
+# Defining server for the "ACDC data base" shiny app
 #
-
 source("./shiny/helper_file_shiny.R")
 source("./shiny/ui.R")
+library(shiny)
 library(knitr)
+library(DT)
+library(dplyr)
+library(DBI)
+library(RSQLite)
+library(acdcquery)
+files.sources = list.files("./functions", pattern = "\\.R$", full.names = TRUE, include.dirs = FALSE)
+sapply(files.sources, source)
+
+
 
 server <- function(input, output, session){
   
@@ -23,7 +32,7 @@ server <- function(input, output, session){
       updateActionButton(inputId = "action_explain_db", label = "Got it!")
       renderUI({HTML("The ACDC data base contains attentional control task data (i.e., Stroop, flanker or Simon task) from over 40 datasets as well as information about the respective studies and publications. <br>
                      It is meant to enhance access to open attentional control task data. <br>
-                     Data can be accessed either via SQL or our R package (<a href=http://github.com/SLesche/acdc-query target='_blank' rel='noopener noreferrer'>Github</a>). <br> <br>
+                     Data can be accessed either via SQL or our C-RAN R package ACDC query (<a href=http://github.com/SLesche/acdc-query target='_blank' rel='noopener noreferrer'>Github</a>). <br> <br>
                      <img src='/shiny/www/db_structure.png' alt='Structure of inhibition task db' width='400' height='400'>"
                      )
         })
@@ -65,7 +74,7 @@ server <- function(input, output, session){
   # conditional panel to choose 1st operator based on criterion1
   output$operator1 <- renderUI({
     conditionalPanel(
-      condition = "input.criterion1 != ' ' & input.criterion1 != 'Task type(s)' & input.criterion1 != 'Publication Code' & input.criterion1 != 'Neutral stimuli included?' &  input.criterion1 != 'Existence of between-subject manipulation?' & input.criterion1 != 'Existence of within-subject manipulation (besides congruency)?'",
+      condition = "input.criterion1 != ' ' & input.criterion1 != 'task_name' & input.criterion1 != 'publication_code' & input.criterion1 != 'Neutral stimuli included?' &  input.criterion1 != 'Existence of between-subject manipulation?' & input.criterion1 != 'Existence of within-subject manipulation (besides congruency)?'",
       selectInput(inputId = "operator1",
                   label = "Choose operator",
                   choices =  c("", "less", "greater", "between", "equal"))
@@ -107,7 +116,7 @@ server <- function(input, output, session){
   # conditional panel to choose task types
   output$choice_task_type <- renderUI({
     conditionalPanel(
-      condition = "input.criterion1 == 'Task type(s)'",
+      condition = "input.criterion1 == 'task_name'",
       checkboxGroupInput(inputId = "task_type",
                          label = "Choose task type:",
                          choices = 
@@ -122,14 +131,14 @@ server <- function(input, output, session){
   # conditional panel to choose publication code
   output$choice_pubcode <- renderUI({
     conditionalPanel(
-      condition = "input.criterion1 == 'Publication Code'",
+      condition = "input.criterion1 == 'publication_code'",
       selectInput(inputId = "pub_code",
                   label = "Choose publiction code",
                   choices = c("", sort(publication_codes)))
     ) 
   }) 
   
-  # lcreate reactive list to store added filter arguments
+  # create reactive list to store added filter arguments
   argument_list <- list(
     variable = c(),
     operator = c(),
@@ -157,21 +166,21 @@ server <- function(input, output, session){
       } else if(input$yes_no != ""){
         new_entry <- list(
           variable = input$criterion1, 
-          operator = "is",
+          operator = "equal",
           values = input$yes_no
         )
       
       } else if(!is.null(input$task_type)){
         new_entry <- list(
           variable = input$criterion1, 
-          operator = "is",
+          operator = "equal",
           values = paste(input$task_type, collapse = "; ")
         )
         
       } else if (!is.null(input$pub_code)){
         new_entry <- list(
           variable = input$criterion1, 
-          operator = "is",
+          operator = "equal",
           values = input$pub_code
         )
       
@@ -231,64 +240,48 @@ server <- function(input, output, session){
     argument_df()
   })
   
-  # MAIN PANEL 
+  # MAIN PANEL ---------------------------------------
   
   # TAB 1
   # print data frame of suited data sets ----
-  # TODO: include query function which takes argument_df as input and returns 
-  # each publication it applies to 
   
-  # Reactive expression to get filtered data based on set filter criteria
-  #filtered_data <- reactive({
-  #  req(argument_df()) # Require that argument_df is not NULL
-  #  filter_db(db, arguments)  #TODO: replace filter_db function
-  #})
+  # connect to data base
+  conn <- DBI::dbConnect(RSQLite::SQLite(), "acdc.db")
   
-  # # Get the reactive filtered da
-  #suited_df <- filtered_data() 
-  
-  # TODO: function to get relevant information from suited_df
-  
-  # print info in suited_data_df
-  suited_data_df <- data.frame(
-    pub_code = "hedge_2018_reliability",
-    authors = "Hedge et al.",
-    conducted = 2018,
-    dataset_id = 32,
-    between_manipulation = "None", 
-    within_manipulation = "Time of measurement", 
-    n_participants = 200,
-    n_blocks = 5, 
-    n_trials = 30
-  )
-
-  colnames(suited_data_df) <- colnames_suited
+  suited_overview_df <- reactive({
+    get_filtered_df(rv$argument_list, conn, type = "overview")
+  })
   
   # print table
-  output$suited_datasets <- renderDT(suited_data_df)
-                                    
+  output$suited_datasets <- renderDT(suited_overview_df())
+  # TODO: assign correct column names; change author column
+  # TODO: warning when no match was found
   
+  # TAB 2 
   # print dataframe of descriptives ----
-  #TODO: reactive function which gets info from suited_df
+  descriptives_df <- reactive({
+    get_filtered_df(rv$argument_list, conn, type = "descriptives")
+  })
   
-  
-  descriptives_df <- data.frame(
-    dataset_id = 32,
-    trials_pp = 150,
-    percentage_congruent = 0.66,
-    mean_rt = 750, 
-    mean_accuracy = 0.94, 
-    n_conditions = 2, 
-    time_limit = 2000, 
-    data_excl = "None"
-  )
-  colnames(descriptives_df) <- colnames_descriptives
-  
-  output$descriptives <- renderDT(descriptives_df,
+  # print table
+  output$descriptives <- renderDT(descriptives_df(),
                                   caption = htmltools::tags$caption(
                                     style = 'caption-side: bottom; text-align: center;',
                                     htmltools::em('Note:'), 'percentage congruent, mean reaction time and mean accuracy are calculated across all participants and conditions within this task.'
                                   ))
+  
+  
+  #descriptives_df <- data.frame(
+  #  dataset_id = 32,
+  #  trials_pp = 150,
+  #  percentage_congruent = 0.66,
+  #  mean_rt = 750, 
+  #  mean_accuracy = 0.94, 
+  #  n_conditions = 2, 
+  #  time_limit = 2000, 
+  #  data_excl = "None"
+  #)
+  #colnames(descriptives_df) <- colnames_descriptives
   
   # print R Code to access data ----
   #TODO: write function which generates R query based on argument df

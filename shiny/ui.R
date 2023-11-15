@@ -139,12 +139,10 @@ ui <- fluidPage(
       
       # TAB 1
       tabPanel("Overview of suited datasets",
-               
               DTOutput("suited_datasets")),
       
       # TAB 2
       tabPanel("Descriptives",
-               
               DTOutput("descriptives")),
       
       # TAB 3
