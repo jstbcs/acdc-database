@@ -103,7 +103,6 @@ ui <- fluidPage(
                ), # end fluid row
                
                # summary of chosen arguments ---
-               
                tableOutput("summary"),
                
                fluidRow(

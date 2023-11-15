@@ -129,23 +129,13 @@ server <- function(input, output, session){
     ) 
   }) 
   
-  # logic behind adding new argument to argument summary --
-  
-  # create df as reactive value
+  # lcreate reactive list to store added filter arguments
   argument_list <- list(
     variable = c(),
     operator = c(),
-    values = list()
+    values = c()
   )
-  #argument_df <- data.frame(
-  #  criertion = NA,
-  #  operator = NA, 
-  #  value = NA,
-  #  value2 = NA
-  #)
-  
-  #rv <- reactiveValues(x = argument_df)
-  rv <- reactiveValues(x = argument_list)
+  rv <- reactiveValues(argument_list = argument_list)
   
   # specify action whenever "Add argument to list" is clicked
   observeEvent(input$action_add_arg, {
@@ -153,62 +143,42 @@ server <- function(input, output, session){
     if(input$operator1 != "" & input$operator1 != "between"){
       new_entry <- list(
         variable = input$criterion1, 
-        opeartor = input$operator1,
-        values = input$value1, 
+        operator = input$operator1,
+        values = input$value1
       )
-      #new_entry <- data.frame(criterion = input$criterion1,
-      #                        operator = input$operator1,
-      #                        value = input$value1,
-      #                        value2 = "")
       
     } else if (input$operator1 == "between") {
       new_entry <- list(
         variable = input$criterion1, 
         operator = input$operator1,
-        values = list(c(input$value1, input$value1b)) 
+        values = paste(input$value1, input$value1b, sep="; ") 
       )
-      #new_entry <- data.frame(criterion = input$criterion1,
-      #                        operator = input$operator1,
-      #                        value = input$value1,
-      #                        value2 = input$value1b)
       
       } else if(input$yes_no != ""){
         new_entry <- list(
           variable = input$criterion1, 
-          operator = "",
-          values = input$yes_no, 
+          operator = "is",
+          values = input$yes_no
         )
-        #new_entry <- data.frame(criterion = input$criterion1,
-        #                      operator = "",
-        #                      value = input$yes_no,
-        #                      value2 = "")
       
       } else if(!is.null(input$task_type)){
         new_entry <- list(
           variable = input$criterion1, 
-          operator = "",
-          values = input$task_type, 
+          operator = "is",
+          values = paste(input$task_type, collapse = "; ")
         )
-        #new_entry <-  data.frame(criterion = input$criterion1,
-        #                        operator = "",
-        #                        value = input$task_type,
-        #                        value2 = "")
         
       } else if (!is.null(input$pub_code)){
         new_entry <- list(
           variable = input$criterion1, 
-          operator = "",
-          values = input$pub_code, 
+          operator = "is",
+          values = input$pub_code
         )
-        #new_entry <-  data.frame(criterion = input$criterion1,
-        #                         operator = "",
-        #                         value = input$pub_code,
-        #                         value2 = "")
       
     }
     
-    #rv$argument_df <- rbind(rv$argument_df, new_entry)
-    rv_argument_list <- mapply(merge_lists, argument_list, new_entry, SIMPLIFY = FALSE)
+    # add new argument to list
+    rv$argument_list <- mapply(merge_lists, rv$argument_list, new_entry, SIMPLIFY = FALSE)
     
     # reset drop down menu for criterion choice
     updateSelectInput(session, 
@@ -221,39 +191,45 @@ server <- function(input, output, session){
     
   })
   
-  # remove last element argument_list when 'action_remove_recent' is clicked
-  observeEvent(input$action_remove_recent, {
-    #rv$argument_df <-  rv$argument_df[-nrow(rv$argument_df), ]
-    rv$argument_list <- lapply(argument_list, function(x) x[-1])
-  })
-  
-  # reset argument_df when 'action_reset_list' is clicked
-  observeEvent(input$action_reset_list, {
-    rv$argument_list <- lapply(argument_list, function(x) c())
-    #rv$argument_df <- rv$argument_df[0,]
-  })
-  
-  # add reactive dataframe to print argument_list as a table 
-  argument_df <- as.data.frame(do.call(cbind, argument_list))
-  rv <- reactiveValues(x = argument_df)
-  # print summary df of chosen arguments
-  output$summary <- renderTable(rv$argument_df)
-  
-  #TODO: continue here
+ 
   # conditional action button to delete last entry to argument list 
   output$conditional_action_remove <- renderUI({
-    if(!is.null(rv$argument_df[1,1])){ # show action button only after first argument was added
+    if(!is.null(rv$argument_list[[1]])){ # show action button only after first argument was added
       actionButton("action_remove_recent", "Remove recent argument")
     }
   }) 
   
   # conditional action button to reset list 
   output$conditional_action_reset <- renderUI({
-    if(!is.null(rv$argument_df[1,1])){ # show action button only after first argument was added
+    if(!is.null(rv$argument_list[[1]])){ # show action button only after first argument was added
       actionButton("action_reset_list", "Reset list",
                    style="color: #000000; border-color: #FF000")
     }
   }) 
+  
+  # remove last element argument_list when 'action_remove_recent' is clicked
+  observeEvent(input$action_remove_recent, {
+    rv$argument_list <- lapply(rv$argument_list, function(x) x[-length(x)])
+  })
+  
+  # reset argument_list when 'action_reset_list' is clicked
+  observeEvent(input$action_reset_list, {
+    rv$argument_list <- lapply(rv$argument_list, function(x) c())
+  })
+
+  # add reactive dataframe to print argument_list as a table
+  argument_df <- reactive({
+    # Transform the list into a data frame
+    if(length(rv$argument_list) > 0) {
+      as.data.frame(do.call(cbind, rv$argument_list))
+    } else {
+      # Return an empty data frame if rv$argument_list is empty
+      data.frame()
+    }
+  })
+  output$summary <- renderTable({
+    argument_df()
+  })
   
   # MAIN PANEL 
   
