@@ -156,8 +156,22 @@ get_R_code <- function(argument_list){
 }
 
 
+# merge tables to get list of all publications, studies, and datasets
+get_overview_df <- function(conn){
+  pub <- dbReadTable(conn, "publication_table")
+  stud <- dbReadTable(conn, "study_table")
+  dat <- dbReadTable(conn, "dataset_table")
   
-# list all publications
+  overview_df <- pub %>%
+    left_join(stud, by = "publication_id") %>%
+    left_join(dat, by = "study_id") %>%
+    select(publication_id, apa_reference, publication_code, study_id, study_comment, dataset_id, task_id)
+  colnames(overview_df) <- c("Publication ID", "APA Refrence", "Publication Code",
+                             "Study ID", "Study description", "Dataset ID",
+                             "Task type")
+  
+  return(overview_df)
+}
   
 
 

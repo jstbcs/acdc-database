@@ -24,7 +24,12 @@ server <- function(input, output, session){
   
   # print short intro text
   output$short_intro <- renderUI({
-    HTML("This shiny app provides an overview over datasets in the Attentional Control Data Collection data base (ACDC).")
+    HTML("This shiny app provides an overview over datasets in the Attentional Control Data Collection (ACDC) data base . <br> <br>
+         You can filter datasets by criteria such as task type and sample size using the first tab of the sidebar labeled 'filter datasets'. <br>
+         The main panel provides an overview of those datasets fulfilling your filter criteria (tab 1), descriptive attributes of these 
+         datasets (such as mean accuracy and respose time distributions; tab 2), and instructions on how to access these datasets using our
+         R package acdcquery and an option to download trial level data as a csv (tab 3). <br> <br>
+         In the second/third tab of the sidebar you also find an overview over all datasets currently included in ACDC. <br>")
   })
   
   # print explanation of project 
@@ -54,7 +59,7 @@ server <- function(input, output, session){
                      Furthermore, suited data must include the following information: <ul>
                      <li>An ID variable</li> 
                      <li>A congruency variable, indicating stimuli were congruent or conflicting </li> 
-                     <li>Reaction time of each trial, in milliseconds </li>
+                     <li>Reaction time of each trial, in seconds </li>
                      <li>Accuracyof each trials (correct/ incorrect)</li>
                      <li>A between variable indicating between subject manipulation (if applicable)</li>
                      <li>A within variable indicating within subject manipulation (if applicable)</li>
@@ -89,7 +94,7 @@ server <- function(input, output, session){
       condition = "input.operator1 != ''",
       numericInput(
         inputId = "value1",
-        label = "Choose ........ value",
+        label = "Choose         value",
         value = get_default_value(input$criterion1, input$operator1)[1])
     )
   })
@@ -250,10 +255,6 @@ server <- function(input, output, session){
     argument_df()
   })
   
-  # tab 2 --#
-  pub_table <- dbReadTable(conn, "publication_table")
-  output$publications_df <- renderDT(pub_table,
-                                     rownames= FALSE)
   
   
   # MAIN PANEL ---------------------------------------
@@ -325,6 +326,11 @@ server <- function(input, output, session){
          write.csv(suited_df, filename) #TODO: decide which data users can download exactly & make reactive 
        }
      )
+  
+  # TAB 5 
+  overview_df <- get_overview_df(conn)
+  output$overview_datasets <- renderTable(overview_df,
+                                       rownames= FALSE)
 }
 
 

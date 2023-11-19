@@ -118,15 +118,13 @@ ui <- fluidPage(
       # TAB 2
       tabPanel("Filter data",
                h3("Filter data across all datasets")
-               
       ), 
       
       # TAB 3
-      tabPanel("Publication list",
-               #h3("List of all publications & datasets"),
-              
-               
-      ), 
+      #tabPanel("Dataset list",
+      #         h3("List of all publications & datasets in ACDC")
+      #         
+      #), 
       
     ) # end tabsetpanel 
   
@@ -173,8 +171,8 @@ ui <- fluidPage(
       ),
       
       # TAB 5
-      tabPanel("Overview of all publications in ACDC",
-               DTOutput("publications_df")
+      tabPanel("Overview of all publications in ACDC", 
+               tableOutput("overview_datasets")
       )
     
     ) # end tabset 
