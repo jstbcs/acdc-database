@@ -123,7 +123,8 @@ ui <- fluidPage(
       
       # TAB 3
       tabPanel("Publication list",
-               h3("List of all publications & datasets")
+               #h3("List of all publications & datasets"),
+              
                
       ), 
       
@@ -169,6 +170,11 @@ ui <- fluidPage(
                # option to download data as csv file
                h2("Or download it directly as a csv file:"), 
                downloadLink("downloadData", "Download csv file")
+      ),
+      
+      # TAB 5
+      tabPanel("Overview of all publications in ACDC",
+               DTOutput("publications_df")
       )
     
     ) # end tabset 

@@ -68,9 +68,9 @@ server <- function(input, output, session){
     }
   })
   
-  # SIDEBAR PANELS ---
+  # SIDEBAR PANELS -----#
   
-  # tab 1
+  # tab 1 --#
   
   # add arguments
   # conditional panel to choose 1st operator based on criterion1
@@ -249,6 +249,12 @@ server <- function(input, output, session){
   output$summary <- renderTable({
     argument_df()
   })
+  
+  # tab 2 --#
+  pub_table <- dbReadTable(conn, "publication_table")
+  output$publications_df <- renderDT(pub_table,
+                                     rownames= FALSE)
+  
   
   # MAIN PANEL ---------------------------------------
   
