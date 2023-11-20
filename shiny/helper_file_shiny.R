@@ -115,7 +115,7 @@ get_filtered_df <- function(argument_list, conn, type=c("overview", "descriptive
 }
 
 
-# TODO: pipe same line as code (loop); indentions; seperate ";", make vairbales characters, 
+# TODO: pipe same line as code (loop); indentions; seperate ";", make variables characters, 
 # function to create R code based on chosen arguments
 get_R_code <- function(argument_list){
   Rcode <- "if (!require('acdcquery')) install.packages('acdcquery') \nlibrary(acdcquery) \n \n # create connection to SQL data base \nconn <- connect_to_db('acdc.db')\n"
@@ -129,11 +129,18 @@ get_R_code <- function(argument_list){
   # modify arguments based on user input ----
   arguments <- c()
   for(i in 1:length(argument_list[[1]])){
+    # turn non-numeric elements into characters
+    if(!is.numeric(argument_list[[1]][i])) arg1=paste0("'",argument_list[[1]][i],"'") else arg1=argument_list[[1]][i]
+    if(!is.numeric(argument_list[[2]][i])) arg2=paste0("'",argument_list[[2]][i],"'") else arg2=argument_list[[2]][i]
+    if(!is.numeric(argument_list[[3]][i])) arg3=paste0("'",argument_list[[3]][i],"'") else arg3=argument_list[[3]][i]
+    
+    # if between operator: print values as
+    if(arg2 == "'between'") arg3=paste0("c(", str_split(arg3, "; ")[[1]][1], ",", str_split(arg3, "; ")[[1]][2], ")") else arg3=arg3
     # elements to be separated by comma
     comma_separated <- paste("    conn",
-                             argument_list[[1]][i], 
-                             argument_list[[2]][i], 
-                             argument_list[[3]][i],
+                             arg1, 
+                             arg2, 
+                             arg3,
                              sep =", \n")
     new_argument <- paste("%>%",
                           "add_argument(",
@@ -145,7 +152,7 @@ get_R_code <- function(argument_list){
   query <- paste("\n \n query_db(conn,\n", "         arguments,\n", 
                  "         target_vars = `default`,\n", 
                  "         target_table = 'observation_table',\n",
-                 "         argument_relation = 'and'")
+                 "         argument_relation = 'and')")
   
   # TODO: which code shall we provide?  
   Rcode <- cat(Rcode, set_up, arguments, query, sep=" ")
