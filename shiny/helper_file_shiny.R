@@ -161,14 +161,17 @@ get_overview_df <- function(conn){
   pub <- dbReadTable(conn, "publication_table")
   stud <- dbReadTable(conn, "study_table")
   dat <- dbReadTable(conn, "dataset_table")
+  task <- dbReadTable(conn, "task_table")
   
   overview_df <- pub %>%
     left_join(stud, by = "publication_id") %>%
     left_join(dat, by = "study_id") %>%
-    select(publication_id, apa_reference, publication_code, study_id, study_comment, dataset_id, task_id)
+    left_join(task, by = "task_id") %>%
+    select(publication_id, apa_reference, publication_code, study_id, study_comment,
+           dataset_id, task_name, task_description)
   colnames(overview_df) <- c("Publication ID", "APA Refrence", "Publication Code",
                              "Study ID", "Study description", "Dataset ID",
-                             "Task type")
+                             "Task type", "Task description")
   
   return(overview_df)
 }
