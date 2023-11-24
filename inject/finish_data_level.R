@@ -33,6 +33,8 @@ finish_data_level  <- function(pub, entry, dataframe_list, n_studies){
       pub[[2]][[i+2]]$dataset_table$neutral_trials <- get_neutral_trials(df_test)
       pub[[2]][[i+2]]$dataset_table$mean_dataset_rt <- get_mean_dataset_rt(df_test)
       pub[[2]][[i+2]]$dataset_table$mean_dataset_acc <- get_mean_dataset_acc(df_test)
+      pub[[2]][[i+2]]$dataset_table$between <- unique(pub[[2]][[i+2]]$observation_table[6])
+      pub[[2]][[i+2]]$dataset_table$number_within_conditions <- length(unique(pub[[2]][[i+2]]$observation_table[7]))
       
       # create condition_table --------------------------
       
@@ -117,6 +119,8 @@ finish_data_level  <- function(pub, entry, dataframe_list, n_studies){
         pub[[i+1]][[j+2]]$dataset_table$neutral_trials <- get_neutral_trials(df_test)
         pub[[i+1]][[j+2]]$dataset_table$mean_dataset_rt <- get_mean_dataset_rt(df_test)
         pub[[i+1]][[j+2]]$dataset_table$mean_dataset_acc <- get_mean_dataset_acc(df_test)
+        pub[[i+1]][[j+2]]$dataset_table$between <- unique(pub[[i+1]][[j+2]]$observation_table[6])
+        pub[[i+1]][[j+2]]$dataset_table$number_within_conditions <- length(unique(pub[[i+1]][[j+2]]$observation_table[7]))
         
         # create condition_table --------------------------
         

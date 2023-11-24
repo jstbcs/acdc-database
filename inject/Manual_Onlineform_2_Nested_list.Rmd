@@ -69,6 +69,7 @@ This results in a list of data frames.
 
 In case you first need to process the data file(s), insert the code in the `Create_db/add_data/reformat_datasets.R` file.
 
+Also, make sure that the raw, unprocessed data (as published by the researchers) is uploaded in our github repository. You will have to add the link to the database later on (described below).
 ---
 
 ## 1.3 Create the publication code
@@ -181,6 +182,13 @@ For instance, if the author names, year of publication, or keywords were not pro
 
 ```{r}
 # e.g.: pub[[1]]$authors <- "J. Example"
+```
+
+Furthermore, we want to add the link to the raw data in our github repository to the respective dataset_table. \
+You can index these entries like so: 
+
+```{r}
+#pub[[studynumber + 1]][[datasetnumber + 2]][[2]]$github <- "link"
 ```
 
 # Step 4: Run automatic checks 

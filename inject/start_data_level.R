@@ -127,7 +127,13 @@ start_data_level <- function(pub, entry){
         n_trials = NA, # computed later
         neutral_trials= NA, # computed later
         fixation_cross = fix_cross_value,
-        time_limit = time_limit_value
+        time_limit = time_limit_value, 
+        mean_dataset_rt = NA, # computed later
+        mean_dataset_acc = NA, # computed later
+        github = NA, 
+        dataset_comment = NA, 
+        between = NA, # computed later
+        number_within_conditions = NA # computed later
       )
       
       # if custom fixation point: insert description as fixation_cross
@@ -311,7 +317,13 @@ start_data_level <- function(pub, entry){
           n_trials = NA, # computed later
           neutral_trials= NA, # computed later
           fixation_cross = fix_cross_value,
-          time_limit = time_limit_value
+          time_limit = time_limit_value, 
+          mean_dataset_rt = NA, # computed later
+          mean_dataset_acc = NA, # computed later
+          github = NA, 
+          dataset_comment = NA, 
+          between = NA, # computed later
+          number_within_conditions = NA # computed later
         )
         
         # if custom fixation point: insert description as fixation_cross
