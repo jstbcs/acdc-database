@@ -50,7 +50,7 @@ for(i in 1:nrow(study_df)){ # within each study
   for(k in 1:study_df$n_data[i]){ # loop over each dataset
     # CREATE DATA LIST
     pub[[i+1]][[k+2]] <- list()
-    names(pub[[i+1]])[k+2] <-paste("data", k, sep = "")
+    names(pub[[i+1]])[k+2] <- paste("data", k, sep = "")
     
     # assign respective raw data as observation_table and add condition column
     df <- eval(parse(text = dataset_df$`dataset in R`[k + data_added]))
@@ -68,7 +68,9 @@ for(i in 1:nrow(study_df)){ # within each study
       mean_dataset_rt = NA, 
       mean_dataset_acc = NA, 
       github = dataset_df$github[k + data_added], 
-      dataset_comment = NA
+      dataset_comment = NA, 
+      between = NA, 
+      number_within_conditions = NA # add later
     )
     
     # add within_table
@@ -139,6 +141,9 @@ for(within in 2:14){
   pub[[2]][[3]]$within_table[within, ] <- c(within_df$within_id[within], 
                                             within_df$within_desciption[within])
 }
+
+pub[[2]][[3]][[2]]$number_within_conditions <- length(unique(pub[[2]][[3]][[1]]$within))
+
 
 # save list object -------------------------------------------------------------
 saveRDS(pub, file="./Create_db/add_data/tang_list.RData")

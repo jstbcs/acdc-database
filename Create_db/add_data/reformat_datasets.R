@@ -78,7 +78,11 @@ dataset4 <- left_join(dataset4, trialnumber, by = c("id", "sub", "ageGroup", "bl
          accuracy = ifelse(acc < 97, acc, NA),     # 97 and 99 in raw data are excluded trials
          between = ageGroup,        
          within = NA) %>%
-  select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt) 
+  select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt) %>%
+  group_split(between) 
+dataset4a <- dataset4[[1]] # age group 1 only
+dataset4b <- dataset4[[2]] # age group 3 only 
+
 
 # Dataset 5 (Rey-Mermet et al.); colStroop
 dataset5 <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/mermet_2018_should/colStroop.dat.txt", sep = " ") %>% mutate(id = row_number())
@@ -92,7 +96,10 @@ dataset5 <- left_join(dataset5, trialnumber, by = c("id", "sub", "ageGroup", "bl
          accuracy = ifelse(acc < 97, acc, NA),
          between = ageGroup,
          within = NA) %>%
-  select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
+  select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt) %>%
+  group_split(between) 
+dataset5a <- dataset5[[1]] # age group 1 only
+dataset5b <- dataset5[[2]] # age group 3 only 
 
 
 # Dataset 6 (Hedge et al.); Stroop task study 1
@@ -197,7 +204,11 @@ dataset11 <- left_join(dataset11, trialnumber, by = c("id", "sub", "ageGroup", "
          accuracy = acc,
          between = ageGroup,   
          within = NA) %>%
-  select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt) 
+  select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)  %>%
+  select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt) %>%
+  group_split(between) 
+dataset11a <- dataset11[[1]] # age group 1 only
+dataset11b <- dataset11[[2]] # age group 3 only 
 
 # Dataset 12 (Rey-Mermet et al.); letter flanker task
 dataset12 <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/mermet_2018_should/letFlanker.dat.txt", sep = " ") %>% mutate(id = row_number())
@@ -211,7 +222,11 @@ dataset12 <- left_join(dataset12, trialnumber, by = c("id", "sub", "ageGroup", "
          accuracy = acc,
          between = ageGroup,   
          within = NA) %>%
-  select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)  
+  select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)  %>%
+  select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt) %>%
+  group_split(between) 
+dataset12a <- dataset12[[1]] # age group 1 only
+dataset12b <- dataset12[[2]] # age group 3 only 
 
 
 # Dataset 13 (Hedge et al.); flanker of study 1
@@ -489,7 +504,7 @@ dataset45 <- dataset45 %>%
     congruency = as.factor(congruency),
     accuracy = err,
     between = NA,
-    within = NA, # code match/ mismatch of target & distractor (i.e., identical)?
+    within = NA, 
     rt = latency / 1000
   ) %>%
   group_by(subject, block) %>% # change trial number to include warm-ups

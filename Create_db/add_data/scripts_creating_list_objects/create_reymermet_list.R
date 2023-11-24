@@ -17,7 +17,7 @@ publication_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "publicat
                                                    "publication_code")) 
 study_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "study_table", range = "A4:D4",
                                col_names = c("study", "n_groups",	"n_tasks", "comment"))
-study_df$n_data <- 4 # encode number of data sets per study (by hand)
+study_df$n_data <- 8 # encode number of data sets per study (by hand)
 group_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "group_table", range = "A4:G5",
                                col_names = c("study_in_publication", "study_description",
                                              "between_id",	"mean_age",	"percentage_female",
@@ -25,21 +25,37 @@ group_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "group_table", 
 task_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "task", range = "A6:D9", 
                               col_names = c("study_within_pub",	"Dataset", "task",
                                             "task_description"))
+task2df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "task", range = "A40:D43", 
+                              col_names = c("study_within_pub",	"Dataset", "task",
+                                            "task_description"))
+task_df <- rbind(task_df, task2df)
 dataset_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "dataset_overview_table", range = "A6:K9",
                                  col_names = c("study_within_publication", "data",	
                                                "data_excl", "n_participants",
                                                "n_blocks", "n_trials", "neutral_trials",
                                                "fixaction_cross",	"time_limit",
                                                "github",	"dataset in R"))
+dataset2_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "dataset_overview_table", range = "A62:K65",
+                                 col_names = c("study_within_publication", "data",	
+                                               "data_excl", "n_participants",
+                                               "n_blocks", "n_trials", "neutral_trials",
+                                               "fixaction_cross",	"time_limit",
+                                               "github",	"dataset in R"))
+dataset_df <- rbind(dataset_df, dataset2_df)
 within_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "within_table", range = "A6:D9",
                                 col_names = c("study_within_publication",	"data set",
                                               "within_id",	"within_desciption"))
+within2_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "within_table", range = "A83:D86",
+                                col_names = c("study_within_publication",	"data set",
+                                              "within_id",	"within_desciption"))
+within_df <- rbind(within_df, within2_df)
 condition_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "condition_descriptives", range = "A6:F9",
                                    col_names = c("study_in_publication",
                                                  "dataset & condition",	"percentage_congr",
                                                  "percentage_neutral",	"mean_obs_pp",	"n_obs"))
 
-# NOTE: read in dataset5, dataset4, dataset11, and dataset12 from "reformat_datasets.R"
+# NOTE: read in dataset4a, datset4b, dataset5a, dataset5b, dataset11a, dataset11b,
+# and dataset12a and dataset12b from "Create_db/add_data/reformat_datasets.R"
 
 # create publication and study level -------------------------------------------
 pub <- list_study_level(publication_df, study_df, group_df)
@@ -69,7 +85,9 @@ for(i in 1:nrow(study_df)){ # within each study
       mean_dataset_rt = NA, 
       mean_dataset_acc = NA, 
       github = dataset_df$github[k + data_added], 
-      dataset_comment = NA
+      dataset_comment = paste("Contains data of group", unique(pub[[i+1]][[k+2]]$observation_table[6])),
+      between = unique(pub[[i+1]][[k+2]]$observation_table[6]),
+      number_within_conditions = length(unique(pub[[i+1]][[k+2]]$observation_table[7]))
     )
     
     # add within_table

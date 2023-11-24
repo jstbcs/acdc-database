@@ -72,7 +72,9 @@ for(i in 1:nrow(study_df)){ # within each study
       mean_dataset_rt = NA, 
       mean_dataset_acc = NA, 
       github = dataset_df$github[k + data_added], 
-      dataset_comment = NA
+      dataset_comment = NA, 
+      between = unique(pub[[i+1]][[k+1]]$observation_table[6]),
+      number_within_conditions = NA # code later
     )
     
     # add within_table
@@ -149,6 +151,11 @@ for(dataset in 1:5){ # TODO: change to 1:6 once stroop2 issue sorted out
     pub[[2]][[dataset+2]]$within_table[i, 1] <- within_list[[dataset]]$within_id[i]
     pub[[2]][[dataset+2]]$within_table[i, 2] <- within_list[[dataset]]$within_desciption[i]
   }
+}
+
+# code number_within_conditions in dataset table: 
+for(dataset in 1:5){
+  pub[[2]][[dataset+2]]$dataset_table[1, 13] <- length(unique(pub[[i+1]][[dataset+2]]$observation_table[[7]]))
 }
 
 # save list object -------------------------------------------------------------
