@@ -765,11 +765,37 @@ dataset58 <- dataset58 %>%
          rt = RT) %>%
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
 
-
-
-
-
-
+# Löffler data -----------------
+data_colnames <- c("Subject", "Session","Block", "TrialNum", "TaskDescription", "CongruencyNum",
+                   "Congruency", "Arrow", "ArrowDirection", "Flanker", "FlankerDirection",
+                   "Fix", "ISI", "ITI", # presentation times of the fixation cross, the inter-stimulus-interval, and the inter-trial-intervall
+                   "Accuracy", "RT","Response", "CorrResp")
+data_colclasses <- c("integer", "integer", "integer","integer", "character","integer",
+                     "character", "integer", "character", "integer", "character",
+                     "numeric","numeric","numeric",
+                     "integer", "numeric","character", "character")
+df_full <- read.table("",
+                      col.names = data_colnames,
+                      colClasses = data_colclasses)
+data_files <- list.files(pattern = "exp.txt")
+data_files <- data.frame(data_files,stringsAsFactors = F)
+df_full <- NULL
+i <- 1
+for(i in 1:nrow(data_files)){
+  datafile <- data_files[i,]
+  
+  
+  dat <- read.table(datafile,col.names = data_colnames,
+                    colClasses = data_colclasses)
+  
+  df_full  <- rbind(df_full,dat)
+  rm(dat)
+  i <- i + 1
+}
+#dataset59 <- df_full %>%
+#  mutate(datasetid = 59, 
+#         subject = Subject, 
+#         )
 
 
 
