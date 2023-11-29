@@ -3,7 +3,8 @@
 # 
 library(stringr)
 
-# vector storing criteria to be chosen
+# setting choice option names -------------------------------------------------- 
+# vector storing criteria to be chosen 
 criteria <- c("Task type(s)" = "task_name",
               "Mean reaction time (in seconds)" = "mean_dataset_rt",
               "Mean accuracy" = "mean_dataset_acc",
@@ -30,7 +31,7 @@ publication_codes <- c("pratte_2010_exploring",
                "ebersole_2016_many")
 
 
-# function to choose default value of "value" fields 
+# function to choose default value of "value" fields ---------------------------
 get_default_value <- function(criterion, operator){
   # only execute once operator has been chosen
   if(!is.null(operator)){
@@ -57,6 +58,8 @@ get_default_value <- function(criterion, operator){
   }
 }
 
+# set column names of data frames to be displayed to user -----------------------
+
 # column names for suited_data_df
 colnames_suited <- c("Dataset ID", "Publication Code", "Authors", "Conducted", "Task Type", 
                      "Sample Size", "Blocks per participant", "Trials per block", 
@@ -68,13 +71,13 @@ colnames_descriptives <- c("Dataset ID", "Publication ID", "Study ID", "Conditio
                            "Percentage congruent", "Percentage of neutral trials", "Time limit (in ms)",
                            "Mean reaction time (dataset)", "Mean accuracy (dataset)", "Within manipulation", "Between manipulation")
 
-# function for server: merge existing lists 
+# function for server: merge existing lists  ------------------------------------
 merge_lists <- function(x, y) {
   c(x, y)
 }
 
 
-# function to get overview_df or descriptive_df based on chosen arguments
+# function to get overview_df or descriptive_df based on chosen arguments ---------
 get_filtered_df <- function(argument_list, conn, type=c("overview", "descriptives", "detailed")){
   if(length(argument_list[[1]]) > 0){ # once first argument has been chosen
     # update arguments 
@@ -114,7 +117,16 @@ get_filtered_df <- function(argument_list, conn, type=c("overview", "descriptive
   return(df)
 }
 
-# function to create R code based on chosen arguments ----------
+# for data_id_for_plot choice: only show IDs of datasets that fit criteria -------
+filtered_dataset_ids <- function(suited_overview_df){
+  # input is reactive dataframe of suited datasets
+  ids <- unique(suited_overview_df$dataset_id)
+  
+  return(ids)
+}
+
+
+# function to create R code based on chosen arguments ----------------------------
 get_R_code <- function(argument_list){
   # R code for setup---------
   Rcode <- "if (!require('acdcquery')) install.packages('acdcquery') \nif (!require('dplyr')) install.packages('dplyr') \nlibrary(dpylr) \nlibrary(acdcquery)\n \n# create connection to SQL data base \nconn <- connect_to_db('acdc.db')\n"
@@ -178,7 +190,7 @@ get_R_code <- function(argument_list){
 }
 
 
-# merge tables to get list of all publications, studies, and datasets
+# merge tables to get list of all publications, studies, and datasets ---------------
 get_overview_df <- function(conn){
   pub <- dbReadTable(conn, "publication_table")
   stud <- dbReadTable(conn, "study_table")
@@ -199,4 +211,25 @@ get_overview_df <- function(conn){
 }
   
 
+# download data  ------------
+download_data <- function(ids, conn){
+  arguments <- list() %>% 
+    add_argument(
+      conn,
+      "dataset_id",
+      "greater",
+      0
+    )
+ 
+  query_results <- query_db(conn,
+                     arguments,
+                     target_vars = 'default',
+                     target_table = 'observation_table',
+                     argument_relation = 'and')
+  
+  filtered_results <- query_results %>%
+    filter(dataset_id %in% ids)
+  
+  return(filtered_results)
+}
 

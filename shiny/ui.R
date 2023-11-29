@@ -116,9 +116,9 @@ ui <- fluidPage(
                ),
       
       # TAB 2
-      tabPanel("Filter data",
-               h3("Filter data across all datasets")
-      ), 
+      #tabPanel("Filter data",
+      #         h3("Filter data across all datasets")
+      #), 
       
       # TAB 3
       #tabPanel("Dataset list",
@@ -142,20 +142,26 @@ ui <- fluidPage(
       
       # TAB 2
       tabPanel("Descriptives",
-              DTOutput("descriptives"),
-              plotOutput("histogram")),
+              DTOutput("descriptives")#,
+              #plotOutput("histogram")
+              ),
       
       # TAB 3
-      tabPanel("Detailed info on dataset",
-               selectInput(inputId = "dataset_id_choice",
-                           label = "Choose dataset ID:",
-                           choices = c(" ", 1:40),  # TODO: replace 
-                           selected = " ")#,
-               #numericInput(
-               #  inputId = "chosen_dataset",
-               #  label = "Choose Dataset ID",
-               #  value = 1),
-               #plotOutput("rt_dist")
+      tabPanel("Descriptive plots",
+               plotOutput("histogram"), 
+               
+               # let user choose dataset_id for rt plot
+               selectInput("choose_dataset_id", "Choose Dataset ID for rt plot",
+                           choices = NULL),
+               
+               #selectInput(inputId = "dataset_id_choice",
+               #            label = "Choose dataset ID:",
+               #            choices = c(" ", 1:40),  # TODO: replace 
+               #            selected = " "),
+               
+               plotOutput("rt_dist")
+               
+
                ),
       
       # TAB 4

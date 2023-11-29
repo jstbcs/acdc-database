@@ -10,6 +10,7 @@ library(dplyr)
 library(DBI)
 library(RSQLite)
 library(acdcquery)
+library(htmltools)
 source("./shiny/helper_file_shiny.R")
 source("./shiny/ui.R")
 
@@ -287,27 +288,69 @@ server <- function(input, output, session){
                                     'percentage congruent, mean reaction time and mean accuracy are calculated across all participants and conditions within this task.'),
                                   rownames= FALSE)
   
+  #output_descriptives <- renderDT({
+  #  # Adding a dummy column for checkboxes
+  #  data <- descriptives_df()
+  #  data$Select <- '' # Add an empty column for checkboxes
+  #  
+  #  datatable(data, escape = FALSE, selection = 'none', 
+  #            options = list(
+  #              columnDefs = list(
+  #                list(targets = ncol(data), defaultContent = '<input type="checkbox" class="datatable-checkbox">', orderable = FALSE)
+  #              ),
+  #              preDrawCallback = JS('function() { 
+  #                $("#descriptives input.datatable-checkbox").off("click.dtCheckbox"); 
+  #              }'),
+  #              drawCallback = JS('function(settings) { 
+  #                $("#descriptives input.datatable-checkbox").on("click.dtCheckbox", function() {
+  #                  var $checkboxes = $("#descriptives input.datatable-checkbox");
+  #                  $checkboxes.not(this).prop("checked", false);
+  #                });
+  #              }')
+  #            ),
+  #            rownames= FALSE, caption = tags$caption(
+  #              style = 'caption-side: bottom; text-align: center;',
+  #              em('Note:'), 'percentage congruent, mean reaction time and mean accuracy are calculated across all participants and conditions within this task.'
+  #            )
+  #  )
+  #})
+  
+  # print histogram of filtered datasets 
+  #output$histogram <- renderPlot({
+  #  req(descriptives_df())
+  #  plot_dataset_histograms(descriptives_df())
+  #})
+  
+  
+  # TAB 3 
+  # get reactive list with detailed information about dfs 
+  detailed_info <- reactive({
+    get_filtered_df(rv$argument_list, conn, type = "detailed")
+  })
+  
   # print histogram of filtered datasets 
   output$histogram <- renderPlot({
     req(descriptives_df())
     plot_dataset_histograms(descriptives_df())
   })
   
-  
-  # TAB 3 
-  # TODO: Integrate?
-  # get reactive list with detailed information about dfs 
-  detailed_info<- reactive({
-    get_filtered_df(rv$argument_list, conn, type = "detailed")
+  #  for choice of datasetID for rt plot: only show IDs that match criteria
+  observe({
+    # Assuming the dataset IDs are in a column named 'id'
+    dataset_ids <- suited_overview_df()[['Dataset ID']]
+    
+    # Update the selectInput choices
+    updateSelectInput(session, "choose_dataset_id", choices = dataset_ids)
   })
+  
   # plot detailed information about datasets 
-  #output$rt_dist <- renderPlot({
-  #  req(dataset_id_choice)
-  #  plot_trial_rtdist(detailed_info(), dataset_id_choice, 2)
-  #})
+  output$rt_dist <- renderPlot({
+    req(input$choose_dataset_id)
+    plot_trial_rtdist(detailed_info(), input$choose_dataset_id, 2)
+  })
   
   
-  # print R Code to access data ----
+  # print R Code to access data 
   R_code <- reactive({
     req(length(rv$argument_list[[1]]) > 0)
     cat(get_R_code(argument_list = rv$argument_list), sep=" ") # use cat for line breaks
@@ -317,13 +360,21 @@ server <- function(input, output, session){
     R_code()
   })
   
-  # logic behind download button
+  
+  # logic behind download button 
+  # get filtered data for download
+  data_for_download <- reactive({
+    #download_data(rv$argument_list, conn)
+    download_data(suited_overview_df()[['Dataset ID']], conn)
+  })
+  
   output$downloadData <- downloadHandler(
        filename = function() {
-         paste('inhibition_task_data-', Sys.Date(), '.csv', sep='')
+         paste('attentional_control_task_data-', Sys.Date(), '.csv', sep='')
        },
        content = function(con) {
-         write.csv(suited_df, filename) #TODO: decide which data users can download exactly & make reactive 
+         # Use 'con' as the file connection to write the CSV
+         write.csv(data_for_download(), con, row.names = FALSE)
        }
      )
   
