@@ -765,7 +765,9 @@ dataset58 <- dataset58 %>%
          rt = RT) %>%
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
 
-# Löffler data -----------------
+# Löffler data ----------------- 
+#TODO: github link
+# flanker task 
 data_colnames <- c("Subject", "Session","Block", "TrialNum", "TaskDescription", "CongruencyNum",
                    "Congruency", "Arrow", "ArrowDirection", "Flanker", "FlankerDirection",
                    "Fix", "ISI", "ITI", # presentation times of the fixation cross, the inter-stimulus-interval, and the inter-trial-intervall
@@ -792,11 +794,30 @@ for(i in 1:nrow(data_files)){
   rm(dat)
   i <- i + 1
 }
-#dataset59 <- df_full %>%
-#  mutate(datasetid = 59, 
-#         subject = Subject, 
-#         )
+dataset59 <- df_full %>%
+  mutate(datasetid = 59, 
+         subject = Subject, 
+         block = Block, 
+         trial = TrialNum,
+         congruency = Congruency,
+         between = NA, 
+         within = NA, 
+         accuracy = Accuracy, 
+         rt = RT) %>%
+  select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
 
+# Löffler stroop 
+dataset60 <- read.table("Inhibition - Stroop TaskStroop_Task_S100_Ses1exp.txt") %>% # TODO replace by gthub link
+  mutate(datasetid = 60#, 
+         #subject = 
+         # V14 accuracy 
+         # V10 & V9 congruency 
+         
+         
+         )
+         
+
+# Löffler negative priming?
 
 
 
