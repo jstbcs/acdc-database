@@ -310,7 +310,7 @@ server <- function(input, output, session){
   # print R Code to access data ----
   R_code <- reactive({
     req(length(rv$argument_list[[1]]) > 0)
-    get_R_code(argument_list = rv$argument_list)  
+    cat(get_R_code(argument_list = rv$argument_list), sep=" ") # use cat for line breaks
     })
   
   output$Rcode <- renderPrint({

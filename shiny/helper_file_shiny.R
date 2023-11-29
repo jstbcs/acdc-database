@@ -35,7 +35,7 @@ get_default_value <- function(criterion, operator){
   # only execute once operator has been chosen
   if(!is.null(operator)){
     default_value <- switch(criterion,
-                            "mean_dataset_rt" = 0.7, 
+                            "mean_dataset_rt" = 0.55, 
                             "mean_dataset_acc" = 0.8, 
                             "n_participants" = 100, 
                             "n_blocks" = 5, 
@@ -114,49 +114,63 @@ get_filtered_df <- function(argument_list, conn, type=c("overview", "descriptive
   return(df)
 }
 
-
-# TODO: pipe same line as code (loop); indentions; seperate ";", make variables characters, 
-# function to create R code based on chosen arguments
+# function to create R code based on chosen arguments ----------
 get_R_code <- function(argument_list){
-  Rcode <- "if (!require('acdcquery')) install.packages('acdcquery') \nlibrary(acdcquery) \n \n # create connection to SQL data base \nconn <- connect_to_db('acdc.db')\n"
+  # R code for setup---------
+  Rcode <- "if (!require('acdcquery')) install.packages('acdcquery') \nlibrary(acdcquery) \n \n# create connection to SQL data base \nconn <- connect_to_db('acdc.db')\n"
   
-  
-  if(length(argument_list[[1]]) > 0){ # once first argument has been chosen
-    
-  # install, load, connect to db -------
-  set_up <- "\n \n # specify filter arguments\n arguments <- list() \n"
-  
-  # modify arguments based on user input ----
-  arguments <- c()
-  for(i in 1:length(argument_list[[1]])){
-    # turn non-numeric elements into characters
-    if(!is.numeric(argument_list[[1]][i])) arg1=paste0("'",argument_list[[1]][i],"'") else arg1=argument_list[[1]][i]
-    if(!is.numeric(argument_list[[2]][i])) arg2=paste0("'",argument_list[[2]][i],"'") else arg2=argument_list[[2]][i]
-    if(!is.numeric(argument_list[[3]][i])) arg3=paste0("'",argument_list[[3]][i],"'") else arg3=argument_list[[3]][i]
-    
-    # if between operator: print values as
-    if(arg2 == "'between'") arg3=paste0("c(", str_split(arg3, "; ")[[1]][1], ",", str_split(arg3, "; ")[[1]][2], ")") else arg3=arg3
-    # elements to be separated by comma
-    comma_separated <- paste("    conn",
-                             arg1, 
-                             arg2, 
-                             arg3,
-                             sep =", \n")
-    new_argument <- paste("%>%",
-                          "add_argument(",
-                          comma_separated,
-                          ")", sep = "\n ")
-       arguments <- paste(arguments, new_argument, collapse = "")
-  }
-  
-  query <- paste("\n \n query_db(conn,\n", "         arguments,\n", 
-                 "         target_vars = `default`,\n", 
+  # query to get data at end of code ---
+  query <- paste("\n \nquery_db(conn,\n", "         arguments,\n", 
+                 "         target_vars = 'default',\n", 
                  "         target_table = 'observation_table',\n",
                  "         argument_relation = 'and')")
   
-  # TODO: which code shall we provide?  
-  Rcode <- cat(Rcode, set_up, arguments, query, sep=" ")
+  # once first argument has been chosen
+  if(length(argument_list[[1]]) > 0){ 
+    
+  # install, load, connect to db -------
+  set_up <- "\n# specify filter arguments\narguments <- list() %>%\n"
   
+  # add first arguments without starting with "%>%" ------
+  # convert value to character if necessary
+  if(grepl("\\d", argument_list[[3]][1])) first_value=argument_list[[3]][1] else first_value=paste0("'",argument_list[[3]][1],"'")
+  first_arguments <- paste0("   conn", ", \n", 
+                           "    '", argument_list[[1]][1], "', \n",
+                           "    '", argument_list[[2]][1], "', \n",
+                           "    ", first_value)
+  first_arg <- paste("add_argument(",
+                     first_arguments, 
+                     ")", sep = "\n ")
+  
+  # if more than 1 argument, add others ------
+  if(length(argument_list[[1]]) > 1){
+    arguments <- c()
+    for(i in 2:length(argument_list[[1]])){
+      # turn non-numeric elements into characters
+      #arg1=paste0("'",argument_list[[1]][i],"'") 
+      #arg2=paste0("'",argument_list[[2]][i],"'")
+      if(grepl("\\d", argument_list[[3]][i])) arg3=argument_list[[3]][i] else arg3=paste0("'",argument_list[[3]][i],"'")
+      
+      # if between operator: print values as vector 
+      if(argument_list[[2]][i] == "'between'") arg3=paste0("c(", str_split(arg3, "; ")[[1]][1], ",", str_split(arg3, "; ")[[1]][2], ")") else arg3=arg3
+      # elements to be separated by comma
+      comma_separated <- paste0("   conn", ", \n", 
+                               "    '", argument_list[[1]][i], "', \n",
+                               "    '", argument_list[[2]][i], "', \n",
+                               "    ", arg3)
+      new_argument <- paste("%>%",
+                            "add_argument(",
+                            comma_separated,
+                            ")", sep = "\n ")
+      arguments <- paste(arguments, new_argument, collapse = "")
+    }
+    
+    # merge all 
+    Rcode <- paste0(Rcode, set_up, first_arg, arguments, query)
+  
+  } else{ # if just 1 argument
+    Rcode <- paste0(Rcode, set_up, first_arg, query)
+    }
   } 
   
   return(Rcode)
