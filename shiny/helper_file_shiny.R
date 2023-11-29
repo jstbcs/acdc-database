@@ -117,13 +117,14 @@ get_filtered_df <- function(argument_list, conn, type=c("overview", "descriptive
 # function to create R code based on chosen arguments ----------
 get_R_code <- function(argument_list){
   # R code for setup---------
-  Rcode <- "if (!require('acdcquery')) install.packages('acdcquery') \nlibrary(acdcquery) \n \n# create connection to SQL data base \nconn <- connect_to_db('acdc.db')\n"
-  
+  Rcode <- "if (!require('acdcquery')) install.packages('acdcquery') \nif (!require('dplyr')) install.packages('dplyr') \nlibrary(dpylr) \nlibrary(acdcquery)\n \n# create connection to SQL data base \nconn <- connect_to_db('acdc.db')\n"
+
   # query to get data at end of code ---
-  query <- paste("\n \nquery_db(conn,\n", "         arguments,\n", 
-                 "         target_vars = 'default',\n", 
-                 "         target_table = 'observation_table',\n",
-                 "         argument_relation = 'and')")
+  query <- paste("\n \nquery_result <- query_db(conn,\n", 
+                 "                        arguments,\n", 
+                 "                        target_vars = 'default',\n", 
+                 "                        target_table = 'observation_table',\n",
+                 "                        argument_relation = 'and')")
   
   # once first argument has been chosen
   if(length(argument_list[[1]]) > 0){ 
