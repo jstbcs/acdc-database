@@ -51,7 +51,6 @@ get_overview_information <- function(conn, arguments, argument_relation){
   
   if(nrow(query_results) == 0) stop("There are no datasets that match your criteria.")
 
-  query_results = dplyr::distinct(query_results, dataset_id, .keep_all = TRUE)
   # Create vector indicating presence or absence of manipulation
   dataset_ids = unique(query_results$dataset_id)
   query_results$has_within_manipulation = NA
@@ -73,7 +72,8 @@ get_overview_information <- function(conn, arguments, argument_relation){
       query_results[which(query_results$dataset_id == id), "has_within_manipulation"] = 0
     }
   }
-
+  query_results = dplyr::distinct(query_results, dataset_id, .keep_all = TRUE)
+  
   query_results$within_id = c()
   query_results$between_id = c()
 
