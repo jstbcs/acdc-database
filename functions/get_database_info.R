@@ -46,34 +46,35 @@ get_database_info <- function(){
     "time_limit",
     "github",
     "mean_dataset_rt",
-    "mean_dataset_acc"
-    
+    "mean_dataset_acc",
+    "number_within_conditions",
+    "group_description",
+    "mean_age",
+    "percentage_female",
+    "n_members"
   )
   
   dataset_table_mandatory <- c(0, 0, 0, 0,
                                0, 0, 0, 0,
                                0, 0, 0, 0,
-                               0, 0)
+                               0, 0, 0, 0,
+                               0, 0, 0)
   
   within_table_columns <- c(
     "within_id",
     "dataset_id",
-    "within_description"
+    "within_description",
+    "percentage_congruent",
+    "percentage_neutral",
+    "n_obs",
+    "mean_obs_per_participant",
+    "mean_condition_rt", 
+    "mean_condition_acc"
   )
   
-  within_table_mandatory <- c(0, 0, 1)
-  
-  between_table_columns <- c(
-    "between_id",
-    "study_id",
-    "mean_age",
-    "percentage_female",
-    "n_members",
-    "group_description"
-  )
-  
-  between_table_mandatory <- c(0, 0, 0, 0, 1, 1)
-  
+  within_table_mandatory <- c(0, 0, 1, 0,
+                              0, 0, 0, 0, 
+                              0)
   task_table_columns <- c(
     "task_id",
     "task_name",
@@ -82,30 +83,13 @@ get_database_info <- function(){
   
   task_table_mandatory <- c(0, 1, 0)
   
-  condition_table_columns <- c(
-    "condition_id",
-    "dataset_id",
-    "between_id",
-    "within_id",
-    "percentage_congruent",
-    "percentage_neutral",
-    "n_obs",
-    "mean_obs_per_participant",
-    "mean_condition_rt",
-    "mean_condition_acc"
-  )
-  
-  condition_table_mandatory <- c(0, 0, 0, 0, 
-                                 1, 1, 1, 1,
-                                 0, 0)
-  
   observation_table_columns <- c(
     "observation_id",
     "dataset_id",
     "subject",
     "block", 
     "trial",
-    "condition_id",
+    "within_id",
     "congruency",
     "accuracy",
     "rt"
@@ -124,10 +108,6 @@ get_database_info <- function(){
                                mandatory = dataset_table_mandatory),
     within_table = data.frame(column = within_table_columns,
                               mandatory = within_table_mandatory),
-    between_table = data.frame(column = between_table_columns,
-                               mandatory = between_table_mandatory),
-    condition_table = data.frame(column = condition_table_columns,
-                                 mandatory = condition_table_mandatory),
     observation_table = data.frame(column = observation_table_columns,
                                    mandatory = observation_table_mandatory),
     task_table = data.frame(column = task_table_columns,
