@@ -27,8 +27,6 @@ get_descriptive_information <- function(conn, arguments, argument_relation){
       "publication_id",
       "study_id",
       "within_id",
-      "between_id",
-      "condition_id",
       "within_description",
       "group_description",
       "task_name",
@@ -39,7 +37,8 @@ get_descriptive_information <- function(conn, arguments, argument_relation){
       "percentage_neutral",
       "time_limit",
       "mean_dataset_rt",
-      "mean_dataset_acc"
+      "mean_dataset_acc",
+      "number_within_conditions"
     )
   )
 
@@ -47,7 +46,6 @@ get_descriptive_information <- function(conn, arguments, argument_relation){
   unique_dataset_ids = unique(query_results$dataset_id)
 
   query_results$within_manipulation = NA
-  query_results$between_manipulation = NA
 
   for (id in unique_dataset_ids){
     if (length(unique(query_results$within_id)) > 1){
@@ -59,24 +57,11 @@ get_descriptive_information <- function(conn, arguments, argument_relation){
       within_manipulations = "none"
     }
 
-    if (length(unique(query_results$between_id)) > 1){
-      between_manipulations = paste(
-        unique(query_results[which(query_results$dataset_id == id), "group_description"]),
-        collapse = "; "
-      )
-    } else {
-      between_manipulations = "none"
-    }
-
-
     query_results[which(query_results$dataset_id == id), "within_manipulation"] = within_manipulations
-    query_results[which(query_results$dataset_id == id), "between_manipulation"] = between_manipulations
   }
 
   query_results = dplyr::distinct(query_results, dataset_id, .keep_all = TRUE)
   query_results$within_id = c()
-  query_results$between_id = c()
   query_results$within_description = c()
-  query_results$group_description = c()
   return(query_results)
 }

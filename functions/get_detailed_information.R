@@ -35,9 +35,7 @@ get_detailed_information <- function(conn, arguments, argument_relation){
       "mean_dataset_acc",
       "mean_condition_rt",
       "mean_condition_acc",
-      "within_id",
-      "between_id",
-      "condition_id"
+      "within_id"
     )
   )
 
@@ -49,8 +47,9 @@ get_detailed_information <- function(conn, arguments, argument_relation){
     target_vars = c(
       "rt",
       "accuracy",
+      "study_id",
       "dataset_id",
-      "condition_id",
+      "within_id",
       "subject"
     )
   )
