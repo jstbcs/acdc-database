@@ -766,7 +766,7 @@ dataset58 <- dataset58 %>%
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
 
 # Löffler data ----------------- 
-#TODO: github link
+
 # flanker task 
 data_colnames <- c("Subject", "Session","Block", "TrialNum", "TaskDescription", "CongruencyNum",
                    "Congruency", "Arrow", "ArrowDirection", "Flanker", "FlankerDirection",
@@ -794,6 +794,9 @@ for(i in 1:nrow(data_files)){
   rm(dat)
   i <- i + 1
 }
+
+
+
 dataset59 <- df_full %>%
   mutate(datasetid = 59, 
          subject = Subject, 
