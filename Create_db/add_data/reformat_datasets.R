@@ -768,6 +768,7 @@ dataset58 <- dataset58 %>%
 # Löffler data ----------------- 
 
 # flanker task 
+participants <- seq(1, 151)[-c(4,34,103)]
 data_colnames <- c("Subject", "Session","Block", "TrialNum", "TaskDescription", "CongruencyNum",
                    "Congruency", "Arrow", "ArrowDirection", "Flanker", "FlankerDirection",
                    "Fix", "ISI", "ITI", # presentation times of the fixation cross, the inter-stimulus-interval, and the inter-trial-intervall
@@ -776,33 +777,21 @@ data_colclasses <- c("integer", "integer", "integer","integer", "character","int
                      "character", "integer", "character", "integer", "character",
                      "numeric","numeric","numeric",
                      "integer", "numeric","character", "character")
-df_full <- read.table("",
-                      col.names = data_colnames,
-                      colClasses = data_colclasses)
-data_files <- list.files(pattern = "exp.txt")
-data_files <- data.frame(data_files,stringsAsFactors = F)
-df_full <- NULL
-i <- 1
-for(i in 1:nrow(data_files)){
-  datafile <- data_files[i,]
-  
-  
-  dat <- read.table(datafile,col.names = data_colnames,
+df_flanker <- data.frame()
+for(i in 1:length(participants)){
+  filepath <-  paste0("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/loeffler_2022_common/Flanker_task/Erikson%20Flanker%20TaskFlanker_Task_S",
+                      participants[i], "_Ses1exp.txt")
+  dat <- read.table(filepath, col.names = data_colnames,
                     colClasses = data_colclasses)
-  
-  df_full  <- rbind(df_full,dat)
+  df_flanker  <- rbind(df_flanker,dat)
   rm(dat)
-  i <- i + 1
 }
-
-
-
-dataset59 <- df_full %>%
+dataset59 <- df_flanker %>%
   mutate(datasetid = 59, 
          subject = Subject, 
          block = Block, 
          trial = TrialNum,
-         congruency = Congruency,
+         congruency = CongruencyNum,
          between = NA, 
          within = NA, 
          accuracy = Accuracy, 
@@ -810,18 +799,66 @@ dataset59 <- df_full %>%
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
 
 # Löffler stroop 
-dataset60 <- read.table("Inhibition - Stroop TaskStroop_Task_S100_Ses1exp.txt") %>% # TODO replace by gthub link
-  mutate(datasetid = 60#, 
-         #subject = 
-         # V14 accuracy 
-         # V10 & V9 congruency 
+participants <- seq(1, 151)[-c(4,34,58,103)]
+data_colnames <- c("Subject","Block", "TrialNum", "TaskDescription", 
+                   "WordNum", "Word", "ColorNum", "Color", "CongruencyNum","Congruency",
+                   "Fix", "ISI", "ITI",
+                   "Accuracy", "RT","Response", "CorrResp")
+data_colclasses <- c("integer", "integer", "integer","character","integer",
+                     "character", "integer", "character", "integer", "character",
+                     "numeric","numeric","numeric",
+                     "integer", "numeric","character", "character")
+df_stroop <- data.frame()
+for(i in 1:length(participants)){
+  filepath <-  paste0("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/loeffler_2022_common/Stroop_task/Inhibition%20-%20Stroop%20TaskStroop_Task_S",
+                      participants[i], "_Ses1exp.txt")
+  dat <- read.table(filepath, col.names = data_colnames,
+                    colClasses = data_colclasses)
+  df_stroop  <- rbind(df_stroop, dat)
+  rm(dat)
+}
+dataset60 <- df_stroop %>%
+  mutate(datasetid = 60, 
+         subject = Subject, 
+         block = Block, 
+         trial= TrialNum,  
+         congruency = CongruencyNum,  
+         between = NA, 
+         within = NA,
+         accuracy = Accuracy, 
+         rt = RT) %>% 
+  select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
          
-         
-         )
-         
 
-# Löffler negative priming?
-
-
-
+# Löffler negative priming
+# missing: 4, 27, 34, 79, 90, 103, 142, 143, 
+participants <- seq(1, 150)[-c(4,27,34,79,90,103,142,143)]
+data_colnames <- c("Subject","Session" ,"Block", "TrialNum", "TaskDescription", 
+                   "Condition", "Condition_Descr", "Pos_X", "Pos_O", 
+                   "Fix", "ISI", "ITI",
+                   "Accuracy", "RT","Response", "CorrResp")
+data_colclasses <- c("integer", "integer","integer","integer", "character",
+                     "integer", "character", "integer", "integer",
+                     "numeric","numeric","numeric",
+                     "integer", "numeric","character", "character")
+df_priming <- data.frame()
+for(i in 1:length(participants)){
+  filepath <- paste0("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/loeffler_2022_common/Neg_priming_task/Negative%20Priming%20TaskSternbergTask_",
+                     participants[i], "_Ses1exp.txt")
+  dat <- read.table(filepath, col.names = data_colnames,
+                    colClasses = data_colclasses)
+  df_priming  <- rbind(df_priming, dat)
+  rm(dat)
+}
+dataset61 <- df_priming %>%
+  mutate(datasetid = 61, 
+         subject = Subject, 
+         block = Block, 
+         trial = TrialNum, 
+         congruency = Condition, # no priming = congruent 
+         between = NA, 
+         within = NA, 
+         accuracy = Accuracy, 
+         rt = RT) %>% 
+  select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
 
