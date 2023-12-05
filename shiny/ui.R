@@ -148,16 +148,18 @@ ui <- fluidPage(
       
       # TAB 3
       tabPanel("Descriptive plots",
+               # let user choose order of x axis for histogram
+               selectInput(inputId = "sort_x_axis",
+                           label = "Order by:",
+                           choices = c("Dataset ID", 
+                                       "Mean reaction time (dataset)"),
+                           selected = "Dataset ID"),
+               
                plotOutput("histogram"), 
                
                # let user choose dataset_id for rt plot
                selectInput("choose_dataset_id", "Choose Dataset ID for rt plot",
                            choices = NULL),
-               
-               #selectInput(inputId = "dataset_id_choice",
-               #            label = "Choose dataset ID:",
-               #            choices = c(" ", 1:40),  # TODO: replace 
-               #            selected = " "),
                
                plotOutput("rt_dist")
                
