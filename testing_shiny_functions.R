@@ -13,16 +13,10 @@ conn <- connect_to_db("acdc.db")
 arguments <- list() %>% 
   add_argument(
     conn,
-    "task_name",
+    "publication_code",
     "equal",
-    "stroop"
-  ) %>% 
-  add_argument(
-    conn,
-    "n_participants",
-    "greater",
-    50
-  )
+    "mermet_2018_should"
+  ) 
 
 overview <- get_overview_information(conn, arguments, "and")
 descriptive <- get_descriptive_information(conn, arguments, "and")

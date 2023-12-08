@@ -19,12 +19,16 @@ names(lists) = paste0("publication", seq_along(list_files))
 
 # Need to join the row from between_table to the appropriate datasets "dataset" table 
 # also within each dataset, join the columns from condition_table to the within_table
+
+# What for datasets with less between conditions than datasets
 for (ipub in seq_along(lists)){
   for (istudy in 2:length(lists[[ipub]])){
     between_table = lists[[ipub]][[istudy]]$between_table
+    if (nrow(between_table) == 1) between_table$between_name = 1
+    
     for (idata in 3:length(lists[[ipub]][[istudy]])){
-      data_num = idata - 2
-      between_info = between_table[data_num, -1]
+      between_num = ifelse(is.na(lists[[ipub]][[istudy]][[idata]]$dataset_table$between), 1, lists[[ipub]][[istudy]][[idata]]$dataset_table$between)
+      between_info = between_table[which(between_table$between_name == between_num), -1]
       lists[[ipub]][[istudy]][[idata]]$dataset_table = cbind(lists[[ipub]][[istudy]][[idata]]$dataset_table, between_info)
       
       condition_info = lists[[ipub]][[istudy]][[idata]]$condition_table
