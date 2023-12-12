@@ -3,7 +3,7 @@ plot_dataset_histograms <- function(dataset, order_by = "Dataset ID"){
     dplyr::mutate(dataset_id = factor(`Dataset ID`)) |>
     ggplot2::ggplot(
       mapping = ggplot2::aes(
-        x = forcats::fct_reorder(dataset_id, {{order_by}}, .desc = TRUE),
+        x = forcats::fct_reorder(dataset_id, !!sym(paste(rlang::get_expr(rlang::enquo(order_by)))), .desc = TRUE),
         y = `Mean reaction time (dataset)`
       )
     ) +
