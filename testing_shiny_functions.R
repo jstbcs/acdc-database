@@ -13,9 +13,9 @@ conn <- connect_to_db("acdc.db")
 arguments <- list() %>% 
   add_argument(
     conn,
-    "publication_code",
-    "equal",
-    "mermet_2018_should"
+    "publication_id",
+    "greater",
+    -1
   ) 
 
 overview <- get_overview_information(conn, arguments, "and")
@@ -24,3 +24,5 @@ detailed <- get_detailed_information(conn, arguments, "and")
 
 plot_dataset_histograms(descriptive)
 plot_trial_rtdist(detailed, 4, 2)
+
+detailed %>% plot_trial_rtdist(., 51)
