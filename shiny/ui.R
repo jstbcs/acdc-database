@@ -133,8 +133,7 @@ ui <- fluidPage(
       
       # TAB 2
       tabPanel("Descriptives",
-              DTOutput("descriptives")#,
-              #plotOutput("histogram")
+              DTOutput("descriptives")
               ),
       
       # TAB 3
@@ -146,6 +145,7 @@ ui <- fluidPage(
                                        "Mean reaction time (dataset)",
                                        "Mean accuracy (dataset)"),
                            selected = "Dataset ID"),
+               textOutput("test"),
                
                plotOutput("histogram"), 
                

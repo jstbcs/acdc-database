@@ -301,9 +301,10 @@ server <- function(input, output, session){
   })
   
   # print histogram of filtered datasets 
+  output$test <- renderText(str(input$sort_x_axis))
   output$histogram <- renderPlot({
     req(length(rv$argument_list[[1]]) > 0)
-    plot_dataset_histograms(descriptives_df(), order_by = as.symbol(input$sort_x_axis))
+    plot_dataset_histograms(descriptives_df(), order_by = input$sort_x_axis)
   })
   
   #  for choice of datasetID for rt plot: only show IDs that match criteria
