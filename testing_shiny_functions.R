@@ -24,8 +24,9 @@ descriptive <- get_descriptive_information(conn, arguments, "and")
 detailed <- get_detailed_information(conn, arguments, "and")
 colnames(descriptive) <- colnames_descriptives 
 
+input = "Dataset ID"
 # setting the order_by arguments to column name returns error
-plot_dataset_histograms(descriptive, order_by = "Dataset ID")
+plot_dataset_histograms(descriptive, order_by = {{input}})
 plot_trial_rtdist(detailed, 4, 2)
 
 detailed %>% plot_trial_rtdist(., 51)
