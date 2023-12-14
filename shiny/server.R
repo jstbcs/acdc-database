@@ -26,11 +26,14 @@ server <- function(input, output, session){
   # print short intro text
   output$short_intro <- renderUI({
     HTML("This shiny app provides an overview over datasets in the Attentional Control Data Collection (ACDC) data base . <br> <br>
-         You can filter datasets by criteria such as task type and sample size using the first tab of the sidebar labeled 'filter datasets'. <br>
-         The main panel provides an overview of those datasets fulfilling your filter criteria (tab 1), descriptive attributes of these 
-         datasets (such as mean accuracy and respose time distributions; tab 2), and instructions on how to access these datasets using our
-         R package acdcquery and an option to download trial level data as a csv (tab 3). <br> <br>
-         In the second/third tab of the sidebar you also find an overview over all datasets currently included in ACDC. <br>")
+         You can filter datasets by criteria such as task type and sample size using the sidebar labeled 'filter datasets'. <br>
+         The main panel provides: <ul>
+                     <li>An overview of those datasets fulfilling your filter criteria [TAB 1]</li> 
+                     <li>A table showing descriptive attributes of these datasets (such as mean accuracy, number of trails etc.) [TAB 2]</li> 
+                     <li>A vizualization of accuracy and rt per dataset and rt distributions [TAB 3]</li>
+                     <li>Instructions on how to access these datasets using our  R package acdcquery and an option to download trial level data as a csv [TAB 4]</li>
+                     <li>and an overview of all data sets in ACDC [TAB 5]</li>
+                     <br> ")
   })
   
   # print explanation of project 
@@ -301,10 +304,10 @@ server <- function(input, output, session){
   })
   
   # print histogram of filtered datasets 
-  output$test <- renderText(str(input$sort_x_axis))
+  output$test <- renderText(class(input$sort_x_axis))
   output$histogram <- renderPlot({
     req(length(rv$argument_list[[1]]) > 0)
-    plot_dataset_histograms(descriptives_df(), order_by = input$sort_x_axis)
+    plot_dataset_histograms(descriptives_df(), order_by = {{input$sort_x_axis}})#"Mean reaction time (dataset)")
   })
   
   #  for choice of datasetID for rt plot: only show IDs that match criteria
