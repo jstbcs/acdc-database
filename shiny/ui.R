@@ -115,17 +115,6 @@ ui <- fluidPage(
                
                ),
       
-      # TAB 2
-      #tabPanel("Filter data",
-      #         h3("Filter data across all datasets")
-      #), 
-      
-      # TAB 3
-      #tabPanel("Dataset list",
-      #         h3("List of all publications & datasets in ACDC")
-      #         
-      #), 
-      
     ) # end tabsetpanel 
   
     ), # end sidebar
@@ -138,7 +127,9 @@ ui <- fluidPage(
       
       # TAB 1
       tabPanel("Overview of suited datasets",
-              DTOutput("suited_datasets")),
+               span(textOutput("number_hits"), style="color:darkcyan"),
+               br(),
+               DTOutput("suited_datasets")),
       
       # TAB 2
       tabPanel("Descriptives",
@@ -152,7 +143,8 @@ ui <- fluidPage(
                selectInput(inputId = "sort_x_axis",
                            label = "Order by:",
                            choices = c("Dataset ID", 
-                                       "Mean reaction time (dataset)"),
+                                       "Mean reaction time (dataset)",
+                                       "Mean accuracy (dataset)"),
                            selected = "Dataset ID"),
                
                plotOutput("histogram"), 
@@ -170,7 +162,7 @@ ui <- fluidPage(
       tabPanel("Get the data",
                
                # print R code
-               h2("Use this code to access the data directly in R:"),
+               h2("Use this code to access the data in R:"),
                verbatimTextOutput("Rcode"),
                
                # option to download data as csv file

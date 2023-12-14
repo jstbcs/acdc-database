@@ -66,10 +66,11 @@ colnames_suited <- c("Dataset ID", "Publication Code", "Authors", "Conducted", "
                      "Existence of neutral trials", "Within manipulation?", "Between manipulation?")
 
 # column names for descriptives_df 
-colnames_descriptives <- c("Dataset ID", "Publication ID", "Study ID", "Condition ID", "Task Type", 
+colnames_descriptives <- c("Dataset ID", "Publication ID", "Study ID", "Sample", "Task Type", 
                            "Sample Size", "Tials per block", "Mean number of trials per participant", 
                            "Percentage congruent", "Percentage of neutral trials", "Time limit (in ms)",
-                           "Mean reaction time (dataset)", "Mean accuracy (dataset)", "Within manipulation", "Between manipulation")
+                           "Mean reaction time (dataset)", "Mean accuracy (dataset)", 
+                           "Number of within conditions", "Within manipulation")
 
 # function for server: merge existing lists  ------------------------------------
 merge_lists <- function(x, y) {

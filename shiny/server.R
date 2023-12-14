@@ -260,9 +260,7 @@ server <- function(input, output, session){
   
   # MAIN PANEL ---------------------------------------
   
-  # TAB 1
-  # print data frame of suited data sets ----
-  
+  # TAB 1 ---------#
   # connect to data base
   conn <- DBI::dbConnect(RSQLite::SQLite(), "acdc.db")
   
@@ -270,11 +268,19 @@ server <- function(input, output, session){
     get_filtered_df(rv$argument_list, conn, type = "overview")
   })
   
+  # return number of hits 
+  n_hits <- reactive({
+    req(length(rv$argument_list[[1]]) > 0)
+    paste(nrow(suited_overview_df()),
+          "datasets in ACDC match your filter criteria")
+    })
+  output$number_hits <- renderText(n_hits())
+  
   # print table
   output$suited_datasets <- renderDT(suited_overview_df(),
                                      rownames= FALSE)
   
-  # TAB 2 
+  # TAB 2 --------#
   # print dataframe of descriptives ----
   descriptives_df <- reactive({
     get_filtered_df(rv$argument_list, conn, type = "descriptives")
@@ -287,42 +293,8 @@ server <- function(input, output, session){
                                     htmltools::em('Note:'), 
                                     'percentage congruent, mean reaction time and mean accuracy are calculated across all participants and conditions within this task.'),
                                   rownames= FALSE)
-  
-  #output_descriptives <- renderDT({
-  #  # Adding a dummy column for checkboxes
-  #  data <- descriptives_df()
-  #  data$Select <- '' # Add an empty column for checkboxes
-  #  
-  #  datatable(data, escape = FALSE, selection = 'none', 
-  #            options = list(
-  #              columnDefs = list(
-  #                list(targets = ncol(data), defaultContent = '<input type="checkbox" class="datatable-checkbox">', orderable = FALSE)
-  #              ),
-  #              preDrawCallback = JS('function() { 
-  #                $("#descriptives input.datatable-checkbox").off("click.dtCheckbox"); 
-  #              }'),
-  #              drawCallback = JS('function(settings) { 
-  #                $("#descriptives input.datatable-checkbox").on("click.dtCheckbox", function() {
-  #                  var $checkboxes = $("#descriptives input.datatable-checkbox");
-  #                  $checkboxes.not(this).prop("checked", false);
-  #                });
-  #              }')
-  #            ),
-  #            rownames= FALSE, caption = tags$caption(
-  #              style = 'caption-side: bottom; text-align: center;',
-  #              em('Note:'), 'percentage congruent, mean reaction time and mean accuracy are calculated across all participants and conditions within this task.'
-  #            )
-  #  )
-  #})
-  
-  # print histogram of filtered datasets 
-  #output$histogram <- renderPlot({
-  #  req(descriptives_df())
-  #  plot_dataset_histograms(descriptives_df())
-  #})
-  
-  
-  # TAB 3 
+ 
+  # TAB 3  --------#
   # get reactive list with detailed information about dfs 
   detailed_info <- reactive({
     get_filtered_df(rv$argument_list, conn, type = "detailed")
@@ -330,8 +302,8 @@ server <- function(input, output, session){
   
   # print histogram of filtered datasets 
   output$histogram <- renderPlot({
-    req(descriptives_df())
-    plot_dataset_histograms(descriptives_df(), order_by = input$sort_x_axis)
+    req(length(rv$argument_list[[1]]) > 0)
+    plot_dataset_histograms(descriptives_df(), order_by = as.symbol(input$sort_x_axis))
   })
   
   #  for choice of datasetID for rt plot: only show IDs that match criteria
@@ -349,7 +321,7 @@ server <- function(input, output, session){
     plot_trial_rtdist(detailed_info(), input$choose_dataset_id, 2)
   })
   
-  
+  # TAB 4 -------------#
   # print R Code to access data 
   R_code <- reactive({
     req(length(rv$argument_list[[1]]) > 0)
@@ -378,7 +350,7 @@ server <- function(input, output, session){
        }
      )
   
-  # TAB 5 
+  # TAB 5 ------#
   overview_df <- get_overview_df(conn)
   output$overview_datasets <- renderTable(overview_df,
                                        rownames= FALSE)
