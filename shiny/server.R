@@ -44,7 +44,7 @@ server <- function(input, output, session){
       renderUI({HTML("The ACDC data base contains attentional control task data (i.e., Stroop, flanker or Simon task) from over 40 datasets as well as information about the respective studies and publications. <br>
                      It is meant to enhance access to open attentional control task data. <br>
                      Data can be accessed either via SQL or our C-RAN R package ACDC query (<a href=http://github.com/SLesche/acdc-query target='_blank' rel='noopener noreferrer'>Github</a>). <br> <br>
-                     <img src='/shiny/www/db_structure.png' alt='Structure of inhibition task db' width='400' height='400'>"
+                     <img src='https://raw.githubusercontent.com/jstbcs/acdc-database/7adc1609a7743803a4d760ef5cd11ff426db2794/shiny/www/db_structure.png' alt='Structure of inhibition task db' width='908' height='630'>"
                      )
         })
     } else {
@@ -392,6 +392,6 @@ server <- function(input, output, session){
 
 
 
-#
+
 shinyApp(ui = ui, server = server)
 
