@@ -26,8 +26,8 @@ ui <- fluidPage(
   fluidRow(
     column(12, 
            actionButton("action_explain_db", "What is the ACDC data base?")),
-           htmlOutput("explanation_db")
-          # imageOutput("img_structure_db")
+           htmlOutput("explanation_db"),
+           imageOutput("img_structure_db")
   ), 
   
   br(),
