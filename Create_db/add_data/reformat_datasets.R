@@ -264,6 +264,7 @@ dataset35 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-da
     congruency = ifelse(Congruency == 0, 2, Congruency),
     congruency = as.factor(congruency),
     subject = as.factor(Subject - 100),
+    trial = NA, 
     block = BlockNum,
     between = NA,
     within = NA,
