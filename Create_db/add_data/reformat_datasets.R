@@ -862,3 +862,18 @@ dataset61 <- df_priming %>%
          rt = RT) %>% 
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
 
+# Robinson flanker
+
+
+# Enkavi 
+dataset62 <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/enkavi_2019_large/shape_matching.csv") %>%
+  mutate(datasetid = 62,
+         subject = rep(seq_along(rle(worker_id)$lengths), times = rle(worker_id)$lengths),
+         block = ifelse(exp_stage == "practice", -999, 1),
+         trial = trial_num + 1,
+         congruency = NA, # TODO
+         between = NA, 
+         within = NA, 
+         accuracy = correct, 
+         rt = ifelse(rt == -1, NA, 1))  %>% 
+  select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
