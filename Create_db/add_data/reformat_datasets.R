@@ -262,9 +262,7 @@ dataset35 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-da
   mutate(
     datasetid = 35,
     congruency = ifelse(Congruency == 0, 2, Congruency),
-    congruency = as.factor(congruency),
     subject = as.factor(Subject - 100),
-    trial = NA, 
     block = BlockNum,
     between = NA,
     within = NA,
@@ -286,10 +284,11 @@ dataset36 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-da
     between = NA,
     within = NA,
     block = ifelse(PracExp == "Exp", 1, -999), 
+    trial = NA, 
     rt = StimSlideFlanker.RT / 1000,
     accuracy = StimSlideFlanker.ACC
   ) %>% 
-  group_by(subject) %>% 
+  group_by(subject, block) %>% 
   mutate(trial = row_number()) %>% 
   ungroup() %>% 
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt) 
@@ -327,7 +326,7 @@ dataset38 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-da
     rt = StimSlideSimon.RT / 1000,
     accuracy = StimSlideSimon.ACC) %>%
   # add trial number/ "Prac" (Note: group by blocks if there are several)
-  group_by(subject) %>% 
+  group_by(subject, block) %>% 
   mutate(trial = row_number()) %>% 
   ungroup() %>% 
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt) 
@@ -363,7 +362,7 @@ dataset40 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-da
     block = ifelse(PracExp == "Exp", 1, -999),  
     rt = StimSlideStroop.RT / 1000,
     accuracy = StimSlideStroop.ACC) %>%
-  group_by(subject, block) %>% # group by block if existed
+  group_by(subject, block) %>% # group by block if existent
   mutate(trial = row_number()) %>% 
   ungroup() %>% # add trial column
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt) 
@@ -678,7 +677,8 @@ dataset54 <- as.data.frame(kucina_tasks[[2]]) %>%
     between = NA, # between manipulation was task type
     within = Double + 1, 
     accuracy = ifelse(R == S, 1, 0),
-    rt = RT) %>%  
+    rt = ifelse(RT > 2, NA, RT) # exclude rt outliers
+    ) %>%  
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
 
 # Dataset55: Kucina Stroopon task 
