@@ -863,16 +863,15 @@ dataset61 <- df_priming %>%
          rt = RT) %>% 
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
 
-# Robinson flanker
 
-
-# Enkavi 
+# Dataset 62: Enkavi et al.; shape matching task 
 dataset62 <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/enkavi_2019_large/shape_matching.csv") %>%
   mutate(datasetid = 62,
          subject = rep(seq_along(rle(worker_id)$lengths), times = rle(worker_id)$lengths),
          block = ifelse(exp_stage == "practice", -999, 1),
          trial = trial_num + 1,
-         congruency = NA, # TODO
+         congruency = ifelse(grepl("NN", lag(condition)), 2, # neutral (no priming) when no distractor in previous trial?
+                             ifelse(probe_id == lag(distractor_id), 0, 1)), # priming = incongruent
          between = NA, 
          within = NA, 
          accuracy = correct, 
