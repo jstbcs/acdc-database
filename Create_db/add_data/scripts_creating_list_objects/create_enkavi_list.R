@@ -17,7 +17,7 @@ publication_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "publicat
                                                    "publication_code")) 
 study_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "study_table", range = "A35:D35",
                                col_names = c("study", "n_groups",	"n_tasks", "comment"))
-study_df$n_data <- 2 # encode number of data sets per study (by hand)
+study_df$n_data <- 3 # encode number of data sets per study (by hand)
 group_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "group_table", range = "A36:G36",
                                col_names = c("study_in_publication", "study_description",
                                              "between_id",	"mean_age",	"percentage_female",
@@ -25,7 +25,11 @@ group_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "group_table", 
 task_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "task", range = "A32:D33", 
                               col_names = c("study_within_pub",	"Dataset", "task",
                                             "task_description"))
-dataset_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "dataset_overview_table", range = "A52:K53",
+task_df2 <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "task", range = "A47:D47", 
+                                   col_names = c("study_within_pub",	"Dataset", "task",
+                                                 "task_description"))
+task_df <- rbind(task_df, task_df2)
+dataset_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "dataset_overview_table", range = "A52:K53;A69:K69",
                                  col_names = c("study_within_publication", "data",	
                                                "data_excl", "n_participants",
                                                "n_blocks", "n_trials", "neutral_trials",
@@ -39,7 +43,7 @@ condition_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "condition_
                                                  "dataset & condition",	"percentage_congr",
                                                  "percentage_neutral",	"mean_obs_pp",	"n_obs"))
 
-# NOTE: read in dataset51 and dataset52 from "reformat_datasets.R"
+# NOTE: read in dataset51, dataset52, and dataset 62 from "reformat_datasets.R"
 
 # create publication and study level -------------------------------------------
 pub <- list_study_level(publication_df, study_df, group_df)
