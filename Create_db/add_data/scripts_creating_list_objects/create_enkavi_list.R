@@ -29,19 +29,35 @@ task_df2 <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "task", range =
                                    col_names = c("study_within_pub",	"Dataset", "task",
                                                  "task_description"))
 task_df <- rbind(task_df, task_df2)
-dataset_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "dataset_overview_table", range = "A52:K53;A69:K69",
+dataset_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "dataset_overview_table", range = "A52:K53",
                                  col_names = c("study_within_publication", "data",	
                                                "data_excl", "n_participants",
                                                "n_blocks", "n_trials", "neutral_trials",
                                                "fixaction_cross",	"time_limit",
                                                "github",	"dataset in R"))
+dataset_df2 <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "dataset_overview_table", range = "A69:K69",
+                               col_names = c("study_within_publication", "data",	
+                                             "data_excl", "n_participants",
+                                             "n_blocks", "n_trials", "neutral_trials",
+                                             "fixaction_cross",	"time_limit",
+                                             "github",	"dataset in R"))
+dataset_df <- rbind(dataset_df, dataset_df2)
 within_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "within_table", range = "A69:D72",
                                 col_names = c("study_within_publication",	"data set",
                                               "within_id",	"within_desciption"))
+within_df2 <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "within_table", range = "A90:D91",
+                                col_names = c("study_within_publication",	"data set",
+                                              "within_id",	"within_desciption"))
+within_df <- rbind(within_df, within_df2)
 condition_df <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "condition_descriptives", range = "A74:F77",
                                    col_names = c("study_in_publication",
                                                  "dataset & condition",	"percentage_congr",
                                                  "percentage_neutral",	"mean_obs_pp",	"n_obs"))
+condition_df2 <- readxl::read_excel("./Create_db/add_data/Book.xlsx", "condition_descriptives", range = "A96:F97",
+                                 col_names = c("study_in_publication",
+                                               "dataset & condition",	"percentage_congr",
+                                               "percentage_neutral",	"mean_obs_pp",	"n_obs"))
+condition_df <- rbind(condition_df, condition_df2)
 
 # NOTE: read in dataset51, dataset52, and dataset 62 from "reformat_datasets.R"
 
@@ -86,7 +102,7 @@ for(i in 1:nrow(study_df)){ # within each study
     
     # add task_table
     pub[[i+1]][[k+2]]$task_table <- data.frame(
-      task_name = task_df$task[k + data_added], 
+      task_name = task_df$task[k + data_added], # just k?
       task_description = task_df$task_description[k + data_added]
     )
     

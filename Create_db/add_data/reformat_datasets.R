@@ -259,6 +259,7 @@ for(i in 1:21){
 
 # Dataset 35 (Whitehead et al., 2020; FlankerExp2)
 dataset35 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/whitehead_2020/FlankerExp2.csv") %>%
+  filter(!Subject %in% c(120,175,238,903,904,262)) %>% # remove participants with high trial count
   mutate(
     datasetid = 35,
     congruency = ifelse(Congruency == 0, 2, Congruency),
@@ -306,8 +307,8 @@ dataset37 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-da
     block = BlockNum, 
     rt = StimSlideSimon.RT / 1000,
     accuracy = StimSlideSimon.ACC) %>%
-  # add trial number/ "Prac" (Note: group by blocks if there are several)
-  group_by(subject, block) %>%
+  filter(!subject %in% c(24,48,75,95,112,122,127,129,139,170,182)) %>% # remove participants with unrealistically high number of trials 
+  group_by(subject, block) %>%   # adding trial number
   mutate(trial = row_number()) %>%
   ungroup() %>% 
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt) 
@@ -325,7 +326,7 @@ dataset38 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-da
     block = ifelse(PracExp == "Exp", 1, -999), 
     rt = StimSlideSimon.RT / 1000,
     accuracy = StimSlideSimon.ACC) %>%
-  # add trial number/ "Prac" (Note: group by blocks if there are several)
+  # add trial number
   group_by(subject, block) %>% 
   mutate(trial = row_number()) %>% 
   ungroup() %>% 
@@ -344,7 +345,8 @@ dataset39 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-da
     block = BlockNum, 
     rt = StimSlideStroop.RT / 1000,
     accuracy = StimSlideStroop.ACC) %>%
-  group_by(subject, block) %>% 
+  filter(!subject %in% c(63,68,75,98,103,117,129,143,187,197)) %>% # remove participants with unrealistically high number of trials 
+  group_by(subject, block) %>% # add trial number
   mutate(trial = row_number()) %>% 
   ungroup() %>%
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
@@ -362,7 +364,7 @@ dataset40 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-da
     block = ifelse(PracExp == "Exp", 1, -999),  
     rt = StimSlideStroop.RT / 1000,
     accuracy = StimSlideStroop.ACC) %>%
-  group_by(subject, block) %>% # group by block if existent
+  group_by(subject, block) %>%
   mutate(trial = row_number()) %>% 
   ungroup() %>% # add trial column
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt) 
@@ -865,15 +867,36 @@ dataset61 <- df_priming %>%
 
 
 # Dataset 62: Enkavi et al.; shape matching task 
-dataset62 <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/enkavi_2019_large/shape_matching.csv") %>%
+# first measurement
+dataset62a <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/enkavi_2019_large/shape_matching.csv") %>%
   mutate(datasetid = 62,
-         subject = rep(seq_along(rle(worker_id)$lengths), times = rle(worker_id)$lengths),
+         subject = as.numeric(str_split_fixed(worker_id, fixed("s"), 2)[, 2]),
          block = ifelse(exp_stage == "practice", -999, 1),
          trial = trial_num + 1,
-         congruency = ifelse(grepl("NN", lag(condition)), 2, # neutral (no priming) when no distractor in previous trial?
-                             ifelse(probe_id == lag(distractor_id), 0, 1)), # priming = incongruent
+         cond = ifelse(trial_num == 0, 3, # first trials are by definition neutral
+                       ifelse(grepl("NN", lag(condition)), 3, # neutral when previous trial had no distractor
+                              ifelse(probe_id == lag(distractor_id), 2, # neg. priming = incongruent
+                                            1))),
          between = NA, 
-         within = NA, 
+         within = 1, 
          accuracy = correct, 
          rt = ifelse(rt == -1, NA, 1))  %>% 
+  rename(congruency = cond) %>%
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
+# retest measurement
+dataset62b <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/enkavi_2019_large/shape_matching2.csv") %>%
+  mutate(datasetid = 62,
+         subject = as.numeric(str_split_fixed(worker_id, fixed("s"), 2)[, 2]),
+         block = ifelse(exp_stage == "practice", -999, 1),
+         trial = trial_num + 1,
+         cond = ifelse(trial_num == 0, 3, # first trials are by definition neutral
+                       ifelse(grepl("NN", lag(condition)), 3, # neutral when previous trial had no distractor
+                              ifelse(probe_id == lag(distractor_id), 2, # neg. priming = incongruent
+                                     1))),
+         between = NA, 
+         within = 2, 
+         accuracy = correct, 
+         rt = ifelse(rt == -1, NA, 1))  %>% 
+  rename(congruency = cond) %>%
+  select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
+dataset62 <- rbind(dataset62a, dataset62b)
