@@ -679,7 +679,7 @@ dataset54 <- as.data.frame(kucina_tasks[[2]]) %>%
     between = NA, # between manipulation was task type
     within = Double + 1, 
     accuracy = ifelse(R == S, 1, 0),
-    rt = ifelse(RT > 2, NA, RT) # exclude rt outliers
+    rt = ifelse(RT > 1, NA, RT) # exclude rt outliers
     ) %>%  
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
 

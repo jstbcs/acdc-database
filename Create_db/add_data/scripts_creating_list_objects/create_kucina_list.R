@@ -154,8 +154,8 @@ for(dataset in 1:5){ # TODO: change to 1:6 once stroop2 issue sorted out
 }
 
 # code number_within_conditions in dataset table: 
-for(dataset in 1:5){
-  pub[[2]][[dataset+2]]$dataset_table[1, 13] <- length(unique(pub[[i+1]][[dataset+2]]$observation_table[[7]]))
+for(data in 1:5){
+  pub[[2]][[data+2]]$dataset_table[1, 13] <- length(unique(pub[[2]][[data+2]]$observation_table[[7]]))
 }
 
 # save list object -------------------------------------------------------------
