@@ -16,17 +16,17 @@ arguments <- list() %>%
     conn,
     "publication_id",
     "greater",
-    -1
+    1
   ) 
-
+  
 overview <- get_overview_information(conn, arguments, "and")
 descriptive <- get_descriptive_information(conn, arguments, "and")
 detailed <- get_detailed_information(conn, arguments, "and")
 colnames(descriptive) <- colnames_descriptives 
 
-input = "Dataset ID"
+input = "Mean accuracy (dataset)"
 # setting the order_by arguments to column name returns error
 plot_dataset_histograms(descriptive, order_by = {{input}})
-plot_trial_rtdist(detailed, 4, 2)
+plot_trial_rtdist(detailed, 12, 2)
 
 detailed %>% plot_trial_rtdist(., 51)
