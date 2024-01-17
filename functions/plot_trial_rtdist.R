@@ -28,7 +28,7 @@ plot_trial_rtdist <- function(detailed, dataset_id, rt_cutoff = 2){
         "Response Time Distribuion for dataset_id: ",
         dataset_id
       ),
-      caption = "Find more information about the within_id in the respective table."
+      caption = "Data is aggregated over all congruency conditions. Find more information about the within_id in the respective table."
     )+
     ggplot2::scale_fill_hue(labels = mean_accuracy_labels)+
     ggplot2::theme_classic()
