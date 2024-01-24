@@ -8,6 +8,6 @@
 # 
 #' @export
 get_perc_neut <- function(df_cond){
-  perc_neut <- round(sum(df_cond$congruency == 3) / length(df_cond$congruency),2)
+  perc_neut <- round(sum(df_cond$congruency == 3, na.rm = TRUE) / length(df_cond$congruency),2)
   return(perc_neut) 
 }

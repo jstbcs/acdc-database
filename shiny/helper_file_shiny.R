@@ -19,16 +19,34 @@ criteria <- c("Task type(s)" = "task_name",
               "Publication Code" = "publication_code"
               )
 
-# TODO:connect to db to update automatically
-publication_codes <- c("pratte_2010_exploring",
-               "mermet_2018_should ",
-               "hedge_2018_reliability",
-               "vonbastiaan_2015_evidence",
-               "whitehead_2020",
-               "tang_2022_dual",
-               "chetverikov_2017_blame",
-               "stahl_2014_behavioral",
-               "ebersole_2016_many")
+#publication_codes <- c("pratte_2010_exploring",
+#               "mermet_2018_should ",
+#               "hedge_2018_reliability",
+#               "vonbastiaan_2015_evidence",
+#               "whitehead_2020",
+#               "tang_2022_dual",
+#               "chetverikov_2017_blame",
+#               "stahl_2014_behavioral",
+#               "ebersole_2016_many")
+
+get_pub_code <- function(){
+  # query all datasets
+  arguments <- list() %>% 
+    add_argument(
+      conn,
+      "dataset_id",
+      "greater",
+      0
+    )
+  # get publication codes
+  query_results <- query_db(conn,
+                            arguments,
+                            target_vars = 'publication_code',
+                            target_table = 'observation_table',
+                            argument_relation = 'and')
+  
+  return(unique(query_results$publication_code))
+}
 
 
 # function to choose default value of "value" fields ---------------------------
@@ -37,7 +55,7 @@ get_default_value <- function(criterion, operator){
   if(!is.null(operator)){
     default_value <- switch(criterion,
                             "mean_dataset_rt" = 0.55, 
-                            "mean_dataset_acc" = 0.8, 
+                            "mean_dataset_acc" = 0.9, 
                             "n_participants" = 100, 
                             "n_blocks" = 5, 
                             "n_trials" = 30, 
@@ -98,25 +116,35 @@ get_filtered_df <- function(argument_list, conn, type=c("overview", "descriptive
     # get chosen data frame 
     if(type == "overview"){
       df <- get_overview_information(conn, arguments, "and")
-      df <- df[, c(1,2,12,4,5,6,7,8,9,10,11)] # reorder and delete authors 
-      colnames(df) <- colnames_suited
-      df[,9] <- ifelse(df[,9] == 0, FALSE, TRUE) # convert numeric input to logical
-      df[,10] <- ifelse(df[,10] == 0, FALSE, TRUE)
-      df[,11]<- ifelse(df[,11] == 0, FALSE, TRUE)
+      # if no hits: return empty df 
+      if(!is.data.frame(df)){
+        df <- data.frame()
+      } else {  # if hits, format output df 
+        df <- df[, c(1,2,12,4,5,6,7,8,9,10,11)] # reorder columns and delete authors column 
+        colnames(df) <- colnames_suited
+        df[,9] <- ifelse(df[,9] == 0, FALSE, TRUE) # convert numeric input to logical
+        df[,10] <- ifelse(df[,10] == 0, FALSE, TRUE)
+        df[,11]<- ifelse(df[,11] == 0, FALSE, TRUE)
+      }
       
     } else if (type == "descriptives"){
       df <- get_descriptive_information(conn, arguments, "and")
       colnames(df) <- colnames_descriptives
+
       
     } else if (type == "detailed"){
       df <- get_detailed_information(conn, arguments, "and")
+
     }
     
   } else { # when no arguments are chosen 
     df <- data.frame()
+
   }
   return(df)
 }
+
+
 
 # for data_id_for_plot choice: only show IDs of datasets that fit criteria -------
 filtered_dataset_ids <- function(suited_overview_df){
@@ -212,7 +240,7 @@ get_overview_df <- function(conn){
 }
   
 
-# download data  ------------
+# download data  ---------------------------------------------------------------------
 download_data <- function(ids, conn){
   arguments <- list() %>% 
     add_argument(
@@ -234,3 +262,25 @@ download_data <- function(ids, conn){
   return(filtered_results)
 }
 
+
+# java script code for "show more" button in data table table in last tab -------------#
+js <- "
+function(cell) {
+  var $cell = $(cell);
+  $cell.contents().wrapAll('<div class=\\\"content\\\"></div>');
+  var $content = $cell.find('.content');
+  $cell.append($('<button>Read more</button>'));
+  $btn = $cell.find('button');
+  $content.css({
+    height: '50px',
+    overflow: 'hidden'
+  });
+  $cell.data('isLess', true);
+  $btn.click(function () {
+    var isLess = $cell.data('isLess');
+    $content.css('height', isLess ? 'auto' : '50px');
+    $(this).text(isLess ? 'Read less' : 'Read more');
+    $cell.data('isLess', !isLess);
+  });
+}
+"

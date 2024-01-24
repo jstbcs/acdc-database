@@ -8,6 +8,6 @@
 # 
 #' @export
 get_perc_congr <- function(df_cond){
-  perc_congr <- round(sum(df_cond$congruency == 1) / length(df_cond$congruency),2)
+  perc_congr <- round(sum(df_cond$congruency == 1, na.rm=TRUE) / length(df_cond$congruency),2)
   return(perc_congr)
 }

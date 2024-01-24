@@ -30,10 +30,10 @@ server <- function(input, output, session){
          The main panel provides: <ul>
                      <li>An overview of those datasets fulfilling your filter criteria [TAB 1]</li> 
                      <li>A table showing descriptive attributes of these datasets (such as mean accuracy, number of trails etc.) [TAB 2]</li> 
-                     <li>A vizualization of accuracy and rt per dataset and rt distributions [TAB 3]</li>
+                     <li>A vizualization of accuracy and reaction time (rt) per dataset and rt distributions [TAB 3]</li>
                      <li>Instructions on how to access these datasets using our  R package acdcquery and an option to download trial level data as a csv [TAB 4]</li>
                      <li>and an overview of all data sets in ACDC [TAB 5]</li>
-                     <br> ")
+                     ")
   })
   
   # print explanation of project 
@@ -43,7 +43,7 @@ server <- function(input, output, session){
       updateActionButton(inputId = "action_explain_db", label = "Got it!")
       renderUI({HTML("The ACDC data base contains attentional control task data (i.e., Stroop, flanker or Simon task) from over 40 datasets as well as information about the respective studies and publications. <br>
                      It is meant to enhance access to open attentional control task data. <br>
-                     Data can be accessed either via SQL or our C-RAN R package ACDC query (<a href=http://github.com/SLesche/acdc-query target='_blank' rel='noopener noreferrer'>Github</a>). <br> <br>
+                     Data can be accessed either via SQL or our CRAN R package <a href=https://cran.r-project.org/web/packages/acdcquery/index.html target='_blank' rel='noopener noreferrer'>acdcquery</a>. <br> <br>
                      <img src='https://raw.githubusercontent.com/jstbcs/acdc-database/7adc1609a7743803a4d760ef5cd11ff426db2794/shiny/www/db_structure.png' alt='Structure of inhibition task db' width='908' height='630'>"
                      )
         })
@@ -62,13 +62,13 @@ server <- function(input, output, session){
                      Note that the study/ studies which data were collected for must have been published (this includes preprints). <br>
                      Furthermore, suited data must include the following information: <ul>
                      <li>An ID variable</li> 
-                     <li>A congruency variable, indicating stimuli were congruent or conflicting </li> 
+                     <li>A congruency variable, indicating if stimuli were congruent (coded as 1), conflincting (2) or neutral (3)</li> 
                      <li>Reaction time of each trial, in seconds </li>
-                     <li>Accuracyof each trials (correct/ incorrect)</li>
-                     <li>A between variable indicating between subject manipulation (if applicable)</li>
-                     <li>A within variable indicating within subject manipulation (if applicable)</li>
+                     <li>Accuracy of each trial (correct coded as 1/ incorrect coded as 0)</li>
+                     <li>If applicable: A between variable indicating between subject manipulation</li>
+                     <li>If applicable: A within variable indicating within subject manipulation</li>
                      <br> 
-                     You can submit your data via <a href=http://www.ampl-psych.com/inhibition-database/ target='_blank' rel='noopener noreferrer'>this</a> online form. <br>
+                     You can submit your data via <a href=https://www.ampl-psych.com/attentional_control_data_collection/ target='_blank' rel='noopener noreferrer'>this online form</a>. <br>
                      In case you have any questions, feel free to contact <a href = 'mailto: j.m.haaf@uva.nl'>j.m.haaf@uva.nl</a>.</div>"
                      )})
     } else {
@@ -85,7 +85,7 @@ server <- function(input, output, session){
   # conditional panel to choose 1st operator based on criterion1
   output$operator1 <- renderUI({
     conditionalPanel(
-      condition = "input.criterion1 != ' ' & input.criterion1 != 'task_name' & input.criterion1 != 'publication_code' & input.criterion1 != 'Neutral stimuli included?' &  input.criterion1 != 'Existence of between-subject manipulation?' & input.criterion1 != 'Existence of within-subject manipulation (besides congruency)?'",
+      condition = "input.criterion1 != ' ' & input.criterion1 != 'task_name' & input.criterion1 != 'publication_code' & input.criterion1 != 'neutral_trials' &  input.criterion1 != 'Existence of between-subject manipulation?' & input.criterion1 != 'Existence of within-subject manipulation (besides congruency)?'",
       selectInput(inputId = "operator1",
                   label = "Choose operator",
                   choices =  c("", "less", "greater", "between", "equal"))
@@ -117,7 +117,7 @@ server <- function(input, output, session){
   # conditional panel to answer yes/no questions in criterion field 
   output$yes_no_choice <- renderUI({
     conditionalPanel(
-      condition = "input.criterion1 == 'Neutral stimuli included?' |  input.criterion1 == 'Existence of between-subject manipulation?' | input.criterion1 == 'Existence of within-subject manipulation (besides congruency)?'",
+      condition = "input.criterion1 == 'neutral_trials'",
       selectInput(inputId = "yes_no",
                   label = " ",
                   choices =  c("", "Yes"=1, "No"=0)) 
@@ -131,7 +131,7 @@ server <- function(input, output, session){
       checkboxGroupInput(inputId = "task_type",
                          label = "Choose task type:",
                          choices = 
-                           c("Select",
+                           c(#"",
                              "Stroop task" = "stroop",
                              "Simon task" = "simon",
                              "Flanker task" = "flanker",
@@ -145,7 +145,7 @@ server <- function(input, output, session){
       condition = "input.criterion1 == 'publication_code'",
       selectInput(inputId = "pub_code",
                   label = "Choose publiction code",
-                  choices = c("", sort(publication_codes)))
+                  choices = c("", sort(get_pub_code())))
     ) 
   }) 
   
@@ -159,28 +159,31 @@ server <- function(input, output, session){
   
   # specify action whenever "Add argument to list" is clicked
   observeEvent(input$action_add_arg, {
-    # add current choices to argument data frame 
-    if(input$operator1 != "" & input$operator1 != "between"){
-      new_entry <- list(
-        variable = input$criterion1, 
-        operator = input$operator1,
-        values = input$value1
-      )
+    # only execute when user made a choice
+    if(input$criterion1 != ' '){
       
-    } else if (input$operator1 == "between") {
-      new_entry <- list(
-        variable = input$criterion1, 
-        operator = input$operator1,
-        values = paste(input$value1, input$value1b, sep="; ") 
-      )
-      
+      # add current choices to argument data frame 
+      if(input$operator1 != "" & input$operator1 != "between"){
+        new_entry <- list(
+          variable = input$criterion1, 
+          operator = input$operator1,
+          values = input$value1
+        )
+        
+      } else if (input$operator1 == "between") {
+        new_entry <- list(
+          variable = input$criterion1, 
+          operator = input$operator1,
+          values = paste(input$value1, input$value1b, sep="; ") 
+        )
+        
       } else if(input$yes_no != ""){
         new_entry <- list(
           variable = input$criterion1, 
           operator = "equal",
           values = input$yes_no
         )
-      
+        
       } else if(!is.null(input$task_type)){
         new_entry <- list(
           variable = input$criterion1, 
@@ -194,28 +197,32 @@ server <- function(input, output, session){
           operator = "equal",
           values = input$pub_code
         )
+        
+      }
+      
+      # add new argument to list
+      rv$argument_list <- mapply(merge_lists, rv$argument_list, new_entry, SIMPLIFY = FALSE)
+      
+      # reset drop down menu for criterion choice
+      updateSelectInput(session, 
+                        inputId = "criterion1", 
+                        selected = "")
+      
+      updateSelectInput(session, 
+                        inputId = "operator1", 
+                        selected = "")
+      
+      updateSelectInput(session, 
+                        inputId = "task_type", 
+                        selected = "")
+      
+      updateSelectInput(session, 
+                        inputId = "pub_code", 
+                        selected = "")
+      
+    } else { # if nothing chosen yet
       
     }
-    
-    # add new argument to list
-    rv$argument_list <- mapply(merge_lists, rv$argument_list, new_entry, SIMPLIFY = FALSE)
-    
-    # reset drop down menu for criterion choice
-    updateSelectInput(session, 
-                      inputId = "criterion1", 
-                      selected = "")
-    
-    updateSelectInput(session, 
-                      inputId = "operator1", 
-                      selected = "")
-    
-    updateSelectInput(session, 
-                      inputId = "task_type", 
-                      selected = "")
-    
-    updateSelectInput(session, 
-                      inputId = "pub_code", 
-                      selected = "")
     
   })
   
@@ -247,9 +254,12 @@ server <- function(input, output, session){
 
   # add reactive dataframe to print argument_list as a table
   argument_df <- reactive({
-    # Transform the list into a data frame
-    if(length(rv$argument_list) > 0) {
+    # after one value has been chosen 
+    if(input$criterion1 != ' '){
       as.data.frame(do.call(cbind, rv$argument_list))
+    # Transform the list into a data frame
+    #if(length(rv$argument_list) > 0) {
+     # as.data.frame(do.call(cbind, rv$argument_list))
     } else {
       # Return an empty data frame if rv$argument_list is empty
       data.frame()
@@ -271,11 +281,26 @@ server <- function(input, output, session){
     get_filtered_df(rv$argument_list, conn, type = "overview")
   })
   
+  # query data base (needed to print details on number of hits)
+  # note: later used for download button
+  data_for_download <- reactive({
+    download_data(suited_overview_df()[['Dataset ID']], conn)
+  })
+  
+  
   # return number of hits 
   n_hits <- reactive({
     req(length(rv$argument_list[[1]]) > 0)
-    paste(nrow(suited_overview_df()),
-          "datasets in ACDC match your filter criteria")
+    # print number of hits, subjects, and trials 
+    if(nrow(suited_overview_df() != 0)) {
+      subjects <- sum(suited_overview_df()$`Sample Size`)    #length(unique(data_for_download()$subject))
+      all_trials <- sum(suited_overview_df()$`Sample Size` * suited_overview_df()$`Trials per block` * suited_overview_df()$`Blocks per participant`)  #nrow(data_for_download())
+      paste(nrow(suited_overview_df()),"datasets in ACDC match your filter criteria, containing",
+            all_trials, "trials overall from", subjects, "subjects.")
+    } else {
+      # if no hits 
+      paste("There are no datasets that match these criteria. Please reset list.")
+    }
     })
   output$number_hits <- renderText(n_hits())
   
@@ -375,10 +400,9 @@ server <- function(input, output, session){
   
   # logic behind download button 
   # get filtered data for download
-  data_for_download <- reactive({
-    #download_data(rv$argument_list, conn)
-    download_data(suited_overview_df()[['Dataset ID']], conn)
-  })
+  #data_for_download <- reactive({
+   # download_data(suited_overview_df()[['Dataset ID']], conn)
+  #})
   
   output$downloadData <- downloadHandler(
        filename = function() {
@@ -392,8 +416,27 @@ server <- function(input, output, session){
   
   # TAB 5 ------#
   overview_df <- get_overview_df(conn)
-  output$overview_datasets <- renderTable(overview_df,
-                                       rownames= FALSE)
+  #output$overview_datasets <- renderTable(overview_df,
+   #                                  rownames= FALSE)
+  
+ 
+  output$overview_datasets <- renderDataTable({
+    datatable(overview_df,
+              rownames = FALSE,
+              options = list(
+                autoWidth = FALSE,
+                columnDefs = list(
+                  # "Read more button)
+                  list(
+                    targets = 7, 
+                    createdCell = JS(js)  # use JS code (specificed in helper file)
+                  ),
+                  # column width
+                  list(targets = 1, width = '5px'), # narrower 2nd column
+                  list(targets = 7, width = '700px') # wider 8th column
+                )
+              ))
+  })
 }
 
 

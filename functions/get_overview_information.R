@@ -50,17 +50,21 @@ get_overview_information <- function(conn, arguments, argument_relation){
     )
   )
   
-  if(nrow(query_results) == 0) stop("There are no datasets that match your criteria.")
-
-
-  query_results = dplyr::distinct(query_results, dataset_id, .keep_all = TRUE)
-  
-  query_results$within_id = c()
-
-  query_results$short_author = NA
-  for (i in 1:nrow(query_results)){
-    query_results$short_author[i] = shorten_author_field(query_results$authors[i])
+  if(nrow(query_results) == 0){   # warning if no results 
+    #warning("There are no datasets that match your criteria.")
+    
+    } else {        # return found results 
+    query_results = dplyr::distinct(query_results, dataset_id, .keep_all = TRUE)
+    
+    query_results$within_id = c()
+    
+    query_results$short_author = NA
+    for (i in 1:nrow(query_results)){
+      query_results$short_author[i] = shorten_author_field(query_results$authors[i])
+    }
+    
+    return(query_results)
   }
 
-  return(query_results)
+ 
 }

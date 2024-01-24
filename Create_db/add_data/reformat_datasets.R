@@ -880,7 +880,7 @@ dataset62a <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/m
          between = NA, 
          within = 1, 
          accuracy = correct, 
-         rt = ifelse(rt == -1, NA, 1))  %>% 
+         rt = ifelse(rt == -1, NA, rt/1000))  %>% 
   rename(congruency = cond) %>%
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
 # retest measurement
@@ -896,7 +896,8 @@ dataset62b <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/m
          between = NA, 
          within = 2, 
          accuracy = correct, 
-         rt = ifelse(rt == -1, NA, 1))  %>% 
+         rt = ifelse(rt == -1, NA, rt/1000))  %>% 
   rename(congruency = cond) %>%
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
+
 dataset62 <- rbind(dataset62a, dataset62b)
