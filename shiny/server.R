@@ -45,8 +45,8 @@ server <- function(input, output, session){
                      It is meant to enhance access to open attentional control task data. <br>
                      Data can be accessed either via SQL or our CRAN R package <a href=https://cran.r-project.org/web/packages/acdcquery/index.html target='_blank' rel='noopener noreferrer'>acdcquery</a>. <br> <br>
                      <img src='https://raw.githubusercontent.com/jstbcs/acdc-database/7adc1609a7743803a4d760ef5cd11ff426db2794/shiny/www/db_structure.png' alt='Structure of inhibition task db' width='908' height='630'>"
-                     )
-        })
+      )
+      })
     } else {
       updateActionButton(inputId = "action_explain_db", label = "What is the ACDC data base?")
       tagList()
@@ -70,7 +70,7 @@ server <- function(input, output, session){
                      <br> 
                      You can submit your data via <a href=https://www.ampl-psych.com/attentional_control_data_collection/ target='_blank' rel='noopener noreferrer'>this online form</a>. <br>
                      In case you have any questions, feel free to contact <a href = 'mailto: j.m.haaf@uva.nl'>j.m.haaf@uva.nl</a>.</div>"
-                     )})
+      )})
     } else {
       updateActionButton(inputId = "action_contribute", label = "How can I contribute my data to the data base?")
       tagList()
@@ -89,7 +89,7 @@ server <- function(input, output, session){
       selectInput(inputId = "operator1",
                   label = "Choose operator",
                   choices =  c("", "less", "greater", "between", "equal"))
-      )
+    )
   })
   
   # conditional panel to choose value based on operator
@@ -145,7 +145,7 @@ server <- function(input, output, session){
       condition = "input.criterion1 == 'publication_code'",
       selectInput(inputId = "pub_code",
                   label = "Choose publiction code",
-                  choices = c("", sort(get_pub_code())))
+                  choices = c("", sort(get_pub_code(conn))))
     ) 
   }) 
   
@@ -226,7 +226,7 @@ server <- function(input, output, session){
     
   })
   
- 
+  
   # conditional action button to delete last entry to argument list 
   output$conditional_action_remove <- renderUI({
     if(!is.null(rv$argument_list[[1]])){ # show action button only after first argument was added
@@ -251,15 +251,15 @@ server <- function(input, output, session){
   observeEvent(input$action_reset_list, {
     rv$argument_list <- lapply(rv$argument_list, function(x) c())
   })
-
+  
   # add reactive dataframe to print argument_list as a table
   argument_df <- reactive({
     # after one value has been chosen 
     if(input$criterion1 != ' '){
       as.data.frame(do.call(cbind, rv$argument_list))
-    # Transform the list into a data frame
-    #if(length(rv$argument_list) > 0) {
-     # as.data.frame(do.call(cbind, rv$argument_list))
+      # Transform the list into a data frame
+      #if(length(rv$argument_list) > 0) {
+      # as.data.frame(do.call(cbind, rv$argument_list))
     } else {
       # Return an empty data frame if rv$argument_list is empty
       data.frame()
@@ -301,7 +301,7 @@ server <- function(input, output, session){
       # if no hits 
       paste("There are no datasets that match these criteria. Please reset list.")
     }
-    })
+  })
   output$number_hits <- renderText(n_hits())
   
   # print table
@@ -321,7 +321,7 @@ server <- function(input, output, session){
                                     htmltools::em('Note:'), 
                                     'percentage congruent, mean reaction time and mean accuracy are calculated across all participants and conditions within this task.'),
                                   rownames= FALSE)
- 
+  
   # TAB 3  --------#
   # get reactive list with detailed information about dfs 
   detailed_info <- reactive({
@@ -329,46 +329,46 @@ server <- function(input, output, session){
   })
   
   # print histogram of filtered datasets 
-    output$histogram <- renderPlot({
+  output$histogram <- renderPlot({
     req(length(rv$argument_list[[1]]) > 0)
-      acc_plot <- descriptives_df() |> 
-    dplyr::mutate(dataset_id = factor(`Dataset ID`)) |>
-    ggplot2::ggplot(
-      mapping = ggplot2::aes(
-        x = forcats::fct_reorder(dataset_id, .data[[input$sort_x_axis]], .desc = TRUE),
-        y = `Mean accuracy (dataset)`
-      )
-    ) +
-    ggplot2::geom_point(
-      size = 3
-    ) +
-    ggplot2::labs(
-      title = "Mean Accuracy",
-      x = "dataset_id",
-      caption = "Values are based on the 'mean_dataset_acc' column."
-    )+
-    ggplot2::theme_classic()
-  
-  rt_plot <- descriptives_df() |> 
-    dplyr::mutate(dataset_id = factor(`Dataset ID`)) |>
-    ggplot2::ggplot(
-      mapping = ggplot2::aes(
-        x = forcats::fct_reorder(dataset_id, .data[[input$sort_x_axis]], .desc = TRUE),
-        y = `Mean reaction time (dataset)`
-      )
-    ) +
-    ggplot2::geom_point(
-      size = 3
-    ) +
-    ggplot2::labs(
-      title = "Mean Reaction Time (in s)",
-      x = "dataset_id",
-      caption = "Values are based on the 'mean_dataset_rt' column."
-    )+
-    ggplot2::theme_classic()
-  
-  ggpubr::ggarrange(acc_plot, rt_plot, ncol = 1, nrow = 2)
-      
+    acc_plot <- descriptives_df() |> 
+      dplyr::mutate(dataset_id = factor(`Dataset ID`)) |>
+      ggplot2::ggplot(
+        mapping = ggplot2::aes(
+          x = forcats::fct_reorder(dataset_id, .data[[input$sort_x_axis]], .desc = TRUE),
+          y = `Mean accuracy (dataset)`
+        )
+      ) +
+      ggplot2::geom_point(
+        size = 3
+      ) +
+      ggplot2::labs(
+        title = "Mean Accuracy",
+        x = "dataset_id",
+        caption = "Values are based on the 'mean_dataset_acc' column."
+      )+
+      ggplot2::theme_classic()
+    
+    rt_plot <- descriptives_df() |> 
+      dplyr::mutate(dataset_id = factor(`Dataset ID`)) |>
+      ggplot2::ggplot(
+        mapping = ggplot2::aes(
+          x = forcats::fct_reorder(dataset_id, .data[[input$sort_x_axis]], .desc = TRUE),
+          y = `Mean reaction time (dataset)`
+        )
+      ) +
+      ggplot2::geom_point(
+        size = 3
+      ) +
+      ggplot2::labs(
+        title = "Mean Reaction Time (in s)",
+        x = "dataset_id",
+        caption = "Values are based on the 'mean_dataset_rt' column."
+      )+
+      ggplot2::theme_classic()
+    
+    ggpubr::ggarrange(acc_plot, rt_plot, ncol = 1, nrow = 2)
+    
   })
   
   #  for choice of datasetID for rt plot: only show IDs that match criteria
@@ -391,7 +391,7 @@ server <- function(input, output, session){
   R_code <- reactive({
     req(length(rv$argument_list[[1]]) > 0)
     cat(get_R_code(argument_list = rv$argument_list), sep=" ") # use cat for line breaks
-    })
+  })
   
   output$Rcode <- renderPrint({
     R_code()
@@ -401,25 +401,25 @@ server <- function(input, output, session){
   # logic behind download button 
   # get filtered data for download
   #data_for_download <- reactive({
-   # download_data(suited_overview_df()[['Dataset ID']], conn)
+  # download_data(suited_overview_df()[['Dataset ID']], conn)
   #})
   
   output$downloadData <- downloadHandler(
-       filename = function() {
-         paste('attentional_control_task_data-', Sys.Date(), '.csv', sep='')
-       },
-       content = function(con) {
-         # Use 'con' as the file connection to write the CSV
-         write.csv(data_for_download(), con, row.names = FALSE)
-       }
-     )
+    filename = function() {
+      paste('attentional_control_task_data-', Sys.Date(), '.csv', sep='')
+    },
+    content = function(con) {
+      # Use 'con' as the file connection to write the CSV
+      write.csv(data_for_download(), con, row.names = FALSE)
+    }
+  )
   
   # TAB 5 ------#
   overview_df <- get_overview_df(conn)
   #output$overview_datasets <- renderTable(overview_df,
-   #                                  rownames= FALSE)
+  #                                  rownames= FALSE)
   
- 
+  
   output$overview_datasets <- renderDataTable({
     datatable(overview_df,
               rownames = FALSE,
@@ -443,4 +443,3 @@ server <- function(input, output, session){
 
 
 shinyApp(ui = ui, server = server)
-

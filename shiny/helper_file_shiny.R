@@ -29,7 +29,7 @@ criteria <- c("Task type(s)" = "task_name",
 #               "stahl_2014_behavioral",
 #               "ebersole_2016_many")
 
-get_pub_code <- function(){
+get_pub_code <- function(conn){
   # query all datasets
   arguments <- list() %>% 
     add_argument(
