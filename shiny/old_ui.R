@@ -1,19 +1,61 @@
+# 
+# User interface for the inhibition data base shiny app 
+# 
+
 library(shiny)
-library(shinydashboard)
 library(DT)
 source("./shiny/helper_file_shiny.R")
-source("./shiny/server.R")
 
-# UI using shinydashboard
-ui <- dashboardPage(
-  dashboardHeader(title = "ACDC overview"),
+
+ui <- fluidPage(
   
-  # SIDEBAR 
-  dashboardSidebar(
-    width = 500,
-    tabsetPanel(
-      type = "tabs",
-      tabPanel("Filter datasets", 
+  # TITLE 
+  titlePanel("Information about data in the Attentional Control Data Collection data base"),
+  
+  # INTRO PART
+  
+  # short intro text
+  fluidRow(
+    column(12,
+           htmlOutput("short_intro"))
+  ),
+  
+  hr(),
+  
+  # action button explaining the project 
+  fluidRow(
+    column(12, 
+           actionButton("action_explain_db", "What is the ACDC data base?"),
+           htmlOutput("explanation_db"))#,
+           #imageOutput("img_structure_db"))
+    
+  ), 
+  
+  br(),
+  
+  # action button explaining how to contribute
+  fluidRow(
+    column(12, 
+           actionButton("action_contribute", "How can I contribute my data to the data base?"), 
+           htmlOutput("explanation_contribute")
+    )
+  ),
+  
+  hr(),
+  
+
+  # MAIN PART OF SHINY APP: USER INPUT & OUTPUT PANELS  
+  br(),
+  
+  # SIDE BAR FOR USER INPUT
+  sidebarPanel(
+    
+    # create tabs
+    shiny::tabsetPanel(
+      type = "pills",
+      
+      # TAB 1
+      tabPanel("Filter datasets",
                
                # add argument ---
                fluidRow(    # split sidebar into 3 columns 
@@ -37,7 +79,7 @@ ui <- dashboardPage(
                         uiOutput("choice_task_type"),
                         # choice of pub_code
                         uiOutput("choice_pubcode")
-                 )
+                        )
                ), # end fluid row
                
                
@@ -71,44 +113,29 @@ ui <- dashboardPage(
                  column(6, # button reset list
                         uiOutput("conditional_action_reset"))
                ) # end fluid row
-    )
-  )
-  ),  # end sidebar
+               
+               ),
+      
+    ) # end tabsetpanel 
   
-  dashboardBody(
-    # Body content (originally in mainPanel)
-    fluidRow(
-      column(12, htmlOutput("short_intro"))
-    ),
-    #hr(),
-    fluidRow(
-      column(12, 
-             actionButton("action_explain_db", "What is the ACDC data base?"),
-             htmlOutput("explanation_db")
-      )
-    ),
-    br(),
-    fluidRow(
-      column(12, 
-             actionButton("action_contribute", "How can I contribute my data to the data base?"), 
-             htmlOutput("explanation_contribute")
-      )
-    ),
-    hr(),
-    br(),
-    tabsetPanel(
-      type = "tabs",
+    ), # end sidebar
+  
+  # MAIN PANEL FOR OUTPUT
+  mainPanel(
+    # create tabs for main bar
+    shiny::tabsetPanel(
+      type = "pills",
       
       # TAB 1
-      tabPanel("Overview of suited datasets", 
+      tabPanel("Overview of suited datasets",
                span(textOutput("number_hits"), style="color:darkcyan"),
                br(),
                DTOutput("suited_datasets")),
       
       # TAB 2
       tabPanel("Descriptives",
-               DTOutput("descriptives")
-      ),
+              DTOutput("descriptives")
+              ),
       
       # TAB 3
       tabPanel("Descriptive plots",
@@ -129,8 +156,8 @@ ui <- dashboardPage(
                
                plotOutput("rt_dist")
                
-               
-      ),
+
+               ),
       
       # TAB 4
       tabPanel("Get the data",
@@ -149,13 +176,8 @@ ui <- dashboardPage(
                #tableOutput("overview_datasets")
                dataTableOutput("overview_datasets")
       )
-      
-      
-    )
-  )
+    
+    ) # end tabset 
+  ) # end main bar
 )
 
-
-
-# Run the application
-shinyApp(ui, server)
