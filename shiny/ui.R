@@ -146,7 +146,6 @@ ui <- dashboardPage(
       
       # TAB 5
       tabPanel("Overview of all datasets in ACDC", 
-               #tableOutput("overview_datasets")
                dataTableOutput("overview_datasets")
       )
       

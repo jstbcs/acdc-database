@@ -263,7 +263,7 @@ download_data <- function(ids, conn){
 }
 
 
-# java script code for "show more" button in data table table in last tab -------------#
+# java script code for "show more" button in datatable table in last tab -------------#
 js <- "
 function(cell) {
   var $cell = $(cell);

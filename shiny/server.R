@@ -11,6 +11,7 @@ library(DBI)
 library(RSQLite)
 library(acdcquery)
 library(htmltools)
+library(papaja)
 source("./shiny/helper_file_shiny.R")
 source("./shiny/ui.R")
 
@@ -293,10 +294,10 @@ server <- function(input, output, session){
     req(length(rv$argument_list[[1]]) > 0)
     # print number of hits, subjects, and trials 
     if(nrow(suited_overview_df() != 0)) {
-      subjects <- sum(suited_overview_df()$`Sample Size`)    #length(unique(data_for_download()$subject))
-      all_trials <- sum(suited_overview_df()$`Sample Size` * suited_overview_df()$`Trials per block` * suited_overview_df()$`Blocks per participant`)  #nrow(data_for_download())
-      paste(nrow(suited_overview_df()),"datasets in ACDC match your filter criteria, containing",
-            all_trials, "trials overall from", subjects, "subjects.")
+      subjects <- sum(suited_overview_df()$`Sample Size`)   
+      all_trials <- sum(suited_overview_df()$`Sample Size` * suited_overview_df()$`Trials per block` * suited_overview_df()$`Blocks per participant`)  
+      paste(nrow(suited_overview_df()),"datasets in ACDC match your filter criteria, containing approx.",
+            printnum(all_trials, digits=0), "trials overall from approx.", printnum(subjects, digits=0), "subjects.")
     } else {
       # if no hits 
       paste("There are no datasets that match these criteria. Please reset list.")
@@ -428,7 +429,7 @@ server <- function(input, output, session){
                 columnDefs = list(
                   # "Read more button)
                   list(
-                    targets = 7, 
+                    targets = 4, 
                     createdCell = JS(js)  # use JS code (specificed in helper file)
                   ),
                   # column width
