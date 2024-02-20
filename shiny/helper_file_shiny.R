@@ -176,6 +176,8 @@ get_R_code <- function(argument_list){
   # add first arguments without starting with "%>%" ------
   # convert value to character if necessary
   if(grepl("\\d", argument_list[[3]][1])) first_value=argument_list[[3]][1] else first_value=paste0("'",argument_list[[3]][1],"'")
+  # if between operator: print values as vector 
+  if(argument_list[[2]][1] == "between") first_value=paste0("c(", str_split(argument_list[[3]][1], "; ")[[1]][1], ", ", str_split(argument_list[[3]][1], "; ")[[1]][2], ")") else first_value=argument_list[[3]][1]  #"'between'"
   first_arguments <- paste0("   conn", ", \n", 
                            "    '", argument_list[[1]][1], "', \n",
                            "    '", argument_list[[2]][1], "', \n",
@@ -188,13 +190,10 @@ get_R_code <- function(argument_list){
   if(length(argument_list[[1]]) > 1){
     arguments <- c()
     for(i in 2:length(argument_list[[1]])){
-      # turn non-numeric elements into characters
-      #arg1=paste0("'",argument_list[[1]][i],"'") 
-      #arg2=paste0("'",argument_list[[2]][i],"'")
       if(grepl("\\d", argument_list[[3]][i])) arg3=argument_list[[3]][i] else arg3=paste0("'",argument_list[[3]][i],"'")
       
       # if between operator: print values as vector 
-      if(argument_list[[2]][i] == "'between'") arg3=paste0("c(", str_split(arg3, "; ")[[1]][1], ",", str_split(arg3, "; ")[[1]][2], ")") else arg3=arg3
+      if(argument_list[[2]][i] == "between") arg3=paste0("c(", str_split(argument_list[[3]][i], "; ")[[1]][1], ", ", str_split(argument_list[[3]][i], "; ")[[1]][2], ")") else arg3=argument_list[[3]][i]  #"'between'"
       # elements to be separated by comma
       comma_separated <- paste0("   conn", ", \n", 
                                "    '", argument_list[[1]][i], "', \n",

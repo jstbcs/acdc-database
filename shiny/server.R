@@ -296,8 +296,9 @@ server <- function(input, output, session){
     if(nrow(suited_overview_df() != 0)) {
       subjects <- sum(suited_overview_df()$`Sample Size`)   
       all_trials <- sum(suited_overview_df()$`Sample Size` * suited_overview_df()$`Trials per block` * suited_overview_df()$`Blocks per participant`)  
-      paste(nrow(suited_overview_df()),"datasets in ACDC match your filter criteria, containing approx.",
-            printnum(all_trials, digits=0), "trials overall from approx.", printnum(subjects, digits=0), "subjects.")
+      paste(nrow(suited_overview_df()), "datasets in ACDC match your filter criteria, containing approx.",
+            format(all_trials, big.mark = ",", scientific = FALSE), "trials overall from approx.", 
+            format(subjects, big.mark = ",", scientific = FALSE), "subjects.")
     } else {
       # if no hits 
       paste("There are no datasets that match these criteria. Please reset list.")
@@ -417,9 +418,6 @@ server <- function(input, output, session){
   
   # TAB 5 ------#
   overview_df <- get_overview_df(conn)
-  #output$overview_datasets <- renderTable(overview_df,
-  #                                  rownames= FALSE)
-  
   
   output$overview_datasets <- renderDataTable({
     datatable(overview_df,

@@ -2,7 +2,7 @@ library(shiny)
 library(shinydashboard)
 library(DT)
 source("./shiny/helper_file_shiny.R")
-source("./shiny/server.R")
+#source("./shiny/server.R")
 
 # UI using shinydashboard
 ui <- dashboardPage(
@@ -156,5 +156,3 @@ ui <- dashboardPage(
 
 
 
-# Run the application
-shinyApp(ui, server)
