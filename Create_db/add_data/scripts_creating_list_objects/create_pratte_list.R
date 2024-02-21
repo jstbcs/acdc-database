@@ -116,6 +116,10 @@ for(i in 1:nrow(study_df)){ # within each study
   data_added <- data_added + study_df$n_data[i] # keep track of datasets added
 }
 
+# add manual comments for simon tasks 
+comment <- "Some trials in this dataset have reaction times of -1"
+pub[[2]][[3]][[2]]$dataset_comment <- comment
+pub[[3]][[3]][[2]]$dataset_comment <- comment
 
 # save list object -------------------------------------------------------------
 saveRDS(pub, file="./Create_db/add_data/pratte_list.RData")
