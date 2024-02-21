@@ -5,7 +5,7 @@ account: mfhcgn
 server: shinyapps.io
 hostUrl: https://api.shinyapps.io/v1
 appId: 11286719
-bundleId: 8280174
+bundleId: 8280204
 url: https://mfhcgn.shinyapps.io/acdc-database/
 version: 1
 asMultiple: FALSE
