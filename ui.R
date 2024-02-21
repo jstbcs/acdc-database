@@ -1,6 +1,7 @@
 library(shiny)
 library(shinydashboard)
 library(DT)
+source("shiny/functions_for_shiny_app/helper_file_shiny.R")
 
 # UI using shinydashboard
 dashboardPage(
@@ -69,8 +70,8 @@ dashboardPage(
                  column(6, # button reset list
                         uiOutput("conditional_action_reset"))
                ) # end fluid row
+      )
     )
-  )
   ),  # end sidebar
   
   dashboardBody(
@@ -153,4 +154,4 @@ dashboardPage(
 )
 
 
-rsconnect::deployApp()
+#rsconnect::deployApp()

@@ -15,7 +15,7 @@ library(papaja)
 #source("./shiny/helper_file_shiny.R")
 #source("./shiny/ui.R")
 
-files.sources = list.files("./functions_for_shiny_app", pattern = "\\.R$", full.names = TRUE, include.dirs = FALSE)
+files.sources = list.files("shiny/functions_for_shiny_app", pattern = "\\.R$", full.names = TRUE, include.dirs = FALSE)
 sapply(files.sources, source)
 
 
@@ -437,6 +437,3 @@ function(input, output, session){
               ))
   })
 }
-
-
-#shinyApp(ui = ui, server = server)

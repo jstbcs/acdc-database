@@ -27,6 +27,6 @@ colnames(descriptive) <- colnames_descriptives
 input = "Mean accuracy (dataset)"
 # setting the order_by arguments to column name returns error
 plot_dataset_histograms(descriptive, order_by = {{input}})
-plot_trial_rtdist(detailed, 12, 2)
+plot_trial_rtdist(detailed, 6, 2)
 
 detailed %>% plot_trial_rtdist(., 51)
