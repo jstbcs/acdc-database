@@ -252,8 +252,8 @@ download_data <- function(ids, conn){
     add_argument(
       conn,
       "dataset_id",
-      "greater",
-      0
+      "equal",
+      ids
     )
  
   query_results <- query_db(conn,
@@ -262,10 +262,7 @@ download_data <- function(ids, conn){
                      target_table = 'observation_table',
                      argument_relation = 'and')
   
-  filtered_results <- query_results %>%
-    filter(dataset_id %in% ids)
-  
-  return(filtered_results)
+  return(query_results)
 }
 
 
