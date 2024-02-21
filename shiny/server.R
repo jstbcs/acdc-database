@@ -12,15 +12,15 @@ library(RSQLite)
 library(acdcquery)
 library(htmltools)
 library(papaja)
-source("./shiny/helper_file_shiny.R")
-source("./shiny/ui.R")
+#source("./shiny/helper_file_shiny.R")
+#source("./shiny/ui.R")
 
-files.sources = list.files("./functions", pattern = "\\.R$", full.names = TRUE, include.dirs = FALSE)
+files.sources = list.files("./functions_for_shiny_app", pattern = "\\.R$", full.names = TRUE, include.dirs = FALSE)
 sapply(files.sources, source)
 
 
 
-server <- function(input, output, session){
+function(input, output, session){
   
   # FOR INTRO ---
   
@@ -439,6 +439,4 @@ server <- function(input, output, session){
 }
 
 
-
-
-shinyApp(ui = ui, server = server)
+#shinyApp(ui = ui, server = server)

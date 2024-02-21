@@ -1,11 +1,9 @@
 library(shiny)
 library(shinydashboard)
 library(DT)
-source("./shiny/helper_file_shiny.R")
-#source("./shiny/server.R")
 
 # UI using shinydashboard
-ui <- dashboardPage(
+dashboardPage(
   dashboardHeader(title = "ACDC overview"),
   
   # SIDEBAR 
@@ -155,4 +153,4 @@ ui <- dashboardPage(
 )
 
 
-
+rsconnect::deployApp()

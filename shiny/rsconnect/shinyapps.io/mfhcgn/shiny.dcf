@@ -1,0 +1,10 @@
+name: shiny
+title:
+username: mfhcgn
+account: mfhcgn
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 11285829
+bundleId: 8279656
+url: https://mfhcgn.shinyapps.io/shiny/
+version: 1
