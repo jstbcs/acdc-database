@@ -1,0 +1,13 @@
+name: acdc-database
+title:
+username: mfhcgn
+account: mfhcgn
+server: shinyapps.io
+hostUrl: https://api.shinyapps.io/v1
+appId: 11286719
+bundleId: 8280174
+url: https://mfhcgn.shinyapps.io/acdc-database/
+version: 1
+asMultiple: FALSE
+asStatic: FALSE
+ignoredFiles: .gitattributes|acdc_old.db|helper_functions/column_names_db.R|helper_functions/helper_functions.R|LICENSE|reading_list_objects_to_db.R|README.md|renv.lock|testing_shiny_functions.R|Create_db|data|functions|inject

@@ -173,11 +173,15 @@ get_R_code <- function(argument_list){
   # install, load, connect to db -------
   set_up <- "\n# specify filter arguments\narguments <- list() %>%\n"
   
-  # add first arguments without starting with "%>%" ------
+  # add first arguments without starting with "%>%" --------
+  
   # convert value to character if necessary
   if(grepl("\\d", argument_list[[3]][1])) first_value=argument_list[[3]][1] else first_value=paste0("'",argument_list[[3]][1],"'")
   # if between operator: print values as vector 
-  if(argument_list[[2]][1] == "between") first_value=paste0("c(", str_split(argument_list[[3]][1], "; ")[[1]][1], ", ", str_split(argument_list[[3]][1], "; ")[[1]][2], ")") else first_value=argument_list[[3]][1]  #"'between'"
+  if(argument_list[[2]][1] == "between") first_value=paste0("c(", str_split(argument_list[[3]][1], "; ")[[1]][1], ", ", str_split(argument_list[[3]][1], "; ")[[1]][2], ")") else first_value=argument_list[[3]][1]  
+  # if muliple task types chosen: print as vector 
+  if(argument_list[[1]][1] == "task_name" & grepl(";", argument_list[[3]][1])) first_value=paste0("c(", str_split(argument_list[[3]][1], ";")[[1]][1], ", ", str_split(argument_list[[3]][1], ";")[[1]][2], ")") else first_value=argument_list[[3]][1]
+ 
   first_arguments <- paste0("   conn", ", \n", 
                            "    '", argument_list[[1]][1], "', \n",
                            "    '", argument_list[[2]][1], "', \n",
@@ -194,6 +198,9 @@ get_R_code <- function(argument_list){
       
       # if between operator: print values as vector 
       if(argument_list[[2]][i] == "between") arg3=paste0("c(", str_split(argument_list[[3]][i], "; ")[[1]][1], ", ", str_split(argument_list[[3]][i], "; ")[[1]][2], ")") else arg3=argument_list[[3]][i]  #"'between'"
+      # if muliple task types chosen: print as vector 
+      if(argument_list[[1]][i] == "task_name" & grepl(";", argument_list[[3]][i])) arg3=paste0("c(", str_split(argument_list[[3]][i], ";")[[1]][1], ", ", str_split(argument_list[[3]][i], ";")[[1]][2], ")") else arg3=argument_list[[3]][i]
+      
       # elements to be separated by comma
       comma_separated <- paste0("   conn", ", \n", 
                                "    '", argument_list[[1]][i], "', \n",

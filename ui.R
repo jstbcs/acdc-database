@@ -1,7 +1,7 @@
 library(shiny)
 library(shinydashboard)
 library(DT)
-source("shiny/functions_for_shiny_app/helper_file_shiny.R")
+source("shiny_functions/helper_file_shiny.R")
 
 # UI using shinydashboard
 dashboardPage(

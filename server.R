@@ -15,7 +15,7 @@ library(papaja)
 #source("./shiny/helper_file_shiny.R")
 #source("./shiny/ui.R")
 
-files.sources = list.files("shiny/functions_for_shiny_app", pattern = "\\.R$", full.names = TRUE, include.dirs = FALSE)
+files.sources = list.files("shiny_functions", pattern = "\\.R$", full.names = TRUE, include.dirs = FALSE)
 sapply(files.sources, source)
 
 
@@ -45,7 +45,7 @@ function(input, output, session){
       renderUI({HTML("The ACDC data base contains attentional control task data (i.e., Stroop, flanker or Simon task) from over 40 datasets as well as information about the respective studies and publications. <br>
                      It is meant to enhance access to open attentional control task data. <br>
                      Data can be accessed either via SQL or our CRAN R package <a href=https://cran.r-project.org/web/packages/acdcquery/index.html target='_blank' rel='noopener noreferrer'>acdcquery</a>. <br> <br>
-                     <img src='https://raw.githubusercontent.com/jstbcs/acdc-database/7adc1609a7743803a4d760ef5cd11ff426db2794/shiny/www/db_structure.png' alt='Structure of inhibition task db' width='908' height='630'>"
+                     <img src='https://raw.githubusercontent.com/jstbcs/acdc-database/7adc1609a7743803a4d760ef5cd11ff426db2794/shiny_functions/www/db_structure.png' alt='Structure of inhibition task db' width='908' height='630'>"
       )
       })
     } else {
