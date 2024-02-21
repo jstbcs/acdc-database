@@ -10,13 +10,8 @@ knitr::opts_chunk$set(echo = TRUE)
 
 ```{r, echo = F}
 library(dplyr)
-source("./download_raw_data.R")
-source("./compute_automatic_info.R")
-source("./create_publication_level.R")
-source("./create_study_level.R")
-source("./start_data_level.R")
-source("./finish_data_level.R")
-source("./source_testing_scripts.R")
+files.sources = list.files("./functions", pattern = "\\.R$", full.names = TRUE, include.dirs = FALSE)
+sapply(files.sources, source)
 ```
 
 This scripts guides you through the steps of getting submissions from the inhibition task online form and creating a nested list which can then be used to automatically insert the data into the data base. 
