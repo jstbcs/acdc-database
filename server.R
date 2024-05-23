@@ -417,10 +417,29 @@ function(input, output, session){
   )
   
   # TAB 5 ------#
-  overview_df <- get_overview_df(conn)
+  overview_df <- reactive({ # get overview dataframe 
+    df <- get_overview_df(conn, 
+                          filtered = input$filtered_overview,
+                          filtered_dataset_id  = suited_overview_df()[['Dataset ID']])
+    if (is.null(df) || !is.data.frame(df)) {
+      df <- data.frame()  # Ensure df is always a data frame
+    }
+    df
+  })
   
+  # print overview table 
   output$overview_datasets <- renderDataTable({
-    datatable(overview_df,
+    df <- overview_df()
+    
+    if (nrow(df) == 0) {  # if no matches for filter
+      df <- data.frame(Message = "No data available for the selected filters")
+    }
+    
+    if((length(rv$argument_list[[1]]) == 0) & (input$filtered_overview == TRUE)){ # if no filter chosen yet
+      df <- data.frame(Message = "No filter criteria chosen yet")
+    }
+    
+    datatable(df,
               rownames = FALSE,
               options = list(
                 autoWidth = FALSE,

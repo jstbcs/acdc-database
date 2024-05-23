@@ -151,6 +151,9 @@ dashboardPage(
       
       # TAB 5
       tabPanel("Overview of all datasets in ACDC", 
+               checkboxInput(inputId = "filtered_overview", 
+                             label = "Only show filtered datasets", 
+                             value = FALSE, width = NULL),
                dataTableOutput("overview_datasets")
       )
       

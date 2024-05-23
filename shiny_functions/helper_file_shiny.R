@@ -226,7 +226,7 @@ get_R_code <- function(argument_list, target_table){
 
 
 # merge tables to get list of all publications, studies, and datasets ---------------
-get_overview_df <- function(conn){
+get_overview_df <- function(conn, filtered = FALSE, filtered_dataset_id = NULL){
   pub <- dbReadTable(conn, "publication_table")
   stud <- dbReadTable(conn, "study_table")
   dat <- dbReadTable(conn, "dataset_table")
@@ -238,13 +238,19 @@ get_overview_df <- function(conn){
     left_join(task, by = "task_id") %>%
     select(publication_id, apa_reference, publication_code, study_id, study_comment,
            dataset_id, task_name, task_description)
+  
+  if(filtered == TRUE){ # option to only show filtered publications
+    overview_df <- overview_df %>%
+      filter(dataset_id %in% filtered_dataset_id)
+  }
+  
   colnames(overview_df) <- c("Publication ID", "APA Refrence", "Publication Code",
                              "Study ID", "Study description", "Dataset ID",
                              "Task type", "Task description")
   
   return(overview_df)
 }
-  
+
 
 # download data  ---------------------------------------------------------------------
 download_data <- function(ids, conn, target_table){
