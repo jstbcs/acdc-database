@@ -156,7 +156,7 @@ filtered_dataset_ids <- function(suited_overview_df){
 
 
 # function to create R code based on chosen arguments ----------------------------
-get_R_code <- function(argument_list){
+get_R_code <- function(argument_list, target_table){
   # R code for setup---------
   Rcode <- "if (!require('acdcquery')) install.packages('acdcquery') \nif (!require('dplyr')) install.packages('dplyr') \nlibrary(dpylr) \nlibrary(acdcquery)\n \n# create connection to SQL data base \nconn <- connect_to_db('acdc.db')\n"
 
@@ -164,7 +164,7 @@ get_R_code <- function(argument_list){
   query <- paste("\n \nquery_result <- query_db(conn,\n", 
                  "                        arguments,\n", 
                  "                        target_vars = 'default',\n", 
-                 "                        target_table = 'observation_table',\n",
+                 "                        target_table = '",target_table,"',\n",
                  "                        argument_relation = 'and')")
   
   # once first argument has been chosen
@@ -247,7 +247,7 @@ get_overview_df <- function(conn){
   
 
 # download data  ---------------------------------------------------------------------
-download_data <- function(ids, conn){
+download_data <- function(ids, conn, target_table){
   arguments <- list() %>% 
     add_argument(
       conn,
@@ -259,7 +259,7 @@ download_data <- function(ids, conn){
   query_results <- query_db(conn,
                      arguments,
                      target_vars = 'default',
-                     target_table = 'observation_table',
+                     target_table = target_table,
                      argument_relation = 'and')
   
   return(query_results)

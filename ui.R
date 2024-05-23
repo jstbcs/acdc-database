@@ -134,6 +134,12 @@ dashboardPage(
       # TAB 4
       tabPanel("Get the data",
                
+               # user input: choice of table 
+               selectInput(inputId = "target_table",
+                           label = "Choose table to download/ access:",
+                           choices = c("observation_table", "study_table", "dataset_table"),
+                           selected = "observation_table"),
+               
                # print R code
                h2("Use this code to access the data in R:"),
                verbatimTextOutput("Rcode"),

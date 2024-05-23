@@ -285,7 +285,7 @@ function(input, output, session){
   # query data base (needed to print details on number of hits)
   # note: later used for download button
   data_for_download <- reactive({
-    download_data(suited_overview_df()[['Dataset ID']], conn)
+    download_data(suited_overview_df()[['Dataset ID']], conn, input$target_table)
   })
   
   
@@ -392,7 +392,7 @@ function(input, output, session){
   # print R Code to access data 
   R_code <- reactive({
     req(length(rv$argument_list[[1]]) > 0)
-    cat(get_R_code(argument_list = rv$argument_list), sep=" ") # use cat for line breaks
+    cat(get_R_code(argument_list = rv$argument_list, target_table = input$target_table), sep=" ") # use cat for line breaks
   })
   
   output$Rcode <- renderPrint({
