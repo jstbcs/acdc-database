@@ -5,7 +5,7 @@ library(DBI)
 
 # Getting info on lists -------
 # NOTE: adjust this code to select only those list objects you want to newly add to the db
-data_folder_path = "../Create_db/add_data/"
+data_folder_path = "./Create_db/add_data/"
 
 list_files = list.files(data_folder_path, "(list).*(RData)", full.names = TRUE)
 
@@ -33,19 +33,22 @@ for (ipub in seq_along(lists)){
       
       condition_info = lists[[ipub]][[istudy]][[idata]]$condition_table
       lists[[ipub]][[istudy]][[idata]]$within_table = cbind(lists[[ipub]][[istudy]][[idata]]$within_table, condition_info)
+      
+      # Recode condition variable
+      lists[[ipub]][[istudy]][[idata]]$observation_table$congruency = factor(lists[[ipub]][[istudy]][[idata]]$observation_table$congruency, levels = 1:3, labels = c("congruent", "incongruent", "neutral"))
     }
   }
 }
 
 # Adding lists ------
 
-files.sources = list.files("../functions", pattern = "\\.R$", full.names = TRUE, include.dirs = FALSE)
+files.sources = list.files("./functions", pattern = "\\.R$", full.names = TRUE, include.dirs = FALSE)
 sapply(files.sources, source)
 
 check_overall_structure(lists)
 
-create_empty_db("../acdc.db")
+create_empty_db("./acdc.db")
 
-db_conn = DBI::dbConnect(RSQLite::SQLite(), "../acdc.db")
+db_conn = DBI::dbConnect(RSQLite::SQLite(), "./acdc.db")
 
 add_object(db_conn, lists)

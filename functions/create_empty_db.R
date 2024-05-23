@@ -89,7 +89,7 @@ create_empty_db <- function(file_path){
     block INTEGER,
     trial INTEGER,
     within_id INTEGER,
-    congruency INTEGER,
+    congruency VARCHAR(20),
     accuracy BOOLEAN,
     rt FLOAT,
     FOREIGN KEY (dataset_id) REFERENCES dataset_table(dataset_id),
