@@ -40,6 +40,16 @@ create_empty_db <- function(file_path){
   
   DBI::dbExecute(
     conn,
+    "CREATE TABLE measures_table (
+    measures_id INTEGER PRIMARY KEY AUTOINCREMENT,
+    study_id INTEGER,
+    measure_name VARCHAR(10000),
+    FOREIGN KEY (study_id) REFERENCES study_table(study_id)
+    );"
+  )
+  
+  DBI::dbExecute(
+    conn,
     "CREATE TABLE dataset_table (
     dataset_id INTEGER PRIMARY KEY AUTOINCREMENT,
     study_id INTEGER,
