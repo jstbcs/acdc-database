@@ -137,7 +137,9 @@ dashboardPage(
                # user input: choice of table 
                selectInput(inputId = "target_table",
                            label = "Choose table to download/ access:",
-                           choices = c("observation_table", "study_table", "dataset_table"),
+                           choices = c("observation_table", "publication_table", 
+                                       "study_table","task_table","dataset_table", 
+                                       "within_table"),
                            selected = "observation_table"),
                
                # print R code
