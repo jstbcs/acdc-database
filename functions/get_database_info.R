@@ -99,6 +99,14 @@ get_database_info <- function(){
                                    1, 0, 
                                    1, 1, 1)
   
+  measures_table_columns <- c(
+    "measures_id",
+    "study_id",
+    "measure_name"
+  )
+  
+  measures_table_mandatory <- c(1, 1, 1)
+  
   table_info_db <- list(
     publication_table = data.frame(column = publication_table_columns, 
                                    mandatory = publication_table_mandatory),
@@ -111,7 +119,9 @@ get_database_info <- function(){
     observation_table = data.frame(column = observation_table_columns,
                                    mandatory = observation_table_mandatory),
     task_table = data.frame(column = task_table_columns,
-                            mandatory = task_table_mandatory)
+                            mandatory = task_table_mandatory),
+    measures_table = data.frame(column = measures_table_columns,
+                                mandatory = measures_table_mandatory)
   )
   
   return(table_info_db)

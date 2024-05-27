@@ -15,8 +15,12 @@ add_study <- function(conn, study_add, pub_id){
     
     
   study_id = find_next_free_id(conn, "study_table")
-  # Add study id to study_info and group_info
+  #measures_id = find_next_free_id(conn, "measures_table")
+
+    # Add study id to study_info and measures
   study_add$study_table$study_id = study_id
+  study_add$measures_table$study_id = study_id
+  # study_add$measures_table$measures_id = measures_id
 
   # Also add the publication id
   study_add$study_table$publication_id = pub_id
@@ -24,6 +28,9 @@ add_study <- function(conn, study_add, pub_id){
   # Then add the study table
   study_table = study_add$study_table
   add_table(conn, study_table, "study_table")
+  
+  measures_table = study_add$measures_table
+  add_table(conn, measures_table, "measures_table")
   
   # Now moving to dataset
   data_names = which_elements_match(names(study_add), regex_matches_data_names)

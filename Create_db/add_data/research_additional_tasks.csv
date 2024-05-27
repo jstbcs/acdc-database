@@ -1,0 +1,13 @@
+study_no;publication_code;tasks
+1;chetverikov_2017_blame;Flanker
+1;enkavi_2019_large;Adaptive N-back, Angling Risk, ANT, Bickel Titrator, Choice RT, CRT, CCT Cold, CCT Hot, Dietary, Digit Span, Directed Forgetting, Discounting, DPX, Go-Nogo, Hierarchical Rule, Holt Laury, Information Sampling, Keep Track, Kirby, Local Global, Motor SSS, Prob Selection, PRP, Raven's, Recent Probes, Shape Matching, Shifting, Simon, Simple RT, Spatial Span, Stim SSS, Stop Signal, Stroop, Task Switching, Tower of London, Two Step
+1;hedge_2018_reliability;Flanker, Stroop, Go-Nogo, Stop-Signal
+1;kucina_2023_calibration;Flanker, Stroop, Simon, Stroopon, Flankon
+1;loeffler_2022_common;Stroop, Flanker, Negative Priming, Keep track, Running span, N-back, Switching, Number letter, Global local, Two choice reaction time, Sternberg, posner, memory updating, operation span, sentence span, spatial short-term memory, location-letter binding, berlin intelligence structure test
+1;ebersole_2016_many;Conscientiousness, Agreeableness, Neuroticism, Openness to experience, Extraversion, Intrinsic motivation, Perceived stress, mood, self-esteem, effort, attention, need for cognition, Stroop effect, Metaphoric structuring effect, availability heuristic, persistence, power and perspective, weight embodiment, warmth perceptions, elaboration likelihood effect, subjective distance, credentials and prejudice
+1;pratte_2010_exploring;Simon, Stroop
+1;mermet_2018_should;Stroop, Simon, Flanker, Global local, Positive and negative compatability, n-2 repetition, Stop-signal, Antisaccade,
+1;stahl_2014_behavioral;Shape Matching, Stroop matching, Animal matching, Recent probes, Directed forgetting, Response priming, number-letter task-switching, color-shape task-switching, brightness-discrimination, lexical decision, decay discounting, counting span, speed (identical pictures), advanced progressive matrices, MWT-B vocabulary test, Stroop, Flanker, Stop-Signal, Antisaccade, Go-Nogo, Barrat Impulsiveness Scale, Sensation-Seeking scale, UPPS questionnaire, BIS-BAS, Motivational Scale (Kunda 2002), Delay-of-gratification scale (Blass 1983), Cognitive Failures Questionnaire, White Bear Suppression Inventory, Symptom Check List (SCL-R Frank 1995)
+1;tang_2022_dual;Stroop, AX-CPT, Cued Task-Switching, Sternberg task
+1;vonbastiaan_2015_evidence;Simon, Stroop, Flanker, color-shape task-switching, parity-magnitude task-switching, animacy-size task-switching, square-monitoring, rhyme-monitoring, digis-monitoring, color keep-track, letter keep-track, spatial short-term memory, brown-peterson, complex-span, advanced progressive matrices, locations test, letter sets test, nonsense syllogisms test, diagrammin relationships, LEAP-Q
+1;whitehead_2020;Stroop, Simon, Flanker  
