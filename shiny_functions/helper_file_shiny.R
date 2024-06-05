@@ -161,7 +161,7 @@ get_R_code <- function(argument_list, target_table){
   Rcode <- "if (!require('acdcquery')) install.packages('acdcquery') \nif (!require('dplyr')) install.packages('dplyr') \nlibrary(dpylr) \nlibrary(acdcquery)\n \n# create connection to SQL data base \nconn <- connect_to_db('acdc.db')\n"
 
   # query to get data at end of code ---
-  query <- paste("\n \nquery_result <- query_db(conn,\n", 
+  query <- paste0("\n \nquery_result <- query_db(conn,\n", 
                  "                        arguments,\n", 
                  "                        target_vars = 'default',\n", 
                  "                        target_table = '",target_table,"',\n",
