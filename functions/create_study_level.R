@@ -101,6 +101,13 @@ create_study_level <- function(pub, entry){
       }
     }
     
+    # FILL measures_table
+    pub[[2]]$measures_table <- data.frame(
+      study_id = 1,
+      measure_id = NA, 
+      measure_name = NA
+    )
+    
     
     # STUDY LEVEL IF NUMBER OF STUDIES > 1 ------------------- #
   } else if (entry$Number.of.studies > 1){
@@ -214,6 +221,14 @@ create_study_level <- function(pub, entry){
           
         }
       }
+      
+      # FILL measures_table
+      pub[[i+1]]$measures_table <- data.frame(
+        study_id = i,
+        measure_id = NA, 
+        measure_name = NA
+      )
+      
     }
   }
   

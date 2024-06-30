@@ -114,6 +114,7 @@ The nested list will have the following structure:
 #   study1 {                  # study level 
 #     study_table,
 #     between_table,
+#     measures_table,
 
 #     data1{                    # data level 
 #       task_table,
@@ -185,6 +186,9 @@ You can index these entries like so:
 ```{r}
 #pub[[studynumber + 1]][[datasetnumber + 2]][[2]]$github <- "link"
 ```
+
+Optionally, fill in the measures table if user indicated that additional tests other than attentional control tasks were conducted and if they indidicate which ones.
+
 
 # Step 4: Run automatic checks 
 
