@@ -23,9 +23,7 @@ library(stringr)
 
 # Dataset 1 (Von Bastian et al.) Stroop task 
 dataset1 <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/vonbastian_2015_evidence/LEF_stroop.csv", sep = ";") %>%
-  mutate(congruency = ifelse(congruency == "congruent", 1, ifelse(congruency == "incongruent", 2, ifelse(congruency == "neutral", 3, NA))),
-         congruency = as.factor(congruency),
-         datasetid = 1,
+  mutate(datasetid = 1,
          subject = as.factor(ID),
          between = NA,
          within = NA,
@@ -45,7 +43,7 @@ dataset2 <- dataset2 %>% filter(exp == 1) %>% # keep Stroop task data
          block = blk+1,
          trial = trial+1,
          subject = as.factor(subject),
-         congruency = ifelse(cond == 1, 1, ifelse(cond == 0, 2, ifelse(cond == 2, 3, NA))),
+         congruency = ifelse(cond == 1, "congruent", ifelse(cond == 0, "incongruent", ifelse(cond == 2, "neutral", NA))),
          congruency = as.factor(congruency),
          between = NA,
          within = NA) %>%
@@ -59,8 +57,7 @@ dataset3 <- dataset3 %>% filter(blktype == 1) %>% # keep Stroop task data
          block = (blk+2)/2,
          trial = trial,
          subject = as.factor(subject),
-         congruency = ifelse(cond == 1, 1, ifelse(cond == 0, 2, ifelse(cond == 2, 3, NA))),
-         congruency = as.factor(congruency),
+         congruency = ifelse(cond == 1, "congruent", ifelse(cond == 0, "incongruent", ifelse(cond == 2, "neutral", NA))),
          between = NA, 
          within = NA) %>%
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt) 
@@ -69,8 +66,7 @@ dataset3 <- dataset3 %>% filter(blktype == 1) %>% # keep Stroop task data
 dataset4 <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/mermet_2018_should/numStroop.dat.txt", sep = " ") %>% mutate(id = row_number())
 trialnumber <- dataset4 %>% group_by(sub, block) %>% mutate(trial = row_number()) %>% ungroup()
 dataset4 <- left_join(dataset4, trialnumber, by = c("id", "sub", "ageGroup", "block", "trialType", "cond", "stim", "acc", "rt")) %>%
-  mutate(congruency = ifelse(cond == "congruent", 1, ifelse(cond == "incongruent", 2, ifelse(cond == "neutral", 3, NA))),
-         congruency = as.factor(congruency),
+  mutate(congruency = cond,
          block = ifelse(block == "practice", -999, substring(block ,nchar(block))),
          datasetid = 4,
          subject =  sub - 100, 
@@ -88,8 +84,7 @@ dataset4b <- dataset4[[2]] # age group 3 only
 dataset5 <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/mermet_2018_should/colStroop.dat.txt", sep = " ") %>% mutate(id = row_number())
 trialnumber <- dataset5 %>% group_by(sub, block) %>% mutate(trial = row_number()) %>% ungroup()
 dataset5 <- left_join(dataset5, trialnumber, by = c("id", "sub", "ageGroup", "block", "trialType", "cond", "stim", "acc", "rt")) %>%
-  mutate(congruency = ifelse(cond == "congruent", 1, ifelse(cond == "incongruent", 2, ifelse(cond == "neutral", 3, NA))),
-         congruency = as.factor(congruency),
+  mutate(congruency = cond, 
          block = ifelse(block == "practice", -999, substring(block ,nchar(block))),
          datasetid = 5,
          subject = as.factor(sub - 100),
@@ -122,8 +117,7 @@ for(i in 1:length(study)){
 }
 # combine data of study 1
 hedge_data1 <- bind_rows(hedge[[1]]) %>%
-  mutate(congruency = ifelse(cond == 0, 1, ifelse(cond == 2, 2, ifelse(cond == 1, 3, NA))),
-         congruency = as.factor(congruency),
+  mutate(congruency = ifelse(cond == 0, "congruent", ifelse(cond == 2, "incongruent", ifelse(cond == 1, "neutral", NA))),
          block = ifelse(session == 1, block, block + 5),
          between = NA,
          within = as.numeric(session),
@@ -135,9 +129,7 @@ dataset6 <- hedge_data1 %>% filter(direction == 0) %>% # keep Stroop task data o
 
 # Dataset 7 (Von Bastian et al.); simon task 
 dataset7 <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/vonbastian_2015_evidence/LEF_simon.csv", sep = ";") %>%
-  mutate(congruency = ifelse(congruency == "congruent", 1, ifelse(congruency == "incongruent", 2, ifelse(congruency == "neutral", 3, NA))),
-         congruency = as.factor(congruency),
-         datasetid = 7,
+  mutate(datasetid = 7,
          block = 1,
          subject = as.factor(ID),
          between = NA, 
@@ -156,8 +148,7 @@ dataset8 <- dataset8 %>% filter(exp == 0) %>% # keep classic Simon task data
          block = blk+1,
          trial = trial,
          subject = as.factor(subject),
-         congruency = ifelse(cond == 1, 1, ifelse(cond == 0, 2, ifelse(cond == 2, 3, NA))),
-         congruency = as.factor(congruency),
+         congruency = ifelse(cond == 1, "congruent", ifelse(cond == 0, "incongruent", ifelse(cond == 2, "neutral", NA))),
          between = NA, 
          within = NA) %>%
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt) 
@@ -170,17 +161,14 @@ dataset9 <- dataset9 %>% filter(blktype == 0) %>% # keep lateral Simon task data
          block = (blk+1)/2,
          trial = trial+1,
          subject = as.factor(subject),
-         congruency = ifelse(cond == 1, 1, ifelse(cond == 0, 2, ifelse(cond == 2, 3, NA))),
-         congruency = as.factor(congruency),
+         congruency = ifelse(cond == 1, "congruent", ifelse(cond == 0, "incongruent", ifelse(cond == 2, "neutral", NA))),
          between = NA, 
          within = NA) %>%
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt) 
 
 # Dataset 10 (Von Bastian et al.); flanker task
 dataset10 <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/vonbastian_2015_evidence/LEF_flanker.csv", sep = ";") %>%
-  mutate(congruency = ifelse(congruency == "congruent", 1, ifelse(congruency == "incongruent", 2, ifelse(congruency == "neutral", 3, NA))),
-         congruency = as.factor(congruency),
-         datasetid = 10,
+  mutate(datasetid = 10,
          block = 1,
          subject = as.factor(ID),
          between = NA,
@@ -196,8 +184,7 @@ dataset10 <- dataset10 %>%
 dataset11 <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/mermet_2018_should/arrowFlanker.dat.txt", sep = " ") %>% mutate(id = row_number())
 trialnumber <- dataset11 %>% group_by(sub, block) %>% mutate(trial = row_number()) %>% ungroup()
 dataset11 <- left_join(dataset11, trialnumber, by = c("id", "sub", "ageGroup", "block", "trialType", "cond", "stim", "acc", "rt")) %>%
-  mutate(congruency = ifelse(cond == "congruent", 1, ifelse(cond == "incongruent", 2, ifelse(cond == "neutral", 3, NA))),
-         congruency = as.factor(congruency),
+  mutate(congruency = cond,
          block = ifelse(block == "practice", -999, substring(block ,nchar(block))),
          datasetid = 11,
          subject = as.factor(sub - 100),
@@ -214,8 +201,7 @@ dataset11b <- dataset11[[2]] # age group 3 only
 dataset12 <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/mermet_2018_should/letFlanker.dat.txt", sep = " ") %>% mutate(id = row_number())
 trialnumber <- dataset12 %>% group_by(sub, block) %>% mutate(trial = row_number()) %>% ungroup()
 dataset12 <- left_join(dataset12, trialnumber, by = c("id", "sub", "ageGroup", "block", "trialType", "cond", "stim", "acc", "rt")) %>%
-  mutate(congruency = ifelse(cond == "congruent", 1, ifelse(cond == "incongruent", 2, ifelse(cond == "neutral", 3, NA))),
-         congruency = as.factor(congruency),
+  mutate(congruency = cond,
          block = ifelse(block == "practice", -999, substring(block ,nchar(block))),
          datasetid = 12,
          subject = as.factor(sub - 100),
@@ -244,8 +230,6 @@ for(i in 1:21){
                   subject = as.factor(session_id), 
                   block = block_number,
                   trial = trial_number+1, 
-                  congruency = ifelse(congruent == "Congruent", 1, ifelse(congruent == "Incongruent", 2, NA)), 
-                  congruency = as.factor(congruency),
                   accuracy = trial_error,
                   between = NA,
                   within = NA,
@@ -262,7 +246,7 @@ dataset35 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-da
   filter(!Subject %in% c(120,175,238,903,904,262)) %>% # remove participants with high trial count
   mutate(
     datasetid = 35,
-    congruency = ifelse(Congruency == 0, 2, Congruency),
+    congruency = ifelse(Congruency == 0, "incongruent", Congruency),
     subject = as.factor(Subject - 100),
     block = BlockNum,
     between = NA,
@@ -279,7 +263,7 @@ dataset35 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-da
 dataset36 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/whitehead_2020/FlankerExp3.csv") %>% 
   mutate(
     datasetid = 36,
-    congruency = ifelse(Congruency == 0, 2, Congruency),
+    congruency = ifelse(Congruency == 0, "incongruent", Congruency),
     congruency = as.factor(congruency),
     subject = factor(Subject - 100),
     between = NA,
@@ -299,7 +283,7 @@ dataset36 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-da
 dataset37 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/whitehead_2020/SimonExp2.csv") %>%
   mutate(
     datasetid = 37,
-    congruency = ifelse(Congruency == 0, 2, Congruency),
+    congruency = ifelse(Congruency == 0, "incongruent", Congruency),
     congruency = as.factor(congruency),
     subject = as.factor(Subject - 100),
     between = NA, 
@@ -318,7 +302,7 @@ dataset37 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-da
 dataset38 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/whitehead_2020/SimonExp3.csv") %>%
   mutate(
     datasetid = 38,
-    congruency = ifelse(Congruency == 0, 2, Congruency),
+    congruency = ifelse(Congruency == 0, "incongruent", Congruency),
     congruency = as.factor(congruency),
     subject = as.factor(Subject - 100),
     between = NA, 
@@ -337,7 +321,7 @@ dataset38 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-da
 dataset39 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/whitehead_2020/StroopExp2.csv") %>% 
   mutate(
     datasetid = 39, 
-    congruency = ifelse(Congruency == 0, 2, Congruency),
+    congruency = ifelse(Congruency == 0, "incongruent", Congruency),
     congruency = as.factor(congruency),
     subject = as.factor(Subject - 100),
     between = NA, 
@@ -356,7 +340,7 @@ dataset39 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-da
 dataset40 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/whitehead_2020/StroopExp3.csv") %>% 
   mutate(
     datasetid = 40,
-    congruency = ifelse(Congruency == 0, 2, Congruency),
+    congruency = ifelse(Congruency == 0, "incongruent", Congruency),
     congruency = as.factor(congruency),
     subject = as.factor(Subject - 100),
     between = NA, 
@@ -410,7 +394,7 @@ dataset41 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-da
       within == "retest.proactive.PC50" ~ 13, 
       within == "retest.proactive.MI" ~ 14
     ),
-    congruency = ifelse(grepl("incon", trialCode), 2, 1),
+    congruency = ifelse(grepl("incon", trialCode), "incongruent", "congruent"),
     accuracy = ACC,
     rt = RT / 1000)  %>%
   group_by(subject, block) %>%   # adding within each subject and within condition trial number
@@ -432,7 +416,7 @@ dataset42 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-da
     trial = trialN + 1, 
     between = NA, 
     within = NA, 
-    congruency = ifelse(grepl("Incompatible", compf), 2, 1), 
+    congruency = ifelse(grepl("Incompatible", compf), "incongruent", "congruent"), 
     accuracy = corr) %>% 
   select(datasetid, subject, block, trial, congruency, between, within, accuracy, rt)
 
@@ -452,8 +436,8 @@ dataset43 <- dataset43 %>%
                    ifelse(grepl("mix", block) | grepl("ueb_", block),
                           -999,
                           block)),
-    congruency = ifelse(condition == "con" | condition == "ident", 1, 
-                        ifelse(condition == "incon", 2, 3)),
+    congruency = ifelse(condition == "con" | condition == "ident", "congruent", 
+                        ifelse(condition == "incon", "incongruent", "neutral")),
     congruency = as.factor(congruency),
     accuracy = error,
     between = NA, 
@@ -501,8 +485,8 @@ dataset45 <- dataset45 %>%
     block = ifelse(grepl("mix", block)  | grepl("ueb_", block), 
                    -999,
                    block),   # encode practice block
-    congruency = ifelse(condition == "congr" | condition == "ident", 1, 
-                        ifelse(condition == "incon", 2, 3)),
+    congruency = ifelse(condition == "congr" | condition == "ident", "congruent", 
+                        ifelse(condition == "incon", "incongruent", "neutral")),
     congruency = as.factor(congruency),
     accuracy = err,
     between = NA,
@@ -519,8 +503,7 @@ dataset45 <- dataset45 %>%
 dataset46 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/whitehead_2020/Experiment1.csv") %>% 
   filter(StimSlideSimon.RT != "NA") %>%  # choose simon task entries
   mutate(datasetid = 46, 
-         congruency = ifelse(Congruency == 0, 2, Congruency),
-         congruency = as.factor(congruency),
+         congruency = ifelse(Congruency == 0, "incongruent", Congruency),
          subject = as.factor(Subject - 505),
          block = BlockNum, 
          between = NA, 
@@ -537,8 +520,7 @@ dataset46 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-da
 dataset47 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/whitehead_2020/Experiment1.csv") %>% 
   filter(StimSlideFlanker.RT != "NA") %>%  # choose Flanker task entries
   mutate(datasetid = 47, 
-         congruency = ifelse(Congruency == 0, 2, Congruency),
-         congruency = as.factor(congruency),
+         congruency = ifelse(Congruency == 0, "incongruent", Congruency),
          subject = as.factor(Subject - 505),
          block = BlockNum, 
          between = NA, 
@@ -555,8 +537,7 @@ dataset47 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-da
 dataset48 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-database/main/data/whitehead_2020/Experiment1.csv") %>% 
   filter(StimSlideStroop.RT != "NA") %>%  # choose Stroop task entries
   mutate(datasetid = 48, 
-         congruency = ifelse(Congruency == 0, 2, Congruency),
-         congruency = as.factor(congruency),
+         congruency = ifelse(Congruency == 0, "incongruent", Congruency),
          subject = as.factor(Subject - 505),
          block = BlockNum, 
          between = NA, 
@@ -571,8 +552,7 @@ dataset48 <- data.table::fread("https://raw.githubusercontent.com/jstbcs/acdc-da
 
 # Dataset49 & 50: Hedge data of study 2
 hedge_data2 <- bind_rows(hedge[[2]]) %>% # combine data of study2
-  mutate(congruency = ifelse(cond == 0, 1, ifelse(cond == 2, 2, ifelse(cond == 1, 3, NA))),
-         congruency = as.factor(congruency),
+  mutate(congruency = ifelse(cond == 0, "congruent", ifelse(cond == 2, "incongruent", ifelse(cond == 1, "neutral", NA))),
          block = ifelse(session == 1, block, block + 5),
          between = NA,
          within = as.numeric(session),
@@ -597,7 +577,7 @@ dataset51a <- dataset51a %>%
     subject = as.numeric(str_split_fixed(worker_id, fixed("s"), 2)[, 2]), 
     block = ifelse(exp_stage == "practice", -999, 1),
     trial = trialnumber$trial, 
-    congruency = ifelse(condition == "congruent", 1, 2),
+    congruency = ifelse(condition == "congruent", "congruent", "incongruent"),
     between = NA, 
     within = 1, # first wave; test phase 
     accuracy = correct, 
@@ -613,7 +593,7 @@ dataset51b <- dataset51b %>%
     subject =  as.numeric(str_split_fixed(worker_id, fixed("s"), 2)[, 2]),
     block = ifelse(exp_stage == "practice", -999, 1),
     trial = trialnumber$trial, 
-    congruency = ifelse(condition == "congruent", 1, 2),
+    congruency = condition,
     between = NA, 
     within = 2, # second wave; retest phase
     accuracy = correct, 
@@ -633,7 +613,7 @@ dataset52a <- dataset52a %>%
     subject = as.numeric(str_split_fixed(worker_id, fixed("s"), 2)[, 2]),
     block = ifelse(exp_stage == "practice", -999, 1),
     trial = trial_num + 1, 
-    congruency = ifelse(condition == "congruent", 1, 2),
+    congruency = condition,
     between = NA, 
     within = 1, # first wave; test phase 
     accuracy = correct, 
@@ -648,7 +628,7 @@ dataset52b <- dataset52b %>%
     subject = as.numeric(str_split_fixed(worker_id, fixed("s"), 2)[, 2]),
     block = ifelse(exp_stage == "practice", -999, 1),
     trial = trial_num + 1, 
-    congruency = ifelse(condition == "congruent", 1, 2),
+    congruency = condition,
     between = NA, 
     within = 2, # second wave, retest
     accuracy = correct, 
@@ -675,7 +655,7 @@ dataset54 <- as.data.frame(kucina_tasks[[2]]) %>%
                    ifelse(Block == 0, 36, # Block 20 in session 2 is coded as 0, should be 36
                           Block + 16)), # Start counting from 16 for 2nd session
     trial = Trial, 
-    congruency = ifelse(Conflict == "congruent", 1, 2), 
+    congruency = condition,
     between = NA, # between manipulation was task type
     within = Double + 1, 
     accuracy = ifelse(R == S, 1, 0),
@@ -702,7 +682,7 @@ dataset55 <- dataset55 %>%
                         ifelse(Block == 0, 36, # Block 20 in session 2 is coded as 0, should be 36
                                Block + 16)), # Start counting from 16 for 2nd session 
          trial = Trial, 
-         congruency = ifelse(Conflict == "congruent+congruent", 1, 2),
+         congruency = ifelse(Conflict == "congruent+congruent", "congruent", "incongruent"),
          between = NA, 
          within = NA,
          accuracy = ifelse(R == S, 1, 0),
@@ -717,7 +697,7 @@ dataset56 <- dataset56 %>%
                         ifelse(Block == 0, 36, # Block 20 in session 2 is coded as 0, should be 36
                                Block + 16)), # Start counting from 16 for 2nd session 
          trial = Trial, 
-         congruency = ifelse(Conflict == "congruent+congruent", 1, 2),
+         congruency = ifelse(Conflict == "congruent+congruent", "congruent", "incongruent"),
          between = NA, 
          within = Double + 1, 
          accuracy = ifelse(R == S, 1, 0),
@@ -744,7 +724,7 @@ dataset57 <- dataset57 %>%
                    ifelse(Block == 0, 36, # Block 20 in session 2 is coded as 0, should be 36
                           Block + 16)), # Start counting from 16 for 2nd session ,
     trial = Trial, 
-    congruency = ifelse(Conflict == "congruent", 1, 2), 
+    congruency = ifelse(Conflict == "congruent", "congruent", "incongruent"), 
     between = NA,
     within = NA, 
     accuracy = ifelse(R == S, 1, 0), 
@@ -761,7 +741,7 @@ dataset58 <- dataset58 %>%
                         ifelse(Block == 0, 36, # Block 20 in session 2 is coded as 0, should be 36
                                Block + 16)), # Start counting from 16 for 2nd session 
          trial = Trial, 
-         congruency = ifelse(Conflict == "congruent", 1, 2),
+         congruency = ifelse(Conflict == "congruent", "congruent", "incongruent"),
          between = NA, 
          within = Double + 1, 
          accuracy = ifelse(R == S, 1, 0), 
@@ -794,7 +774,9 @@ dataset59 <- df_flanker %>%
          subject = Subject, 
          block = Block, 
          trial = TrialNum,
-         congruency = CongruencyNum,
+         congruency = ifelse(CongruencyNum == 1, "congruent", 
+                             ifelse(CongruencyNum == 2, "incongruent", 
+                                    ifelse(CongruencyNum == 3, "neutral", NA))),
          between = NA, 
          within = NA, 
          accuracy = Accuracy, 
@@ -825,7 +807,9 @@ dataset60 <- df_stroop %>%
          subject = Subject, 
          block = Block, 
          trial= TrialNum,  
-         congruency = CongruencyNum,  
+         congruency = ifelse(CongruencyNum == 1, "congruent", 
+                             ifelse(CongruencyNum == 2, "incongruent", 
+                                    ifelse(CongruencyNum == 3, "neutral", NA))), 
          between = NA, 
          within = NA,
          accuracy = Accuracy, 
@@ -858,7 +842,9 @@ dataset61 <- df_priming %>%
          subject = Subject, 
          block = Block, 
          trial = TrialNum, 
-         congruency = Condition, # no priming = congruent 
+         congruency = ifelse(Condition == 1, "congruent", 
+                             ifelse(Condition == 2, "incongruent", 
+                                    ifelse(Condition == 3, "neutral", NA))),
          between = NA, 
          within = NA, 
          accuracy = Accuracy, 
@@ -873,10 +859,10 @@ dataset62a <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/m
          subject = as.numeric(str_split_fixed(worker_id, fixed("s"), 2)[, 2]),
          block = ifelse(exp_stage == "practice", -999, 1),
          trial = trial_num + 1,
-         cond = ifelse(trial_num == 0, 3, # first trials are by definition neutral
-                       ifelse(grepl("NN", lag(condition)), 3, # neutral when previous trial had no distractor
-                              ifelse(probe_id == lag(distractor_id), 2, # neg. priming = incongruent
-                                            1))),
+         cond = ifelse(trial_num == 0, "neutral", # first trials are by definition neutral
+                       ifelse(grepl("NN", lag(condition)), "neutral", # neutral when previous trial had no distractor
+                              ifelse(probe_id == lag(distractor_id), "incongruent", # neg. priming = incongruent
+                                            "congruent"))),
          between = NA, 
          within = 1, 
          accuracy = correct, 
@@ -889,10 +875,10 @@ dataset62b <- read.csv("https://raw.githubusercontent.com/jstbcs/acdc-database/m
          subject = as.numeric(str_split_fixed(worker_id, fixed("s"), 2)[, 2]),
          block = ifelse(exp_stage == "practice", -999, 1),
          trial = trial_num + 1,
-         cond = ifelse(trial_num == 0, 3, # first trials are by definition neutral
-                       ifelse(grepl("NN", lag(condition)), 3, # neutral when previous trial had no distractor
-                              ifelse(probe_id == lag(distractor_id), 2, # neg. priming = incongruent
-                                     1))),
+         cond = ifelse(trial_num == 0, "neutral", # first trials are by definition neutral
+                       ifelse(grepl("NN", lag(condition)), "neutral", # neutral when previous trial had no distractor
+                              ifelse(probe_id == lag(distractor_id), "incongruent", # neg. priming = incongruent
+                                     "congruent"))),
          between = NA, 
          within = 2, 
          accuracy = correct, 
