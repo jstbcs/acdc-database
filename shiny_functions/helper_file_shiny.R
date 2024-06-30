@@ -232,12 +232,19 @@ get_overview_df <- function(conn, filtered = FALSE, filtered_dataset_id = NULL){
   dat <- dbReadTable(conn, "dataset_table")
   task <- dbReadTable(conn, "task_table")
   
+  # merge to overall df
   overview_df <- pub %>%
     left_join(stud, by = "publication_id") %>%
     left_join(dat, by = "study_id") %>%
     left_join(task, by = "task_id") %>%
     select(publication_id, apa_reference, publication_code, study_id, study_comment,
            dataset_id, task_name, task_description)
+  
+  # add info on additional measures
+  measures <- dbReadTable(conn, "measures_table") %>%
+    filter(measure_name != "stroop" & measure_name != "flanker" & measure_name != "simon" 
+           & measure_name != "negative priming" & measure_name != "stroopon")
+  overview_df$has_additional_mes <- ifelse(overview_df$study_id %in% measures$measures_id, "Yes", "No")
   
   if(filtered == TRUE){ # option to only show filtered publications
     overview_df <- overview_df %>%
@@ -246,7 +253,7 @@ get_overview_df <- function(conn, filtered = FALSE, filtered_dataset_id = NULL){
   
   colnames(overview_df) <- c("Publication ID", "APA Refrence", "Publication Code",
                              "Study ID", "Study description", "Dataset ID",
-                             "Task type", "Task description")
+                             "Task type", "Task description", "Additional Measures in Publication")
   
   return(overview_df)
 }
