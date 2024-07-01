@@ -139,7 +139,7 @@ dashboardPage(
                            label = "Choose table to download/ access:",
                            choices = c("observation_table", "publication_table", 
                                        "study_table","task_table","dataset_table", 
-                                       "within_table"),
+                                       "within_table","measures_table"),
                            selected = "observation_table"),
                
                # print R code

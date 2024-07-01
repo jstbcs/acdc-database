@@ -253,7 +253,7 @@ get_overview_df <- function(conn, filtered = FALSE, filtered_dataset_id = NULL){
   
   colnames(overview_df) <- c("Publication ID", "APA Refrence", "Publication Code",
                              "Study ID", "Study description", "Dataset ID",
-                             "Task type", "Task description", "Additional Measures in Publication")
+                             "Task type", "Task description", "Additional Measures in Study")
   
   return(overview_df)
 }
