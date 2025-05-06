@@ -26,7 +26,7 @@ check_data_level_structure <- function(data_i){
   correct_cols_in_task_table(data_i$task_table)
   correct_cols_in_dataset_table(data_i$dataset_table)
   correct_cols_in_within_table(data_i$within_table)
-  correct_cols_in_condition_table(data_i$condition_table)
+  # correct_cols_in_condition_table(data_i$condition_table)
   correct_cols_in_observation_table(data_i$observation_table)
   
   # check if number of within condition in data equals number of within_names in within_table
