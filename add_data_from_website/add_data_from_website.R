@@ -37,7 +37,7 @@ inspect_raw_data(prepped_obj)
 check_overall_structure(prepped_obj)
 
 # Submit to db
-path = "./acdc_website1.db"
+path = "./acdc_website4.db"
 create_empty_db(path)
 
 db_conn = DBI::dbConnect(RSQLite::SQLite(), path)
@@ -57,4 +57,4 @@ arguments <- list() %>%
     "1"
   )
 
-result <- query_db(conn, arguments, "default", "dataset_table")
+result <- query_db(con, arguments, "default", "dataset_table")
