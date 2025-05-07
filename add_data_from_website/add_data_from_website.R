@@ -7,7 +7,7 @@ sapply(functions_path_submission, source)
 functions_path_integration <- list.files("./functions", 
                                          pattern = "*\\.R",
                                          full.names = TRUE)
-# sapply(functions_path_integration, source)
+sapply(functions_path_integration, source)
 
 # Library
 library(dplyr)
@@ -19,7 +19,7 @@ json_path <- "./add_data_from_website/test/submission_Rey-Mermet_2018.json"
 
 unprepped_obj <- extract_from_submission_json(json_path)
 
-
+prepped_obj <- prep_submission_data(unprepped_obj)
 
 # Transform into the usual object thing
 

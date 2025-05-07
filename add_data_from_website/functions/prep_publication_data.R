@@ -1,4 +1,4 @@
-prep_publication_data <- function(publication_data, db_overview){
+prep_publication_data <- function(publication_data){
   # Generate the publication code
   publication_data$publication_code = tolower(paste0(
     publication_data$first_author, "_",
@@ -6,7 +6,7 @@ prep_publication_data <- function(publication_data, db_overview){
     strsplit(publication_data$title, " ")[[1]][1]
   ))
   
-  clean_publication_data = clean_char_columns(publication_data, db_overview, "publication_table")
+  clean_publication_data = clean_char_columns(publication_data)
   
-  return (clean_publication_data)
+  return (publication_data)
 }

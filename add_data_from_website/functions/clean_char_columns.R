@@ -1,12 +1,7 @@
-clean_char_columns <- function(data, db_overview, table_name){
-  character_columns = db_overview |>
-    dplyr::filter(table == table_name) |>
-    dplyr::filter(grepl("VARCHAR", data_type)) |>
-    dplyr::pull(column_name)
-  
+clean_char_columns <- function(data){
   data = dplyr::mutate(
     data, 
-    dplyr::across(dplyr::any_of(character_columns), ~tolower(trimws(.)))
+    dplyr::across(dplyr::everything(), ~tolower(trimws(.)))
   )
   
   return(data)

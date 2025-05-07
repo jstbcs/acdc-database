@@ -8,6 +8,6 @@
 # 
 #' @export
 remove_practice <- function(df) {
-  df_test <- df[df$block != -999, ]
+  df_test <- df[as.numeric(df$block) != -999, ]
   return(df_test)
 }
