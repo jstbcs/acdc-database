@@ -29,7 +29,12 @@ extract_from_submission_json <- function(json_path){
    
     # Deal with submitted additional measures
     if (json_obj$study_info[[istudy]]$measurement_data$additional_measures == "1"){
-      study_info$measurement_table= as.data.frame(data.table::rbindlist(json_obj$study_info[[istudy]]$measurement_data$measures))
+      study_info$measures_table= as.data.frame(data.table::rbindlist(json_obj$study_info[[istudy]]$measurement_data$measures))
+    } else {
+      study_info$measures_table = data.frame(
+        name = "no additional measures",
+        identifier = 1
+      )
     }
     
     n_datasets = length(json_obj$study_info[[istudy]]$dataset_info)

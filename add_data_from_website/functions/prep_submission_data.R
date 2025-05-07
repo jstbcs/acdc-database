@@ -10,8 +10,8 @@ prep_submission_data <- function(object){
   for (istudy in 1:n_studies){
     submission_obj[[paste0("study_", istudy)]]$study_table = prep_study_data(submission_obj[[paste0("study_", istudy)]]$study_table)
     
-    if ("measurement_table" %in% names(submission_obj[[paste0("study_", istudy)]])){
-      submission_obj[[paste0("study_", istudy)]]$measurement_table = prep_measurement_data(submission_obj[[paste0("study_", istudy)]]$measurement_table)
+    if ("measures_table" %in% names(submission_obj[[paste0("study_", istudy)]])){
+      submission_obj[[paste0("study_", istudy)]]$measures_table = prep_measurement_data(submission_obj[[paste0("study_", istudy)]]$measures_table)
     }
 
     n_datasets = sum(grepl(names(submission_obj[[paste0("study_", istudy)]]), pattern = "data_"))
