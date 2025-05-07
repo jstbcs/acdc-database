@@ -21,6 +21,14 @@ unprepped_obj <- extract_from_submission_json(json_path)
 
 prepped_obj <- prep_submission_data(unprepped_obj)
 
+inspect_publication_data(prepped_obj)
+inspect_study_data(prepped_obj)
+inspect_task_data(prepped_obj)
+inspect_measurement_data(prepped_obj)
+inspect_dataset_data(prepped_obj)
+inspect_within_data(prepped_obj)
+inspect_raw_data(prepped_obj)
+
 # Transform into the usual object thing
 
 # Add to database
