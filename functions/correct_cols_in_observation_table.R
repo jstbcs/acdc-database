@@ -21,4 +21,5 @@ correct_cols_in_observation_table <- function(observation_table){
   
   # stop if required column names are not present
   confirm_object_names(observation_table, entry_list_info$observation_table)
+
 }

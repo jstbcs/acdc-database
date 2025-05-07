@@ -49,9 +49,18 @@ extract_from_submission_json <- function(json_path){
       
       if (json_obj$study_info[[istudy]]$dataset_info[[idata]]$within_data$has_within_conditions == "1"){
         data_info$within_table = as.data.frame(data.table::rbindlist(json_obj$study_info[[istudy]]$dataset_info[[idata]]$within_data$within_condition_details))
+      } else {
+        data_info$within_table = data.frame(
+          name = "no within manipulation",
+          identifier = 1
+        )
       }
       
       data_info$observation_table = as.data.frame(data.table::rbindlist(json_obj$study_info[[istudy]]$dataset_info[[idata]]$raw_data))
+
+      if (json_obj$study_info[[istudy]]$dataset_info[[idata]]$within_data$has_within_conditions == "0"){
+        data_info$observation_table$within = 1
+      }
       
       study_info[[paste0("data_", idata)]] = data_info
     }

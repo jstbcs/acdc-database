@@ -25,5 +25,7 @@ prep_within_data <- function(within_data, raw_data){
   
   within_data = cbind(within_data, added_info)
 
+  within_data$within_description = within_data$name
+  within_data$within_name = within_data$identifier
   return(within_data)
 }

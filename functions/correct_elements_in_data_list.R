@@ -16,7 +16,7 @@ correct_elements_in_data_list <- function(object){
   
   # give warning if more than 4 elements in object
   if(length(names) > 4){
-    warning("The study object contains more than 4 elements. Only the task, overview, data, condition and within
+    warning("The study object contains more than 4 elements. Only the task, overview, data, and within
             element will be extracted")
   }
   # error if not all required objects are present

@@ -32,3 +32,9 @@ inspect_raw_data(prepped_obj)
 # Transform into the usual object thing
 
 # Add to database
+
+functions_path_integration <- list.files("./functions", 
+                                         pattern = "*\\.R",
+                                         full.names = TRUE)
+sapply(functions_path_integration, source)
+check_overall_structure(prepped_obj)
