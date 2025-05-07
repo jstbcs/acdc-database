@@ -1,11 +1,25 @@
 # Source Scripts
+functions_path_submission <- list.files("./add_data_from_website/functions", 
+                                        pattern = "*\\.R",
+                                        full.names = TRUE)
+sapply(functions_path_submission, source)
 
+functions_path_integration <- list.files("./functions", 
+                                         pattern = "*\\.R",
+                                         full.names = TRUE)
+# sapply(functions_path_integration, source)
 
 # Library
 library(dplyr)
 
 # Prepare Submission
 # Read from JSON
+json_path <- "./add_data_from_website/test/submission_Rey-Mermet_2018.json"
+
+
+unprepped_obj <- extract_from_submission_json(json_path)
+
+
 
 # Transform into the usual object thing
 
