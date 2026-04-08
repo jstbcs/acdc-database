@@ -8,7 +8,7 @@ prep_within_data <- function(within_data, raw_data){
   added_info = data.frame()
   
   for (i in 1:nrow(within_data)){
-    df_cond = df_test[df_test$within == within_data[i, "identifier"], ]
+    df_cond = df_test[as.character(df_test$within_identifier) == as.character(within_data[i, "identifier"]), ]
     
     added_info = rbind(added_info,
                        data.frame(
@@ -26,6 +26,8 @@ prep_within_data <- function(within_data, raw_data){
   within_data = cbind(within_data, added_info)
 
   within_data$within_description = within_data$name
-  within_data$within_name = within_data$identifier
+  within_data$within = as.character(within_data$identifier)
+  within_data$within_name = as.character(within_data$identifier)
+  
   return(within_data)
 }
