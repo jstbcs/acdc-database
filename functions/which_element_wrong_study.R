@@ -26,16 +26,11 @@ which_element_wrong_study <- function(object){
   {
     stop("Object needs to have a 'study_info' element")
   } 
-  if (!"group_info" %in% names)
-  {
-    stop("Object needs to have a 'group_info' element")
-  }
   # This if checks if all names are valid
   if (!all(stringr::str_detect(names,
                                paste(
                                  regex_matches_data_names,
                                  "study_info",
-                                 "group_info",
                                  sep = "|")
   )
   )
@@ -45,7 +40,6 @@ which_element_wrong_study <- function(object){
                                                  paste(
                                                    regex_matches_data_names, 
                                                    "study_info",
-                                                   "group_info",
                                                    sep = "|"
                                                  ),
                                                  negate = TRUE)
@@ -54,7 +48,7 @@ which_element_wrong_study <- function(object){
       "Element-name:",
       error_name,
       "invalid.",
-      "Elements can only be named 'study_info', 'group_info' or 'data_[NUMBER]"
+      "Elements can only be named 'study_info', or 'data_[NUMBER]"
     )
     stop(error_message)
   }

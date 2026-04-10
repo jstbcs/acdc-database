@@ -15,12 +15,12 @@ add_study <- function(conn, study_add, pub_id){
     
     
   study_id = find_next_free_id(conn, "study_table")
-  #measures_id = find_next_free_id(conn, "measures_table")
+  measures_id = find_next_free_id(conn, "measures_table")
 
-    # Add study id to study_info and measures
+  # Add study id to study_info and measures
   study_add$study_table$study_id = study_id
   study_add$measures_table$study_id = study_id
-  # study_add$measures_table$measures_id = measures_id
+  study_add$measures_table$measures_id = seq(measures_id, measures_id + nrow(study_add$measures_table)-1)
 
   # Also add the publication id
   study_add$study_table$publication_id = pub_id

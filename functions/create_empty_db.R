@@ -66,7 +66,6 @@ create_empty_db <- function(file_path){
     github VARCHAR(1000),
     mean_age FLOAT,
     percentage_female FLOAT,
-    n_members INTEGER,
     number_within_conditions INTEGER,
     group_description VARCHAR(10000),
     FOREIGN KEY (study_id) REFERENCES study_table(study_id),

@@ -14,14 +14,11 @@ check_study_level_structure <- function(object){
   names = names(object)
   length = length(object)
   # This speed up processing if all elements are in correct order
-  if (!all(names == c("study_table", "between_table", paste0("data", 1:(length-2)))))
+  if (!all(names %in% c("study_table", "measures_table", paste0("data_", 1:(length-1)))))
   {
     which_element_wrong_study(object)
   }
   
   # Check the study info element
   check_study_table_structure(object$study_table)
-  
-  # Check group
-  check_between_table_structure(object$between_table)
 }

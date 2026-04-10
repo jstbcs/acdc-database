@@ -12,8 +12,8 @@ get_appropriate_regex_pattern <- function(type){
   switch(
     type,
     publication_code = {"^[a-zA-Z]+_[12][0-9][0-9][0-9]_[a-zA-Z]+$"},
-    publication_names = {"^publication([1-9][0-9]?)$"},
-    study_names = {"^study([1-9][0-9]?)$"},
-    data_names = {"^data([1-9][0-9]?)$"}
+    publication_names = {"^publication(_?)([1-9][0-9]?)$"},
+    study_names = {"^study_?([1-9][0-9]?)$"},
+    data_names = {"^data_?([1-9][0-9]?)$"}
   )
 }
