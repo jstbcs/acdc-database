@@ -24,4 +24,4 @@ This folder stores all functions used for reading in, formatting, and retrieving
 The repo cntains code to the ACDC shiny app (see https://mfhcgn.shinyapps.io/acdc-database/), namely a server.R and a ui.R script, a shiny_functions folder and a rsconnect folder. The ui and server logic of the ACDC shiny app which gives users an overview over all datasets in the database and gives the opportunity to filter datasets. 
 
 ## Additional details for data processing
-Additional technical details on processing submissions to releasing new versions of ACDC can be found here: [LATER]
+Additional technical details on processing submissions to releasing new versions of ACDC can be found here: [submission_details.md](submission_details.md).
