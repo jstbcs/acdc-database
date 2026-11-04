@@ -34,7 +34,7 @@ library(DBI)
 # Read from JSON
 # Loop over this if you want to submit multiple files
 # Make sure to change the path to the JSON file that you want to submit
-json_path <- "./add_data_from_website/test/submission_Rey-Mermet_2018.json"
+json_path <- "./add_data_from_website/data/mittelstaedt_2020/submission_Mittelstädt_2020.json"
 
 unprepped_obj <- extract_from_submission_json(json_path)
 
@@ -48,8 +48,17 @@ prepped_obj <- prep_submission_data(unprepped_obj)
 # inspect_measurement_data(prepped_obj)
 # inspect_dataset_data(prepped_obj)
 # inspect_within_data(prepped_obj)
-# inspect_raw_data(prepped_obj)
+test <- inspect_raw_data(prepped_obj)
+data <- test[[1]][[3]]
 
+data %>% count(
+  subject, block, trial, within
+) %>% 
+  filter(n != 1) %>% 
+  count(block)
+
+data %>% 
+  filter(subject == 1, block == -999, trial == 1) %>% View()
 # 3. Check structure with functions
 check_overall_structure(prepped_obj)
 # MAKE SURE THIS PASSES WITHOUT ERRORS
