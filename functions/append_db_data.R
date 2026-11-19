@@ -4,19 +4,15 @@
 #'
 #' @param conn The database connection object.
 #' @param object A list or data frame containing the data to append.
-#' @param details A list of details containing the study-level identifiers (publication, group, and task).
-#' @param keys A list of keys for within and condition variables.
+#' @param study_id A string representing the study-level identifier to associate with the data being appended.
 #'
 #' @return This function appends the provided data to the specified database.
 #'
 #' @export
-append_db_data <- function(conn, object, details, keys) {
+append_db_data <- function(conn, object, study_id) {
   # Ensure the structure of the data
   check_data_level_structure(object)
   
-  # Extract the study ID from the details
-  study_id = details
-  
-  # Add the data to the database with study-level identifiers and keys
-  add_data(conn, object, study_id, keys)
+  # Add the data to the database with study-level identifiers
+  add_data(conn, object, study_id)
 }
