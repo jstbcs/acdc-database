@@ -35,7 +35,7 @@ library(DBI)
 # Loop over this if you want to submit multiple files
 # Make sure to change the path to the JSON file that you want to submit
 # json_path <- "./add_data_from_website/data/mittelstaedt_2020/submission_Mittelstädt_2020.json"
-json_path <- "./add_data_from_website/data/fassbender_2023/submission_Faßbender_2023.json"
+json_path <- "./add_data_from_website/data/enkavi_2019_v2/submission_Enkavi_2019.json"
 
 unprepped_obj <- extract_from_submission_json(json_path)
 
@@ -43,11 +43,11 @@ unprepped_obj <- extract_from_submission_json(json_path)
 prepped_obj <- prep_submission_data(unprepped_obj)
 
 # # Allow inspection
-# inspect_publication_data(prepped_obj)
-# inspect_study_data(prepped_obj)
+inspect_publication_data(prepped_obj)
+inspect_study_data(prepped_obj)
 # inspect_task_data(prepped_obj)
 # inspect_measurement_data(prepped_obj)
-# inspect_dataset_data(prepped_obj)
+inspect_dataset_data(prepped_obj)
 # inspect_within_data(prepped_obj)
 test <- inspect_raw_data(prepped_obj)
 data <- test[[1]][[1]]
@@ -67,12 +67,13 @@ check_overall_structure(prepped_obj)
 # MAKE SURE THIS PASSES WITHOUT ERRORS
 
 # 4. Submit to db
-path = "./acdc2.db"
-create_empty_db(path) # for testing in a clean database
+path = "./acdc_copy.db"
+# create_empty_db(path) # for testing in a clean database
 
 db_conn = DBI::dbConnect(RSQLite::SQLite(), path)
 
 add_object(db_conn, prepped_obj)
+# append_db_study()
 
 DBI::dbDisconnect(db_conn)
 
@@ -89,8 +90,8 @@ arguments <- list() %>%
   add_argument(
     con,
     "publication_id",
-    "equal",
-    "1" # change this to the publication ID that you want to check
+    "greater",
+    "0" # change this to the publication ID that you want to check
   )
 
 
