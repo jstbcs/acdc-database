@@ -16,14 +16,19 @@ exp1_data <- list.files(
       "Trty",
       "Cor",
       "RT"
-      )
-    ) %>%
+    )
+  ) %>%
   bind_rows() %>%
   group_by(Sub) %>%
+  # discriminability was manipulated blockwise and alternated blockwise
+  # when BlockNum is even, the discriminability is high ("easy")
+  # when BlockNum is odd, the discriminability is low ("hard")
   mutate(
     order = if_else(
+      # half of the participants started with a high stimulus discriminability block
+      # the other half with low stimulus discriminability
       first(BlockNum) == 1,
-      "order_hard_first",
+      "order_hard_first", 
       "order_easy_first"
     )
   ) %>%
@@ -40,8 +45,8 @@ exp1_data_new <- exp1_data %>%
     trial = Trial,
     within_identifier = if_else(
       BlockNum %% 2 == 0,
-      "easy", # when BlockNum is even, the discriminability is high
-      "hard" # when BlockNum is odd, the discriminability is low
+      "easy",
+      "hard"
     ),
     congruency = case_when(
       Trty %in% c(1, 3) ~ "congruent",
@@ -81,8 +86,14 @@ exp2_data <- list.files(
   ) %>%
   bind_rows() %>%
   group_by(Sub) %>%
+  # response mapping was manipulated blockwise
+  # when BlockNum is 1-7, the response mapping is simple (two stimulus alternatives)
+  # when BlockNum is 8-14 the response mapping is difficult (four stimulus alternatives)
   mutate(
     order = if_else(
+      # half of the participants started with two stimulus alternatives for the first seven blocks
+      # and four stimulus alternatives for the last seven blocks
+      # reversed order for the other half of the participants
       first(BlockNum) <= 7 ,
       "order_two_first",
       "order_four_first"
@@ -128,18 +139,18 @@ write_csv(exp2_four_first, "mittelstaedt_2020_exp2_difficult_first.csv")
 exp3_data <- read_delim("RawData_Experiment 3.txt") %>%
   mutate(
     Subject = if_else( # there are two subjects with number 53, change one to 64 based on age
-    Subject == 53 & Alter == 20,
-    64,
-    Subject
+      Subject == 53 & Alter == 20,
+      64,
+      Subject
     ))
 
 exp3_data_new <- exp3_data %>%
   transmute(
     subject = Subject,
     block = case_when(
-      Block == 1 ~ -999,
-      Block == 2 ~ -998,
-      TRUE ~ Block - 2
+      BlockNum == 1 ~ -999,
+      BlockNum == 2 ~ -998,
+      TRUE ~ BlockNum - 2
     ),
     trial = TrialNr,
     within_identifier = if_else( 
