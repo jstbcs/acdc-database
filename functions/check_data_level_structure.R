@@ -31,4 +31,7 @@ check_data_level_structure <- function(data_i){
   
   # check if number of within condition in data equals number of within_names in within_table
   correct_n_of_withinid(data_i$within_table, data_i$observation_table)
+  
+  # Check that there are no duplications in observation table
+  check_duplicates_in_observation_table(data_i$observation_table)
 }

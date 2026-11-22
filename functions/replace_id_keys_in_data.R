@@ -24,5 +24,16 @@ replace_id_keys_in_data <- function(data, keys, method, suffix = NULL){
   data = data %>% 
     dplyr::left_join(., keys) %>% 
     dplyr::select(-{{colname_key_var}}) 
+  
+  # Warn about unmatched keys
+  n_unmatched <- sum(is.na(data[[id_name]]))
+  
+  if (n_unmatched > 0) {
+    warning(sprintf(
+      "Found %d unmatched observations for '%s'.",
+      n_unmatched, method
+    ))
+  }
+  
   return(data)
 }
