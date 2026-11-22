@@ -34,7 +34,7 @@ library(DBI)
 # Read from JSON
 # Loop over this if you want to submit multiple files
 # Make sure to change the path to the JSON file that you want to submit
-json_path <- "./add_data_from_website/data/mittelstaedt_2020/submission_Mittelstädt_2020.json"
+json_path <- "./add_data_from_website/data/fassbender_2023/submission_Faßbender_2023.json"
 # json_path <- "./add_data_from_website/data/enkavi_2019_v2/submission_Enkavi_2019.json"
 
 unprepped_obj <- extract_from_submission_json(json_path)
@@ -43,17 +43,17 @@ unprepped_obj <- extract_from_submission_json(json_path)
 prepped_obj <- prep_submission_data(unprepped_obj)
 # prepped_obj$publication_1$publication_table$publication_code = "enkavi_2019_large"
 
-# # Allow inspection
-# inspect_publication_data(prepped_obj)
+# Allow inspection
+inspect_publication_data(prepped_obj)
 # inspect_study_data(prepped_obj)
 # inspect_task_data(prepped_obj)
 # inspect_measurement_data(prepped_obj)
 inspect_dataset_data(prepped_obj)
 # inspect_within_data(prepped_obj)
 test <- inspect_raw_data(prepped_obj)
-data <- test[[1]][[3]]
-data %>% count(within)
-data %>% count(subject)
+# data <- test[[1]][[3]]
+# data %>% count(within)
+# data %>% count(subject)
 # # 
 # exp3_data_new %>% count(
 #   subject, block, trial, within_identifier
@@ -61,8 +61,8 @@ data %>% count(subject)
 #   filter(n != 1) %>%
 #   count(block)
 # # 
-data %>%
-  filter(subject == 1, block == -999, trial == 4) %>% View()
+# data %>%
+#   filter(subject == 1, block == -999, trial == 4) %>% View()
 
 # 3. Check structure with functions
 check_overall_structure(prepped_obj)
@@ -91,12 +91,18 @@ create_sqlite_hash_file(path)
 arguments <- list() %>% 
   add_argument(
     con,
-    "publication_code",
-    "equal",
-    "enkavi_2019_large" # change this to the publication ID that you want to check
-  )
+    "publication_id",
+    "greater",
+    "0" # change this to the publication ID that you want to check
+  ) # %>% 
+  # add_argument(
+  #   con,
+  #   "publication_code",
+  #   "equal",
+  #   "enkavi_2019_large" # change this to the publication ID that you want to check
+  # )
 
 
-result_pub <- query_db(con, arguments, c("default", "study_id"), "publication_table")
+result_pub <- query_db(con, arguments, c("default", "study_id"), "dataset_table")
 
 result <- query_db(con, arguments, "default", "observation_table")
