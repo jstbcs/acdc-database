@@ -46,7 +46,7 @@ extract_from_submission_json <- function(json_path){
       task_name_used = json_obj$study_info[[istudy]]$dataset_info[[idata]]$dataset_data$task_name
       
       # Retrieve ID number
-      task_id_used = as.numeric(grep("\\d+$", task_name_used))
+      task_id_used = as.numeric(stringr::str_extract(task_name_used, "\\d+$"))
       
       data_info$task_table = submission_list$task_info[[task_id_used]]$task_data
       

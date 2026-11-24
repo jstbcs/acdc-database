@@ -34,7 +34,8 @@ library(DBI)
 # Read from JSON
 # Loop over this if you want to submit multiple files
 # Make sure to change the path to the JSON file that you want to submit
-json_path <- "./add_data_from_website/data/fassbender_2023/submission_Faßbender_2023.json"
+json_path <- "./add_data_from_website/data/ellinghaus_2024/submission_Ellinghaus_2024.json"
+# json_path <- "./add_data_from_website/data/fassbender_2023/submission_Faßbender_2023.json"
 # json_path <- "./add_data_from_website/data/enkavi_2019_v2/submission_Enkavi_2019.json"
 
 unprepped_obj <- extract_from_submission_json(json_path)
@@ -46,7 +47,7 @@ prepped_obj <- prep_submission_data(unprepped_obj)
 # Allow inspection
 inspect_publication_data(prepped_obj)
 # inspect_study_data(prepped_obj)
-# inspect_task_data(prepped_obj)
+inspect_task_data(prepped_obj)
 # inspect_measurement_data(prepped_obj)
 inspect_dataset_data(prepped_obj)
 # inspect_within_data(prepped_obj)
@@ -104,5 +105,6 @@ arguments <- list() %>%
 
 
 result_pub <- query_db(con, arguments, c("default", "study_id"), "dataset_table")
+result_task <- query_db(con, arguments, c("default", "study_id"), "task_table")
 
 result <- query_db(con, arguments, "default", "observation_table")
