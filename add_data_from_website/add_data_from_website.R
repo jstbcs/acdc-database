@@ -34,9 +34,9 @@ library(DBI)
 # Read from JSON
 # Loop over this if you want to submit multiple files
 # Make sure to change the path to the JSON file that you want to submit
-json_path <- "./add_data_from_website/data/ellinghaus_2024/submission_Ellinghaus_2024.json"
+# json_path <- "./add_data_from_website/data/ellinghaus_2024/submission_Ellinghaus_2024.json"
 # json_path <- "./add_data_from_website/data/fassbender_2023/submission_Faßbender_2023.json"
-# json_path <- "./add_data_from_website/data/enkavi_2019_v2/submission_Enkavi_2019.json"
+json_path <- "./add_data_from_website/data/enkavi_2019_v2/submission_Enkavi_2019.json"
 
 unprepped_obj <- extract_from_submission_json(json_path)
 
@@ -76,7 +76,7 @@ path = "./acdc.db"
 db_conn = DBI::dbConnect(RSQLite::SQLite(), path)
 
 add_object(db_conn, prepped_obj)
-# append_db_data(db_conn, prepped_obj$publication_1$study_1$data_2, 2)
+append_db_data(db_conn, prepped_obj$publication_1$study_1$data_1, 2)
 
 DBI::dbDisconnect(db_conn)
 
@@ -85,6 +85,7 @@ library(acdcquery)
 con <- connect_to_db(path)
 
 files_to_source = list.files("../acdc-query/R", pattern = "\\.R$", full.names = TRUE, include.dirs = FALSE)
+
 sapply(files_to_source, source)
 
 create_sqlite_hash_file(path)
@@ -95,13 +96,13 @@ arguments <- list() %>%
     "publication_id",
     "greater",
     "0" # change this to the publication ID that you want to check
-  ) # %>% 
-  # add_argument(
-  #   con,
-  #   "publication_code",
-  #   "equal",
-  #   "enkavi_2019_large" # change this to the publication ID that you want to check
-  # )
+  ) %>% 
+  add_argument(
+    con,
+    "publication_code",
+    "equal",
+    "enkavi_2019_large" # change this to the publication ID that you want to check
+  )
 
 
 result_pub <- query_db(con, arguments, c("default", "study_id"), "dataset_table")
